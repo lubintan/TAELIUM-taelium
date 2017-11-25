@@ -398,6 +398,7 @@ final class BlockImpl implements Block {
         }
         generatorAccount.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.BLOCK_GENERATED, getId(), totalFeeNQT - totalBackFees);
         generatorAccount.addToForgedBalanceNQT(totalFeeNQT - totalBackFees);
+        generatorAccount.addToForgedBalanceNQT(Constants.REWARD);
     }
 
     void setPrevious(BlockImpl block) {

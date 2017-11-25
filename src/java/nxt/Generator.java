@@ -348,8 +348,9 @@ public final class Generator implements Comparable<Generator> {
         // means verifyHit returned True!
         int start = Nxt.getEpochTime();
         while (true) {
-            try {
-                BlockchainProcessorImpl.getInstance().generateBlock(secretPhrase, timestamp);
+            try { //successful forging
+            		//insert reward to forger here.
+            		BlockchainProcessorImpl.getInstance().generateBlock(secretPhrase, timestamp);
                 setDelay(Constants.FORGING_DELAY);//20s delay. (wait 15s to allow more tx to be in the block.)
                 return true;
             } catch (BlockchainProcessor.TransactionNotAcceptedException e) {

@@ -1755,7 +1755,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             TransactionImpl transaction = unconfirmedTransaction.getTransaction();
             blockTransactions.add(transaction);
             digest.update(transaction.bytes());
-            totalAmountNQT += transaction.getAmountNQT();
+            totalAmountNQT += transaction.getAmountNQT(); //can get notional tx value here.
             totalFeeNQT += transaction.getFeeNQT();
             payloadLength += transaction.getFullSize();
         }

@@ -131,6 +131,15 @@ public interface Attachment extends Appendix {
         }
 
     };
+    
+    EmptyAttachment ORDINARY_REWARD = new EmptyAttachment() {
+
+        @Override
+        public TransactionType getTransactionType() {
+            return TransactionType.Reward.ORDINARY_REWARD;
+        }
+
+    };
 
     // the message payload is in the Appendix
     EmptyAttachment ARBITRARY_MESSAGE = new EmptyAttachment() {

@@ -36,6 +36,7 @@ import java.util.Map;
 
 public abstract class TransactionType {
 
+	private static final byte TYPE_REWARD = 10;
     private static final byte TYPE_PAYMENT = 0;
     private static final byte TYPE_MESSAGING = 1;
     private static final byte TYPE_COLORED_COINS = 2;
@@ -45,6 +46,8 @@ public abstract class TransactionType {
     private static final byte TYPE_DATA = 6;
     static final byte TYPE_SHUFFLING = 7;
 
+    private static final byte SUBTYPE_REWARD_ORDINARY_REWARD = 0;
+    
     private static final byte SUBTYPE_PAYMENT_ORDINARY_PAYMENT = 0;
 
     private static final byte SUBTYPE_MESSAGING_ARBITRARY_MESSAGE = 0;
@@ -86,6 +89,8 @@ public abstract class TransactionType {
 
     public static TransactionType findTransactionType(byte type, byte subtype) {
         switch (type) {
+        		case TYPE_REWARD:
+        			return
             case TYPE_PAYMENT:
                 switch (subtype) {
                     case SUBTYPE_PAYMENT_ORDINARY_PAYMENT:
@@ -335,6 +340,82 @@ public abstract class TransactionType {
     public final String toString() {
         return getName() + " type: " + getType() + ", subtype: " + getSubtype();
     }
+    
+    public static abstract class Reward extends TransactionType {
+
+        private Reward() {
+        }
+
+        @Override
+        public final byte getType() {
+            return TransactionType.TYPE_REWARD;
+        }
+
+        @Override
+        final boolean applyAttachmentUnconfirmed(Transaction transaction, Account senderAccount) {
+            return false;
+        }
+
+        @Override
+        final void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
+            if (recipientAccount == null) {
+                Account.getAccount(Genesis.CREATOR_ID).addToBalanceAndUnconfirmedBalanceNQT(getLedgerEvent(),
+                        transaction.getId(), transaction.getAmountNQT());
+            }
+        }
+
+        @Override
+        final void undoAttachmentUnconfirmed(Transaction transaction, Account senderAccount) {
+        }
+
+        @Override
+        public final boolean canHaveRecipient() {
+            return true;
+        }
+
+        @Override
+        public final boolean isPhasingSafe() {
+            return false;
+        }
+
+        public static final TransactionType ORDINARY_REWARD = new Payment() {
+
+            @Override
+            public final byte getSubtype() {
+                return TransactionType.SUBTYPE_REWARD_ORDINARY_REWARD;
+            }
+
+            @Override
+            public final LedgerEvent getLedgerEvent() {
+                return LedgerEvent.ORDINARY_REWARD;
+            }
+
+            @Override
+            public String getName() {
+                return "OrdinaryReward";
+            }
+
+            @Override
+            Attachment.EmptyAttachment parseAttachment(ByteBuffer buffer) throws NxtException.NotValidException {
+                return Attachment.ORDINARY_REWARD;
+            }
+
+            @Override
+            Attachment.EmptyAttachment parseAttachment(JSONObject attachmentData) throws NxtException.NotValidException {
+                return Attachment.ORDINARY_REWARD;
+            }
+
+            @Override
+            void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+                if (transaction.getAmountNQT() <= 0 || transaction.getAmountNQT() >= Constants.MAX_BALANCE_NQT) {
+                    throw new NxtException.NotValidException("Invalid ordinary reward");
+                }
+            }
+
+        };
+
+    }
+
 
     public static abstract class Payment extends TransactionType {
 
