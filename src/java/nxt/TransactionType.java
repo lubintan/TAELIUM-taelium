@@ -90,7 +90,12 @@ public abstract class TransactionType {
     public static TransactionType findTransactionType(byte type, byte subtype) {
         switch (type) {
         		case TYPE_REWARD:
-        			return
+        			switch (subtype) {
+        				case SUBTYPE_REWARD_ORDINARY_REWARD:
+        					return Reward.ORDINARY_REWARD;
+        				default:
+        					return null;
+        			}
             case TYPE_PAYMENT:
                 switch (subtype) {
                     case SUBTYPE_PAYMENT_ORDINARY_PAYMENT:
