@@ -396,9 +396,11 @@ final class BlockImpl implements Block {
         if (totalBackFees != 0) {
             Logger.logDebugMessage("Fee reduced by %f %s at height %d", ((double)totalBackFees)/Constants.ONE_NXT, Constants.COIN_SYMBOL, this.height);
         }
-        generatorAccount.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.BLOCK_GENERATED, getId(), totalFeeNQT - totalBackFees);
-        generatorAccount.addToForgedBalanceNQT(totalFeeNQT - totalBackFees);
-        generatorAccount.addToForgedBalanceNQT(Constants.REWARD);
+        generatorAccount.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.BLOCK_GENERATED, getId(), totalFeeNQT - totalBackFees + Constants.REWARD);
+        generatorAccount.addToForgedBalanceNQT(totalFeeNQT - totalBackFees + Constants.REWARD);
+      //Just use forged balance should be ok! Because don't want to have sender or anything. 
+        //As long as generator's balance is increased! (need to addToBalanceAndUnconfirmedBalanceNQT)
+        //And generator can spend that balance. And it's somewhat invisible that the balance is separated to user.
     }
 
     void setPrevious(BlockImpl block) {

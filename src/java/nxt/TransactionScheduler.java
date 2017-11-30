@@ -15,7 +15,7 @@
  */
 
 package nxt;
-//seen.
+//seen. only used for "Currency" transactions.
 import nxt.util.Filter;
 import nxt.util.Logger;
 

@@ -1663,7 +1663,8 @@ public final class Account {
         }
     }
 
-    void addToBalanceNQT(LedgerEvent event, long eventId, long amountNQT) {
+    void addToBalanceNQT(LedgerEvent event, long eventId, long amountNQT) { 
+    	//used in "applying" a transaction, which is used in appendix txes. And in transactions involving the other types.
         addToBalanceNQT(event, eventId, amountNQT, 0);
     }
 
@@ -1690,6 +1691,7 @@ public final class Account {
     }
 
     void addToUnconfirmedBalanceNQT(LedgerEvent event, long eventId, long amountNQT) {
+    	// only used for "other"-type transactions!
         addToUnconfirmedBalanceNQT(event, eventId, amountNQT, 0);
     }
 
