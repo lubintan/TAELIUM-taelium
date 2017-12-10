@@ -859,11 +859,17 @@ public final class Peers {
     }
 
     public static boolean hasTooManyInboundPeers() {
+//    		System.out.println("≈≈≈NUM OF INBOUND≈≈≈");
+//    		System.out.println(getPeers(Peer::isInbound, maxNumberOfInboundConnections).size());
+    	
         return getPeers(Peer::isInbound, maxNumberOfInboundConnections).size() >= maxNumberOfInboundConnections;
     }
 
     public static boolean hasTooManyOutboundConnections() {
-        return getPeers(peer -> !peer.isBlacklisted() && peer.getState() == Peer.State.CONNECTED && peer.getAnnouncedAddress() != null,
+//    	System.out.println("≈≈≈NUM OF OUTBOUND≈≈≈");
+//    	System.out.println(getPeers(peer -> !peer.isBlacklisted() && peer.getState() == Peer.State.CONNECTED && peer.getAnnouncedAddress() != null,
+//                maxNumberOfOutboundConnections).size());
+    		return getPeers(peer -> !peer.isBlacklisted() && peer.getState() == Peer.State.CONNECTED && peer.getAnnouncedAddress() != null,
                 maxNumberOfOutboundConnections).size() >= maxNumberOfOutboundConnections;
     }
 

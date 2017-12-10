@@ -55,6 +55,7 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
+import java.lang.Thread;
 
 final class PeerImpl implements Peer {
 
@@ -338,6 +339,14 @@ final class PeerImpl implements Peer {
 
     @Override
     public void blacklist(Exception cause) {
+//    		Logger.logDebugMessage("^^^     ^^^     ^^^     ^^^     ^^^     ^^^");
+//    		Logger.logDebugMessage(this.announcedAddress);
+//        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+//        for (int i = 1; i < elements.length; i++) {
+//             StackTraceElement s = elements[i];
+//             Logger.logDebugMessage("\tat " + s.getClassName() + "." + s.getMethodName() + "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
+//        }
+    	
         if (cause instanceof NxtException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException
                 || cause instanceof SQLException || cause.getCause() instanceof SQLException) {
             // don't blacklist peers just because a feature is not yet enabled, or because of database timeouts
@@ -588,7 +597,9 @@ final class PeerImpl implements Peer {
                 log += " >>> " + e.toString();
                 showLog = true;
             }
+            Logger.logDebugMessage(e.getMessage());
             deactivate();
+            
             if (connection != null) {
                 connection.disconnect();
             }

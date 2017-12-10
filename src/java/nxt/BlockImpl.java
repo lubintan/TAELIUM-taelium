@@ -20,6 +20,7 @@ import nxt.AccountLedger.LedgerEvent;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
 import nxt.util.Logger;
+import nxt.GetAllForgersBalances;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -55,6 +56,7 @@ final class BlockImpl implements Block {
     private volatile String stringId = null;
     private volatile long generatorId;
     private volatile byte[] bytes = null;
+    private BigInteger totalForgingHoldings = BigInteger.ZERO;
 
 
     BlockImpl(byte[] generatorPublicKey, byte[] generationSignature) {
@@ -92,7 +94,7 @@ final class BlockImpl implements Block {
     BlockImpl(int version, int timestamp, long previousBlockId, long totalAmountNQT, long totalFeeNQT, int payloadLength,
               byte[] payloadHash, long generatorId, byte[] generationSignature, byte[] blockSignature,
               byte[] previousBlockHash, BigInteger cumulativeDifficulty, long baseTarget, long nextBlockId, int height, long id,
-              List<TransactionImpl> blockTransactions) {
+              List<TransactionImpl> blockTransactions, BigInteger totalForgingHoldings) {
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                 null, generationSignature, blockSignature, previousBlockHash, null);
         this.cumulativeDifficulty = cumulativeDifficulty;
@@ -102,6 +104,7 @@ final class BlockImpl implements Block {
         this.id = id;
         this.generatorId = generatorId;
         this.blockTransactions = blockTransactions;
+        this.totalForgingHoldings = totalForgingHoldings;
     }
 
     @Override
@@ -182,6 +185,11 @@ final class BlockImpl implements Block {
     @Override
     public BigInteger getCumulativeDifficulty() {
         return cumulativeDifficulty;
+    }
+    
+    @Override
+    public BigInteger getTotalForgingHoldings() {
+        return totalForgingHoldings;
     }
 
     @Override
@@ -451,6 +459,11 @@ final class BlockImpl implements Block {
         }
         cumulativeDifficulty = previousBlock.cumulativeDifficulty.add(Convert.two64.divide(BigInteger.valueOf(baseTarget))); 
         //two64 = 2**64.
+    }
+    
+    void calculateTotalForgingHoldings() {
+    		totalForgingHoldings = GetAllForgersBalances.getSumAllForgersBalances();
+    		
     }
 
 }

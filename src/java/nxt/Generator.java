@@ -22,6 +22,7 @@ import nxt.util.Listener;
 import nxt.util.Listeners;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
+import nxt.Account;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -29,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -157,7 +160,7 @@ public final class Generator implements Comparable<Generator> {
         if (old != null) {
             Logger.logDebugMessage(old + " is already forging");
             return old; //if generator with same secretPhrase is already forging, return.
-        } 
+        }
         listeners.notify(generator, Event.START_FORGING);
         Logger.logDebugMessage(generator + " started");
         return generator;
@@ -210,7 +213,36 @@ public final class Generator implements Comparable<Generator> {
 
     public static List<Generator> getSortedForgers() {
         List<Generator> forgers = sortedForgers;
+        
         return forgers == null ? Collections.emptyList() : forgers;
+    }
+    
+    public static Set<Long> getLocalForgerIds() {
+    		
+    		Set<Long> localForgerIds = new HashSet<Long>();
+    		
+    		for (Generator eachForger : sortedForgers ) {
+    			localForgerIds.add(eachForger.accountId);
+    		}
+    		
+    		return localForgerIds==null ? Collections.emptySet() : localForgerIds;
+//    		return localForgerIds;
+    }
+    
+    public static Map<Long, BigInteger> getLocalForgerBalanceMap(){
+    		Map<Long, BigInteger> forgerBalanceMap = new HashMap<>(); 
+    		// Hash map no duplicates. Duplicate entries, latest overwrites earlier.
+        
+        for (Generator eachForger : sortedForgers) {
+        		Account account = Account.getAccount(eachForger.accountId);
+        		double balance = (double)account.getBalanceNQT() / Constants.ONE_NXT;
+        		forgerBalanceMap.put(eachForger.accountId, BigInteger.valueOf(account.getBalanceNQT()) );
+//        		System.out.println();
+//        		System.out.println(Crypto.rsEncode(eachForger.accountId));
+//        		System.out.println(balance);
+//        		System.out.println();
+        }
+        return forgerBalanceMap == null ? Collections.emptyMap() : forgerBalanceMap;
     }
 
     public static long getNextHitTime(long lastBlockId, int curTime) {

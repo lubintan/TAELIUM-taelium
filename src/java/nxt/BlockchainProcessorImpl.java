@@ -29,6 +29,8 @@ import nxt.util.Listener;
 import nxt.util.Listeners;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
+import nxt.Generator;
+import nxt.GetAllForgersBalances;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -1092,10 +1094,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     public void processPeerBlock(JSONObject request) throws NxtException {//called in ProcessBlock.java
         BlockImpl block = BlockImpl.parseBlock(request);
         BlockImpl lastBlock = blockchain.getLastBlock();
-        if (block.getPreviousBlockId() == lastBlock.getId()) {
-            pushBlock(block);
+        if (block.getPreviousBlockId() == lastBlock.getId()) { //if peer's block's previous block is my current block.
+            GetAllForgersBalances.getAllForgerIds();
+        		pushBlock(block);
         } else if (block.getPreviousBlockId() == lastBlock.getPreviousBlockId() && block.getTimestamp() < lastBlock.getTimestamp()) {
-            blockchain.writeLock();
+            //if peer trying to push same block as my latest, and their block's timestamp is earlier than mine.
+        		//do checks and pop off my latest block first.
+        		blockchain.writeLock();
             try {
                 if (lastBlock.getId() != blockchain.getLastBlock().getId()) {
                     return; // blockchain changed, ignore the block
@@ -1315,7 +1320,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 List<TransactionImpl> invalidPhasedTransactions = new ArrayList<>();
                 validatePhasedTransactions(previousLastBlock.getHeight(), validPhasedTransactions, invalidPhasedTransactions, duplicates);
                 validateTransactions(block, previousLastBlock, curTime, duplicates, previousLastBlock.getHeight() >= Constants.LAST_CHECKSUM_BLOCK);
-
+                
+                //validate/add sum of forging balances of each forger.  
+                block.calculateTotalForgingHoldings();
+                
                 block.setPrevious(previousLastBlock);
                 blockListeners.notify(block, Event.BEFORE_BLOCK_ACCEPT);
                 TransactionProcessorImpl.getInstance().requeueAllUnconfirmedTransactions();

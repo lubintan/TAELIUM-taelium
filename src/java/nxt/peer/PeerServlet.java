@@ -67,6 +67,7 @@ public final class PeerServlet extends WebSocketServlet {
         map.put("getUnconfirmedTransactions", GetUnconfirmedTransactions.instance);
         map.put("processBlock", ProcessBlock.instance);
         map.put("processTransactions", ProcessTransactions.instance);
+        map.put("getPeersForgerIds",GetPeersForgerIds.instance);
         peerRequestHandlers = Collections.unmodifiableMap(map);
     }
 

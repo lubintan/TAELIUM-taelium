@@ -29,6 +29,7 @@ import nxt.util.Convert;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
 import nxt.util.Time;
+import nxt.DebugScanner;
 import org.json.simple.JSONObject;
 
 import java.io.File;
@@ -438,6 +439,7 @@ public final class Nxt { //only public class in a Java file must also have the m
                 AddOns.init();
                 API.init();
                 DebugTrace.init();
+                DebugScanner.init();
                 int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Nxt.getIntProperty("nxt.timeMultiplier"), 1) : 1;
                 ThreadPool.start(timeMultiplier);
                 if (timeMultiplier > 1) {

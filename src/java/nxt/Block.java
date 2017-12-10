@@ -60,6 +60,8 @@ public interface Block {
     long getBaseTarget();
 
     BigInteger getCumulativeDifficulty();
+    
+    BigInteger getTotalForgingHoldings();
 
     byte[] getBytes();
 
