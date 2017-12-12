@@ -295,6 +295,11 @@ final class PeerImpl implements Peer {
         if (announcedAddress != null && announcedAddress.length() > Peers.MAX_ANNOUNCED_ADDRESS_LENGTH) {
             throw new IllegalArgumentException("Announced address too long: " + announcedAddress.length());
         }
+        
+        Logger.logDebugMessage("SET ANNOUNCED ADDRESS PORTION");
+        Logger.logDebugMessage("host: " + host);
+        Logger.logDebugMessage("announcedAddress: " + announcedAddress);
+        
         this.announcedAddress = announcedAddress;
         if (announcedAddress != null) {
             try {
@@ -303,6 +308,7 @@ final class PeerImpl implements Peer {
                 this.port = -1;
             }
         } else {
+        		this.announcedAddress = this.host;
             this.port = -1;
         }
     }
@@ -644,8 +650,13 @@ final class PeerImpl implements Peer {
                 }
             }
             JSONObject response = send(Peers.getMyPeerInfoRequest());
+            
+            Logger.logDebugMessage("$$$$$$ RESPONSE $$$$$$");
+            Logger.logDebugMessage(response.toJSONString());
+            
             if (response != null) {
                 if (response.get("error") != null) {
+                		Logger.logDebugMessage("4444444444444444");
                     setState(State.NON_CONNECTED);
                     return;
                 }
@@ -675,6 +686,7 @@ final class PeerImpl implements Peer {
                                     Logger.logDebugMessage("Connect: old announced address for " + host + " no longer valid");
                                     Peers.setAnnouncedAddress(this, host);
                                 }
+                                Logger.logDebugMessage("000000000000000000");
                                 setState(State.NON_CONNECTED);
                                 return;
                             }
@@ -684,6 +696,7 @@ final class PeerImpl implements Peer {
                                 Peers.setAnnouncedAddress(this, newAnnouncedAddress);
                                 if (getPort() != oldPort) {
                                     // force checking connectivity to new announced port
+                                		Logger.logDebugMessage("1111111111111111111");
                                     setState(State.NON_CONNECTED);
                                     return;
                                 }
@@ -699,7 +712,8 @@ final class PeerImpl implements Peer {
                         Peers.setAnnouncedAddress(this, host);
                         Logger.logDebugMessage("Connected to peer without announced address, setting to " + host);
                     } else {
-                        setState(State.NON_CONNECTED);
+                    		Logger.logDebugMessage("222222222222222222");
+                    		setState(State.NON_CONNECTED);
                         return;
                     }
                 }
@@ -714,7 +728,9 @@ final class PeerImpl implements Peer {
                 }
             } else {
                 //Logger.logDebugMessage("Failed to connect to peer " + peerAddress);
-                setState(State.NON_CONNECTED);
+                
+            		Logger.logDebugMessage("333333333333333333333");
+            		setState(State.NON_CONNECTED);
             }
         } catch (RuntimeException e) {
             blacklist(e);

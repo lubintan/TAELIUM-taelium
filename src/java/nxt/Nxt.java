@@ -404,6 +404,7 @@ public final class Nxt { //only public class in a Java file must also have the m
                 setServerStatus(ServerStatus.BEFORE_DATABASE, null);
                 Db.init();
                 setServerStatus(ServerStatus.AFTER_DATABASE, null);
+//                DebugScanner.init();
                 TransactionProcessorImpl.getInstance();
                 BlockchainProcessorImpl.getInstance();
                 Account.init();
@@ -439,7 +440,7 @@ public final class Nxt { //only public class in a Java file must also have the m
                 AddOns.init();
                 API.init();
                 DebugTrace.init();
-                DebugScanner.init();
+                
                 int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Nxt.getIntProperty("nxt.timeMultiplier"), 1) : 1;
                 ThreadPool.start(timeMultiplier);
                 if (timeMultiplier > 1) {

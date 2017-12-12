@@ -201,6 +201,9 @@ public final class Peers {
                 Logger.logWarningMessage("Your announced address is not valid: " + e.toString());
             }
         }
+        Logger.logDebugMessage("@@@@ MY ADDRESS:" + myAddress + "  @@@@");
+        
+        
         myPeerServerPort = Nxt.getIntProperty("nxt.peerServerPort");
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
@@ -252,6 +255,7 @@ public final class Peers {
                 throw new RuntimeException(e.toString(), e);
             }
         }
+        Logger.logDebugMessage("$$$$ another MY ADDRESS:" + myAddress + " $$$$$");
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             json.put("hallmark", Peers.myHallmark);
             servicesList.add(Peer.Service.HALLMARK);
@@ -634,6 +638,10 @@ public final class Peers {
                         return;
                     }
                     JSONArray peers = (JSONArray)response.get("peers");
+                    /**/
+//                    Logger.logDebugMessage("===== RESPONSE FROM getPeers =====");
+//                    Logger.logDebugMessage(peers.toJSONString());
+                    /**/
                     Set<String> addedAddresses = new HashSet<>();
                     if (peers != null) {
                         JSONArray services = (JSONArray)response.get("services");
@@ -917,7 +925,8 @@ public final class Peers {
     }
 
     static PeerImpl findOrCreatePeer(final InetAddress inetAddress, final String announcedAddress, final boolean create) {
-
+//    		Logger.logDebugMessage("||||||Announced Address:" + announcedAddress + " |||||||");
+    	
         if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isLinkLocalAddress()) {
             return null;
         }
@@ -946,6 +955,7 @@ public final class Peers {
             return null;
         }
         peer = new PeerImpl(host, announcedAddress);
+        
         if (Constants.isTestnet && peer.getPort() != TESTNET_PEER_PORT) {
             Logger.logDebugMessage("Peer " + host + " on testnet is not using port " + TESTNET_PEER_PORT + ", ignoring");
             return null;
@@ -980,13 +990,31 @@ public final class Peers {
         peer.setAnnouncedAddress(newAnnouncedAddress);
     }
 
-    public static boolean addPeer(Peer peer, String newAnnouncedAddress) {
+    public static boolean addPeer(Peer peer, String newAnnouncedAddress) {    	
         setAnnouncedAddress((PeerImpl)peer, newAnnouncedAddress.toLowerCase());
         return addPeer(peer);
     }
 
     public static boolean addPeer(Peer peer) {
-        if (peers.put(peer.getHost(), (PeerImpl) peer) == null) {
+    	
+    		if (peer.getAnnouncedAddress() == null) {setAnnouncedAddress((PeerImpl)peer, peer.getHost());}
+    		
+        Logger.logDebugMessage("+++++ ADDING PEER +++++");
+        Logger.logDebugMessage("announced add:" + peer.getAnnouncedAddress());
+        Logger.logDebugMessage("host:"+peer.getHost());
+        Logger.logDebugMessage("string:"+peer.toString());
+        Logger.logDebugMessage("blockchain state:" + peer.getBlockchainState().toString());
+        Logger.logDebugMessage("shareAddress:"+String.valueOf(peer.shareAddress()));
+        Logger.logDebugMessage("port:"+String.valueOf(peer.getPort()));
+        Logger.logDebugMessage("platform:"+peer.getPlatform());
+        
+        Logger.logDebugMessage("***** SHOW ALL PEERS (before new peer) *****");
+        	for (PeerImpl eachPeer: peers.values()) {
+        		Logger.logDebugMessage(eachPeer.toString() + ": " + eachPeer.getState().toString());
+        	}
+    	
+    	
+    		if (peers.put(peer.getHost(), (PeerImpl) peer) == null) {
             listeners.notify(peer, Event.NEW_PEER);
             return true;
         }
@@ -1240,11 +1268,22 @@ public final class Peers {
                         (Nxt.getBlockchain().getLastBlock().getBaseTarget() / Constants.INITIAL_BASE_TARGET > 10 && !Constants.isTestnet) ? Peer.BlockchainState.FORK :
                         Peer.BlockchainState.UP_TO_DATE;
         if (state != currentBlockchainState) {
-            JSONObject json = new JSONObject(myPeerInfo);
+            Logger.logDebugMessage("----------STATE != CURRENTBLOCKCHAINSTATE---------");
+            Logger.logDebugMessage("state: "+state);
+            Logger.logDebugMessage("currentBCState: " + currentBlockchainState);
+        	
+        		JSONObject json = new JSONObject(myPeerInfo);
             json.put("blockchainState", state.ordinal());
+            Logger.logDebugMessage("response: " + json.toJSONString());
+            
             myPeerInfoResponse = JSON.prepare(json);
             json.put("requestType", "getInfo");
+            Logger.logDebugMessage("request: " + json.toJSONString());
+
+            
             myPeerInfoRequest = JSON.prepareRequest(json);
+            
+            
             currentBlockchainState = state;
         }
     }
