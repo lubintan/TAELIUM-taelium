@@ -31,7 +31,11 @@ class NxtDbVersion extends DbVersion {
                         + "next_block_id BIGINT, "
                         + "height INT NOT NULL, generation_signature BINARY(64) NOT NULL, "
                         + "block_signature BINARY(64) NOT NULL, payload_hash BINARY(32) NOT NULL, generator_id BIGINT NOT NULL,"
-                        + "total_forging_holdings VARBINARY NOT NULL)");
+                        + "total_forging_holdings VARBINARY NOT NULL,"
+                        + "latest_annual_interest_rate FLOAT NOT NULL,"
+                        + "supply_current VARBINARY NOT NULL,"
+                        + "vault VARBINARY NOT NULL,"
+                        + "block_reward BIGINT NOT NULL)");
             case 2:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS block_id_idx ON block (id)");
             case 3:

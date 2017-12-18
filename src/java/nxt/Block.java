@@ -62,9 +62,19 @@ public interface Block {
     BigInteger getCumulativeDifficulty();
     
     BigInteger getTotalForgingHoldings();
+    
+    double getLatestRYear();
+    
+    BigInteger getSupplyCurrent();
+    
+    BigInteger getVault();
+    
+    long getBlockReward();
 
     byte[] getBytes();
 
     JSONObject getJSONObject();
+
+	
 
 }

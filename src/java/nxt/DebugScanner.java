@@ -27,6 +27,8 @@ public class DebugScanner{
 
         @Override
         public void run() {
+
+/* START TEST SEND FORGERS LIST */        	
 //	        	Collection<? extends Peer> allPeers = Peers.getAllPeers();
 //	        	List<Peer> activePeers = Peers.getActivePeers();
 //	        	Set<Long> forgers = GetAllForgersBalances.allForgerIds;
@@ -50,6 +52,8 @@ public class DebugScanner{
 //	        		forgers.forEach(eachForger -> Logger.logDebugMessage(Crypto.rsEncode(eachForger)));
 //	        }
         	
+        	/* END TEST SEND FORGERS LIST */        
+        	/* START IP ADDRESS */
 //        	try {
 //        			for (NetworkInterface each: NetworkInterface.getNetworkInterfaces()) {
 //        				
@@ -64,73 +68,81 @@ public class DebugScanner{
 //                ex.printStackTrace();
 //            }
         	
-            try
-            {
-
-//                InetAddress inetAddress = null;
-                InetAddress myAddr = null;
-
-                Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
-                for (NetworkInterface singleInterface : Collections.list(nets))
-                
-//                for (Enumeration<NetworkInterface> networkInterface = NetworkInterface
-//                        .getNetworkInterfaces(); networkInterface.hasMoreElements();)
-                {
-
-//                    NetworkInterface singleInterface = networkInterface
-//                            .nextElement();
-
-                		Enumeration<InetAddress> inetAddresses = singleInterface.getInetAddresses();
-                    for (InetAddress inetAddress : Collections.list(inetAddresses))
-//                    for (Enumeration<InetAddress> IpAddresses = singleInterface
-//                            .getInetAddresses(); IpAddresses.hasMoreElements();)
-                    {
-//                        inetAddress = IpAddresses.nextElement();
-                        
-                        Logger.logDebugMessage("###########################");
-                        Logger.logDebugMessage("display: " + singleInterface.getDisplayName());
-                        Logger.logDebugMessage("myAddr: " + inetAddress.toString());
-                       	Logger.logDebugMessage("host addr: " + inetAddress.getHostAddress());
-                       	Logger.logDebugMessage("local host: " + inetAddress.getLocalHost().getHostAddress());
-                       	Logger.logDebugMessage("reachable: " + String.valueOf(inetAddress.isReachable(3000)));
-            				Logger.logDebugMessage("## ## ## ## ## ## ## ## ## ## ## ## ###");
-                        
-                        if (!inetAddress.isLoopbackAddress()
-                                && (singleInterface.getDisplayName().contains(
-                                        "wlan0") || singleInterface
-                                        .getDisplayName().contains("eth0")))
-                        {
-
-                            myAddr = inetAddress;
-                            Logger.logDebugMessage("NOT YOU SHALL NOT PASS");
-                        }
-                    }
-                }
-//                return myAddr;
-
-              
-        	  	
-			
-
-            }
-            catch (SocketException ex)
-            {
-                Logger.logDebugMessage(ex.toString());
-            } catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-            		Logger.logDebugMessage(e.toString());
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				Logger.logDebugMessage(e.toString());
-				e.printStackTrace();
-			}
-        }
-    };
+//            try
+//            {
+//
+////                InetAddress inetAddress = null;
+//                InetAddress myAddr = null;
+//
+//                Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+//                for (NetworkInterface singleInterface : Collections.list(nets))
+//                
+////                for (Enumeration<NetworkInterface> networkInterface = NetworkInterface
+////                        .getNetworkInterfaces(); networkInterface.hasMoreElements();)
+//                {
+//
+////                    NetworkInterface singleInterface = networkInterface
+////                            .nextElement();
+//
+//                		Enumeration<InetAddress> inetAddresses = singleInterface.getInetAddresses();
+//                    for (InetAddress inetAddress : Collections.list(inetAddresses))
+////                    for (Enumeration<InetAddress> IpAddresses = singleInterface
+////                            .getInetAddresses(); IpAddresses.hasMoreElements();)
+//                    {
+////                        inetAddress = IpAddresses.nextElement();
+//                        
+//                        Logger.logDebugMessage("###########################");
+//                        Logger.logDebugMessage("display: " + singleInterface.getDisplayName());
+//                        Logger.logDebugMessage("myAddr: " + inetAddress.toString());
+//                       	Logger.logDebugMessage("host addr: " + inetAddress.getHostAddress());
+//                       	Logger.logDebugMessage("local host: " + inetAddress.getLocalHost().getHostAddress());
+//                       	Logger.logDebugMessage("reachable: " + String.valueOf(inetAddress.isReachable(3000)));
+//            				Logger.logDebugMessage("## ## ## ## ## ## ## ## ## ## ## ## ###");
+//                        
+//                        if (!inetAddress.isLoopbackAddress()
+//                                && (singleInterface.getDisplayName().contains(
+//                                        "wlan0") || singleInterface
+//                                        .getDisplayName().contains("eth0")))
+//                        {
+//
+//                            myAddr = inetAddress;
+//                            Logger.logDebugMessage("NOT YOU SHALL NOT PASS");
+//                        }
+//                    }
+//                }
+////                return myAddr;
+//
+//              
+//        	  	
+//			
+//
+//            }
+//            catch (SocketException ex)
+//            {
+//                Logger.logDebugMessage(ex.toString());
+//            } catch (UnknownHostException e) {
+//				// TODO Auto-generated catch block
+//            		Logger.logDebugMessage(e.toString());
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				Logger.logDebugMessage(e.toString());
+//				e.printStackTrace();
+//			}
+//        }
+   	
+        	/* END IP ADDRESS */
+        	
+        	/* START TEST GIVING INTEREST */
+//        	CalculateInterestAndG.giveInterest(0.2, Nxt.getBlockchain().getHeight());
+        	/*END GIVING INTEREST */
+        	
+        	
+        }};
     
     
     static void init() {
-    		ThreadPool.scheduleThread("ScanningThread", DebugScanner.scanningThread, 10);
+//    		ThreadPool.scheduleThread("ScanningThread", DebugScanner.scanningThread, 10);
     }
 	
 	

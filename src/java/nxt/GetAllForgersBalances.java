@@ -10,6 +10,7 @@ import nxt.util.JSON;
 import nxt.util.Logger;
 import nxt.crypto.Crypto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +54,7 @@ public class GetAllForgersBalances {
 	        
 	        else {
 		        JSONArray thisPeersForgerIds = (JSONArray)response.get("forgerIds");
-		       
+		        if (thisPeersForgerIds == null) {return Collections.emptySet();}
 	//	        if (thisPeersForgerIds.isEmpty()) {continue;}
 		        
 		        

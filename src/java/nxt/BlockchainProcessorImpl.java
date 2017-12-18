@@ -1324,11 +1324,69 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 //validate/add sum of forging balances of each forger.  
                 block.calculateTotalForgingHoldings();
                 
+              //******************************************************//
+                //****************		REWARD		*******************//
+                  Logger.logDebugMessage("Height: " + Nxt.getBlockchain().getHeight() + "    "+ Nxt.getBlockchain().getLastBlock().getHeight());
+//                  Logger.logDebugMessage("%%%%%%%%%	REWARD 	%%%%%%%%");
+                  CalculateInterestAndG.getVault(); //Do not call this again within same block!
+                  CalculateInterestAndG.getSupplyCurrent(); //Do not call this again within same block!
+                  CalculateInterestAndG.getLatestRYear(); ////Do not call this again within same block!
+                  block.setBlockReward(CalculateReward.reward());
+                  CalculateInterestAndG.updateSupplyCurrent(BigInteger.valueOf(block.getBlockReward()));
+             
+//                  Logger.logDebugMessage("%%%%%%%%%	END REWARD 	%%%%%%%%");
+                  Logger.logDebugMessage("");
+                //******************************************************//
+                //**************** END REWARD	*******************//
+                
+                //******************************************************//
+                  //****************	DAILY UPDATES	*******************//
+                  //TODO:
+                  // get holdings, supplyCurrent info.
+                  // compute r.
+                  // interest payout.
+                  // compute g and vault.
+                  // update supplyCurrent, r and vault.
+                  if (((Nxt.getBlockchain().getHeight() + 1) % Constants.DAILY_BLOCKS) == 0) {          
+                  		//perform these once per day.
+                  		Logger.logDebugMessage("!!!!!!!  DAILY UPDATE  !!!!!!");
+                  	
+                  		CalculateInterestAndG.dailyUpdate(block.getId(), block.getTotalAmountNQT(), block.getTotalForgingHoldings());
+                  		
+                  		
+                  		
+//                  		Logger.logDebugMessage("!!!!!!!  END DAILY UPDATE  !!!!!!");
+                  		Logger.logDebugMessage("");
+                  }
+                  
+                  //******************************************************//
+                  //**************** END DAILY UPDATES	*******************//  
+                  
+                block.setInterestRateYearly(CalculateInterestAndG.rYear); 
+            		block.setSupplyCurrent(CalculateInterestAndG.supplyCurrent);
+            		block.setVault(CalculateInterestAndG.vault);
+            		
+            		Logger.logDebugMessage("R YEAR: " + block.getLatestRYear());
+          		Logger.logDebugMessage("supplyCurrent: " + block.getSupplyCurrent());
+          		Logger.logDebugMessage("vault: " + block.getVault());
+              		
+                //***************** END BLOCK UPDATES *******************//  
+                
                 block.setPrevious(previousLastBlock);
                 blockListeners.notify(block, Event.BEFORE_BLOCK_ACCEPT);
                 TransactionProcessorImpl.getInstance().requeueAllUnconfirmedTransactions();
-                addBlock(block);
+                
+                
+                
+                
+                addBlock(block); //block saved to db here.
                 accept(block, validPhasedTransactions, invalidPhasedTransactions, duplicates);
+                //generator stuff found in accept -> apply.
+                Logger.logDebugMessage("=====  PUSH BLOCK SECTION =====");
+                Logger.logDebugMessage("reward: " + block.getBlockReward());
+                Logger.logDebugMessage("supplyCurrent: " + block.getSupplyCurrent());
+                
+                
                 BlockDb.commit(block);
                 Db.db.commitTransaction();
             } catch (Exception e) {
@@ -1399,6 +1457,12 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         if (block.getId() == 0L || BlockDb.hasBlock(block.getId(), previousLastBlock.getHeight())) {
             throw new BlockNotAcceptedException("Duplicate block or invalid id", block);
         }
+        Logger.logDebugMessage("");
+        Logger.logDebugMessage("!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Logger.logDebugMessage("should be false :" + String.valueOf(!Generator.allowsFakeForging(block.getGeneratorPublicKey())));
+        Logger.logDebugMessage("should be false :" + String.valueOf(!block.verifyGenerationSignature()));
+       
+        
         if (!block.verifyGenerationSignature() && !Generator.allowsFakeForging(block.getGeneratorPublicKey())) {
             Account generatorAccount = Account.getAccount(block.getGeneratorId());
             long generatorBalance = generatorAccount == null ? 0 : generatorAccount.getEffectiveBalanceNXT();
@@ -1779,8 +1843,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         try {
             pushBlock(block);
             blockListeners.notify(block, Event.BLOCK_GENERATED);
-            Logger.logDebugMessage("Account " + Long.toUnsignedString(block.getGeneratorId()) + " generated block " + block.getStringId()
-                    + " at height " + block.getHeight() + " timestamp " + block.getTimestamp() + " fee " + ((float)block.getTotalFeeNQT())/Constants.ONE_NXT);
+//            Logger.logDebugMessage("Account " + Long.toUnsignedString(block.getGeneratorId()) + " generated block " + block.getStringId()
+//                    + " at height " + block.getHeight() + " timestamp " + block.getTimestamp() + " fee " + ((float)block.getTotalFeeNQT())/Constants.ONE_NXT);
+            Logger.logDebugMessage("*************************************************");
+            Logger.logDebugMessage("Account " + Crypto.rsEncode(block.getGeneratorId()) + " generated block " + block.getStringId()
+            + " at height " + block.getHeight() + " timestamp " + block.getTimestamp() + " fee " + ((float)block.getTotalFeeNQT())/Constants.ONE_NXT);
+            Logger.logDebugMessage("*************************************************");
+            
         } catch (TransactionNotAcceptedException e) {
             Logger.logDebugMessage("Generate block failed: " + e.getMessage());
             TransactionProcessorImpl.getInstance().processWaitingTransactions();

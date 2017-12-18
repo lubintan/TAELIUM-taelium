@@ -392,6 +392,7 @@ public class AccountLedger {
     public enum LedgerEvent {
         // Block and Transaction
             BLOCK_GENERATED(1, false),
+            INTEREST_PAYMENT(70, true),
             REJECT_PHASED_TRANSACTION(2, true),
             TRANSACTION_FEE(50, true),
         // TYPE_REWARD

@@ -999,20 +999,20 @@ public final class Peers {
     	
     		if (peer.getAnnouncedAddress() == null) {setAnnouncedAddress((PeerImpl)peer, peer.getHost());}
     		
-        Logger.logDebugMessage("+++++ ADDING PEER +++++");
-        Logger.logDebugMessage("announced add:" + peer.getAnnouncedAddress());
-        Logger.logDebugMessage("host:"+peer.getHost());
-        Logger.logDebugMessage("string:"+peer.toString());
-        Logger.logDebugMessage("blockchain state:" + peer.getBlockchainState().toString());
-        Logger.logDebugMessage("shareAddress:"+String.valueOf(peer.shareAddress()));
-        Logger.logDebugMessage("port:"+String.valueOf(peer.getPort()));
-        Logger.logDebugMessage("platform:"+peer.getPlatform());
-        
-        Logger.logDebugMessage("***** SHOW ALL PEERS (before new peer) *****");
-        	for (PeerImpl eachPeer: peers.values()) {
-        		Logger.logDebugMessage(eachPeer.toString() + ": " + eachPeer.getState().toString());
-        	}
-    	
+//        Logger.logDebugMessage("+++++ ADDING PEER +++++");
+//        Logger.logDebugMessage("announced add:" + peer.getAnnouncedAddress());
+//        Logger.logDebugMessage("host:"+peer.getHost());
+//        Logger.logDebugMessage("string:"+peer.toString());
+//        Logger.logDebugMessage("blockchain state:" + peer.getBlockchainState().toString());
+//        Logger.logDebugMessage("shareAddress:"+String.valueOf(peer.shareAddress()));
+//        Logger.logDebugMessage("port:"+String.valueOf(peer.getPort()));
+//        Logger.logDebugMessage("platform:"+peer.getPlatform());
+//        
+//        Logger.logDebugMessage("***** SHOW ALL PEERS (before new peer) *****");
+//        	for (PeerImpl eachPeer: peers.values()) {
+//        		Logger.logDebugMessage(eachPeer.toString() + ": " + eachPeer.getState().toString());
+//        	}
+//    	
     	
     		if (peers.put(peer.getHost(), (PeerImpl) peer) == null) {
             listeners.notify(peer, Event.NEW_PEER);

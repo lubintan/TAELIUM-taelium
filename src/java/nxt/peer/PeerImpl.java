@@ -652,7 +652,7 @@ final class PeerImpl implements Peer {
             JSONObject response = send(Peers.getMyPeerInfoRequest());
             
             Logger.logDebugMessage("$$$$$$ RESPONSE $$$$$$");
-            Logger.logDebugMessage(response.toJSONString());
+            Logger.logDebugMessage((response==null)? "NULL" : response.toJSONString());
             
             if (response != null) {
                 if (response.get("error") != null) {
@@ -728,9 +728,7 @@ final class PeerImpl implements Peer {
                 }
             } else {
                 //Logger.logDebugMessage("Failed to connect to peer " + peerAddress);
-                
-            		Logger.logDebugMessage("333333333333333333333");
-            		setState(State.NON_CONNECTED);
+               	setState(State.NON_CONNECTED);
             }
         } catch (RuntimeException e) {
             blacklist(e);

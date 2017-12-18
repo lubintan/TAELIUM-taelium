@@ -34,8 +34,17 @@ public final class Constants {
     public static final long MAX_BALANCE_NXT = 21000000;
     public static final long ONE_NXT = 100000000;
     public static final long MAX_BALANCE_NQT = MAX_BALANCE_NXT * ONE_NXT;
-
-    public static final int BLOCK_TIME = 20; // should be 60. reducing it for testing purposes. 
+    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(MAX_BALANCE_NQT);
+    public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(BigInteger.valueOf(ONE_NXT));
+    public static final double INTEREST_DIVISOR = 365.0;
+    public static final double R_MAX = 0.2;
+    public static final double R_MIN = -0.1;
+    public static final double R_DEFAULT = 0.05;
+    public static final long H = 1000000; 
+    public static final int PRECISION = 10; //dec places
+    
+    
+    public static final int BLOCK_TIME = 10; // should be 60. reducing it for testing purposes. 
     public static final long INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME * MAX_BALANCE_NXT)).longValue(); //153722867;
     public static final long MAX_BASE_TARGET = INITIAL_BASE_TARGET * (isTestnet ? MAX_BALANCE_NXT : 50);
     public static final long MIN_BASE_TARGET = INITIAL_BASE_TARGET * 9 / 10;
@@ -46,7 +55,15 @@ public final class Constants {
     public static final int GUARANTEED_BALANCE_CONFIRMATIONS = isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", 1440) : 1440;
     public static final int LEASING_DELAY = isTestnet ? Nxt.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
     public static final long MIN_FORGING_BALANCE_NQT = 1000 * ONE_NXT;
-    public static final long REWARD = 3 * ONE_NXT;
+//    public static final long REWARD = 3 * ONE_NXT;
+    public static final int DAILY_BLOCKS = 5; //blocks. Ie. one day's worth of blocks.
+    public static final int MA_WINDOW = 10; //days. 
+    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(25000000 * ONE_NXT);
+    public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
+//  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
+    public static final long INITIAL_REWARD = 3 * ONE_NXT;
+    public static final double INITIAL_R_YEAR = 0.00; 
+
 
     public static final int MAX_TIMEDRIFT = 15; // allow up to 15 s clock difference
     public static final int FORGING_DELAY = Nxt.getIntProperty("nxt.forgingDelay");
