@@ -235,8 +235,8 @@ public final class Generator implements Comparable<Generator> {
         
         for (Generator eachForger : sortedForgers) {
         		Account account = Account.getAccount(eachForger.accountId);
-        		double balance = (double)account.getBalanceNQT() / Constants.ONE_NXT;
-        		forgerBalanceMap.put(eachForger.accountId, BigInteger.valueOf(account.getBalanceNQT()) );
+        		BigInteger balance = Constants.haedsToTaels(account.getBalanceNQT()).toBigInteger();
+        		forgerBalanceMap.put(eachForger.accountId, account.getBalanceNQT() );
 //        		System.out.println();
 //        		System.out.println(Crypto.rsEncode(eachForger.accountId));
 //        		System.out.println(balance);
@@ -270,7 +270,7 @@ public final class Generator implements Comparable<Generator> {
         if (elapsedTime <= 0) {
             return false;
         }
-        BigInteger effectiveBaseTarget = BigInteger.valueOf(previousBlock.getBaseTarget()).multiply(effectiveBalance);
+        BigInteger effectiveBaseTarget = previousBlock.getBaseTarget().multiply(effectiveBalance);
         BigInteger prevTarget = effectiveBaseTarget.multiply(BigInteger.valueOf(elapsedTime - 1));
         BigInteger target = prevTarget.add(effectiveBaseTarget);
         return hit.compareTo(target) < 0
@@ -295,7 +295,7 @@ public final class Generator implements Comparable<Generator> {
 
     static long getHitTime(BigInteger effectiveBalance, BigInteger hit, Block block) {
         return block.getTimestamp()
-                + hit.divide(BigInteger.valueOf(block.getBaseTarget()).multiply(effectiveBalance)).longValue();
+                + hit.divide(block.getBaseTarget().multiply(effectiveBalance)).longValue();
     }
 
 
@@ -358,7 +358,11 @@ public final class Generator implements Comparable<Generator> {
         if (account == null) {
             effectiveBalance = BigInteger.ZERO;
         } else {
-            effectiveBalance = BigInteger.valueOf(Math.max(account.getEffectiveBalanceNXT(height), 0));
+            effectiveBalance = account.getEffectiveBalanceNXT(height).compareTo(BigInteger.ZERO) > 0 ? 
+            		account.getEffectiveBalanceNXT(height):
+            				BigInteger.ZERO;
+            		
+//            		BigInteger.valueOf(Math.max(account.getEffectiveBalanceNXT(height), 0));
         }
         if (effectiveBalance.signum() == 0) {
             hitTime = 0;
@@ -458,7 +462,7 @@ public final class Generator implements Comparable<Generator> {
     public static class ActiveGenerator implements Comparable<ActiveGenerator> {
         private final long accountId;
         private long hitTime;
-        private long effectiveBalanceNXT;
+        private BigInteger effectiveBalanceNXT;
         private byte[] publicKey;
 
         public ActiveGenerator(long accountId) {
@@ -470,7 +474,7 @@ public final class Generator implements Comparable<Generator> {
             return accountId;
         }
 
-        public long getEffectiveBalance() {
+        public BigInteger getEffectiveBalance() {
             return effectiveBalanceNXT;
         }
 
@@ -492,14 +496,17 @@ public final class Generator implements Comparable<Generator> {
                 hitTime = Long.MAX_VALUE;
                 return;
             }
-            effectiveBalanceNXT = Math.max(account.getEffectiveBalanceNXT(height), 0);
-            if (effectiveBalanceNXT == 0) {
+            effectiveBalanceNXT = account.getEffectiveBalanceNXT(height).compareTo(BigInteger.ZERO) > 0 ? 
+            		account.getEffectiveBalanceNXT(height):
+            				BigInteger.ZERO;
+//            = Math.max(account.getEffectiveBalanceNXT(height), 0);
+            if (effectiveBalanceNXT.compareTo(BigInteger.ZERO) == 0) {
                 hitTime = Long.MAX_VALUE;
                 return;
             }
-            BigInteger effectiveBalance = BigInteger.valueOf(effectiveBalanceNXT);
+//            BigInteger effectiveBalance = BigInteger.valueOf(effectiveBalanceNXT);
             BigInteger hit = Generator.getHit(publicKey, lastBlock);
-            hitTime = Generator.getHitTime(effectiveBalance, hit, lastBlock);
+            hitTime = Generator.getHitTime(effectiveBalanceNXT, hit, lastBlock);
         }
 
         @Override

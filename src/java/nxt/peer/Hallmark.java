@@ -21,10 +21,12 @@ import nxt.Constants;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
 
+import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Hallmark {
@@ -42,13 +44,55 @@ public final class Hallmark {
         return (year < 10 ? "000" : (year < 100 ? "00" : (year < 1000 ? "0" : ""))) + year + "-" + (month < 10 ? "0" : "") + month + "-" + (day < 10 ? "0" : "") + day;
     }
 
-    public static String generateHallmark(String secretPhrase, String host, int weight, int date) {
+    static byte[] bigIntToByte(BigInteger input) {
+			// extends/truncates the byte array to size 10 bytes.
+	//	BigInteger input = BigInteger.valueOf(-543434343).multiply(BigInteger.valueOf(10000000)).multiply(BigInteger.valueOf(10000000));         
+	    byte negOne = (byte)0xFF;
+	    byte zero = (byte)0x00;
+	
+	    byte[] inputBytes = input.toByteArray();
+	    int size = inputBytes.length;
+		int sign = input.signum();
+	    int padLength = 10 - size;
+	    byte [] result = new byte[10];
+	    
+	    if (padLength > 0){
+	        for (int i = 0; i < size; i++){
+	                result[padLength + i] = inputBytes[i];
+	            }
+	        if (sign < 0){
+	            for (int j=0; j < padLength; j++){
+	                result[j] = negOne;
+	            }
+	        }
+	        else if (sign > 0){
+	            for (int j=0; j < padLength; j++){
+	                result[j] = zero;
+	            }
+	                            
+	            
+	        }
+	        else{
+	            byte [] zeroBytes = {zero};
+	            result = Arrays.copyOf(zeroBytes, 10);
+	        }
+	    }
+	    else{
+	        result = Arrays.copyOf(inputBytes, 10);
+	    }
+	  
+	    
+	//    BigInteger bigA = new BigInteger(result);
+	    return result;
+	 }
+    
+    public static String generateHallmark(String secretPhrase, String host, BigInteger weight, int date) {
 
         if (host.length() == 0 || host.length() > 100) {
             throw new IllegalArgumentException("Hostname length should be between 1 and 100");
         }
-        if (weight <= 0 || weight > Constants.MAX_BALANCE_NXT) {
-            throw new IllegalArgumentException("Weight should be between 1 and " + Constants.MAX_BALANCE_NXT);
+        if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.MAX_BALANCE_TAELS) > 0) {
+            throw new IllegalArgumentException("Weight should be between 1 and " + Constants.MAX_BALANCE_TAELS);
         }
 
         byte[] publicKey = Crypto.getPublicKey(secretPhrase);
@@ -59,7 +103,7 @@ public final class Hallmark {
         buffer.put(publicKey);
         buffer.putShort((short)hostBytes.length);
         buffer.put(hostBytes);
-        buffer.putInt(weight);
+        buffer.put(bigIntToByte(weight));
         buffer.putInt(date);
 
         byte[] data = buffer.array();
@@ -91,7 +135,14 @@ public final class Hallmark {
         byte[] hostBytes = new byte[hostLength];
         buffer.get(hostBytes);
         String host = Convert.toString(hostBytes);
-        int weight = buffer.getInt();
+        
+        byte[] weightBytes = new byte[10];
+        for (int i=0; i<10; i++) {
+        		weightBytes[i] = buffer.get();
+        }
+        BigInteger weight = new BigInteger(weightBytes);
+        
+//        int weight = buffer.getInt();
         int date = buffer.getInt();
         buffer.get();
         byte[] signature = new byte[64];
@@ -100,7 +151,8 @@ public final class Hallmark {
         byte[] data = new byte[hallmarkBytes.length - 64];
         System.arraycopy(hallmarkBytes, 0, data, 0, data.length);
 
-        boolean isValid = host.length() < 100 && weight > 0 && weight <= Constants.MAX_BALANCE_NXT
+        boolean isValid = host.length() < 100 && weight.compareTo(BigInteger.ZERO) > 0 && 
+        		weight.compareTo(Constants.MAX_BALANCE_TAELS) <= 0
                 && Crypto.verify(signature, data, publicKey);
         try {
             return new Hallmark(hallmarkString, publicKey, signature, host, weight, date, isValid);
@@ -113,14 +165,14 @@ public final class Hallmark {
     private final String hallmarkString;
     private final String host;
     private final int port;
-    private final int weight;
+    private final BigInteger weight;
     private final int date;
     private final byte[] publicKey;
     private final long accountId;
     private final byte[] signature;
     private final boolean isValid;
 
-    private Hallmark(String hallmarkString, byte[] publicKey, byte[] signature, String host, int weight, int date, boolean isValid)
+    private Hallmark(String hallmarkString, byte[] publicKey, byte[] signature, String host, BigInteger weight, int date, boolean isValid)
             throws URISyntaxException {
         this.hallmarkString = hallmarkString;
         URI uri = new URI("http://" + host);
@@ -146,7 +198,7 @@ public final class Hallmark {
         return port;
     }
 
-    public int getWeight() {
+    public BigInteger getWeight() {
         return weight;
     }
 

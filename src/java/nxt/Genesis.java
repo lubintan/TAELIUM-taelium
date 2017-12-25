@@ -27,6 +27,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.text.DateFormat;
@@ -91,29 +92,30 @@ public final class Genesis {
         count = 0;
         JSONObject balances = (JSONObject) genesisAccountsJSON.get("balances");
         Logger.logDebugMessage("Loading genesis amounts");
-        long total = 0;
-        for (Map.Entry<String, Long> entry : ((Map<String, Long>)balances).entrySet()) {
-        		
-//        	 	System.out.println(entry.getKey());
-//            System.out.println("************************");
-//           
-//            System.out.println(Long.parseUnsignedLong(entry.getKey()));
-//            System.out.println("/n************************/n");
+        BigInteger total = BigInteger.ZERO;
+		//long to BigInt question mark 1
+        // ANSWERED.
+   
+        for (Map.Entry<String, String> entry : ((Map<String, String>)balances).entrySet()) {
+        			
+//        			Logger.logDebugMessage(entry.getValue());
+        			BigInteger thisBalance = new BigInteger(entry.getValue());
+//        			Logger.logDebugMessage("thisBalance: " + thisBalance.toString());
         	
             Account account = Account.addOrGetAccount(Convert.parseAccountId(entry.getKey()));
-            account.addToBalanceAndUnconfirmedBalanceNQT(null, 0, entry.getValue());
-            total += entry.getValue();
+            account.addToBalanceAndUnconfirmedBalanceNQT(null, 0, thisBalance);
+            total = total.add(thisBalance);
             if (count++ % 100 == 0) {
                 Db.db.commitTransaction();
             }//initial account balances distributed here.
         }
-        if (total > Constants.MAX_BALANCE_NQT) {
-            throw new RuntimeException("Total balance " + total + " exceeds maximum allowed " + Constants.MAX_BALANCE_NQT);
+        if (total.compareTo(Constants.MAX_BALANCE_HAEDS) > 0) {
+            throw new RuntimeException("Total balance " + total + " exceeds maximum allowed " + Constants.MAX_BALANCE_HAEDS);
         }
-        Logger.logDebugMessage("Total balance %f %s", (double)total / Constants.ONE_NXT, Constants.COIN_SYMBOL);
+        Logger.logDebugMessage("Total balance %s %s", Constants.haedsToTaels(total).toString(), Constants.COIN_SYMBOL);
         Account creatorAccount = Account.addOrGetAccount(Genesis.CREATOR_ID);
         creatorAccount.apply(Genesis.CREATOR_PUBLIC_KEY);
-        creatorAccount.addToBalanceAndUnconfirmedBalanceNQT(null, 0, -total);
+//        creatorAccount.addToBalanceAndUnconfirmedBalanceNQT(null, 0, -total);
         genesisAccountsJSON = null;
     }
 

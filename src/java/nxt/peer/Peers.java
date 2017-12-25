@@ -46,6 +46,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.DispatcherType;
+
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -536,7 +538,7 @@ public final class Peers {
                             connectSet.forEach(peer -> futures.add(peersService.submit(() -> {
                                 peer.connect();
                                 if (peer.getState() == Peer.State.CONNECTED &&
-                                            enableHallmarkProtection && peer.getWeight() == 0 &&
+                                            enableHallmarkProtection && peer.getWeight().compareTo(BigInteger.ZERO) == 0 &&
                                             hasTooManyOutboundConnections()) {
                                     Logger.logDebugMessage("Too many outbound connections, deactivating peer " + peer.getHost());
                                     peer.deactivate();
@@ -1064,7 +1066,8 @@ public final class Peers {
             List<Future<JSONObject>> expectedResponses = new ArrayList<>();
             for (final Peer peer : peers.values()) {
 
-                if (Peers.enableHallmarkProtection && peer.getWeight() < Peers.pushThreshold) {
+                if (Peers.enableHallmarkProtection && 
+                		peer.getWeight().compareTo(BigInteger.valueOf(Peers.pushThreshold)) < 0) {
                     continue; //will skip the rest of this iteration if above conditions are met.
                     //ie. goes to the head of the for loop immediately.
                 }
@@ -1103,7 +1106,8 @@ public final class Peers {
 
     public static List<Peer> getPublicPeers(final Peer.State state, final boolean applyPullThreshold) {
         return getPeers(peer -> !peer.isBlacklisted() && peer.getState() == state && peer.getAnnouncedAddress() != null
-                && (!applyPullThreshold || !Peers.enableHallmarkProtection || peer.getWeight() >= Peers.pullThreshold));
+                && (!applyPullThreshold || !Peers.enableHallmarkProtection || 
+                		peer.getWeight().compareTo(BigInteger.valueOf(Peers.pullThreshold)) >= 0));
     }
 
     public static Peer getWeightedPeer(List<Peer> selectedPeers) {
@@ -1113,21 +1117,28 @@ public final class Peers {
         if (! Peers.enableHallmarkProtection || ThreadLocalRandom.current().nextInt(3) == 0) {
             return selectedPeers.get(ThreadLocalRandom.current().nextInt(selectedPeers.size()));
         }
-        long totalWeight = 0;
+        BigInteger totalWeight = BigInteger.ZERO;
         for (Peer peer : selectedPeers) {
-            long weight = peer.getWeight();
-            if (weight == 0) {
-                weight = 1;
+            BigInteger weight = peer.getWeight();
+            if (weight.compareTo(BigInteger.ZERO) == 0) {
+                weight = BigInteger.ONE;
             }
-            totalWeight += weight;
+            totalWeight = totalWeight.add(weight);
         }
-        long hit = ThreadLocalRandom.current().nextLong(totalWeight);
+        
+//        BigInteger hit = new BigInteger(totalWeight.bitLength(),2, ThreadLocalRandom.current());
+        
+        long hit = ThreadLocalRandom.current().nextLong(
+        		totalWeight.longValue() > 0 ? totalWeight.longValue() : totalWeight.longValue() * -1);
+        
         for (Peer peer : selectedPeers) {
-            long weight = peer.getWeight();
-            if (weight == 0) {
-                weight = 1;
+            BigInteger weight = peer.getWeight();
+            if (weight.compareTo(BigInteger.ZERO) == 0) {
+                weight = BigInteger.ONE;
             }
-            if ((hit -= weight) < 0) {
+            if ((hit -= weight.longValue()) < 0) {
+//            	hit = hit.subtract(weight);
+//            	if (hit.compareTo(BigInteger.ZERO) < 0) {
                 return peer;
             }
         }
@@ -1217,7 +1228,7 @@ public final class Peers {
 
     private static boolean hasEnoughConnectedPublicPeers(int limit) {
         return getPeers(peer -> !peer.isBlacklisted() && peer.getState() == Peer.State.CONNECTED && peer.getAnnouncedAddress() != null
-                && (! Peers.enableHallmarkProtection || peer.getWeight() > 0), limit).size() >= limit;
+                && (! Peers.enableHallmarkProtection || peer.getWeight().compareTo(BigInteger.ZERO) > 0), limit).size() >= limit;
     }
 
     /**
@@ -1265,7 +1276,9 @@ public final class Peers {
     private static void checkBlockchainState() {
         Peer.BlockchainState state = Constants.isLightClient ? Peer.BlockchainState.LIGHT_CLIENT :
                 (Nxt.getBlockchainProcessor().isDownloading() || Nxt.getBlockchain().getLastBlockTimestamp() < Nxt.getEpochTime() - 600) ? Peer.BlockchainState.DOWNLOADING :
-                        (Nxt.getBlockchain().getLastBlock().getBaseTarget() / Constants.INITIAL_BASE_TARGET > 10 && !Constants.isTestnet) ? Peer.BlockchainState.FORK :
+                        (Nxt.getBlockchain().getLastBlock().getBaseTarget()
+                        		.divide(Constants.INITIAL_BASE_TARGET).compareTo(BigInteger.TEN) > 0 &&
+                        		!Constants.isTestnet) ? Peer.BlockchainState.FORK :
                         Peer.BlockchainState.UP_TO_DATE;
         if (state != currentBlockchainState) {
             Logger.logDebugMessage("----------STATE != CURRENTBLOCKCHAINSTATE---------");

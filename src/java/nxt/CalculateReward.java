@@ -26,7 +26,7 @@ public class CalculateReward {
 	
 	private CalculateReward() {};
 	
-	public static long reward() {
+	public static BigInteger reward() {
 		int currentHeight = Nxt.getBlockchain().getHeight();
 		
 		if (currentHeight < Constants.DAILY_BLOCKS) { return Constants.INITIAL_REWARD;}
@@ -43,7 +43,11 @@ public class CalculateReward {
 		BigDecimal decimalSupplyCurrent = new BigDecimal( CalculateInterestAndG.supplyCurrent);
 		decimalSupplyCurrent = decimalSupplyCurrent.multiply(BigDecimal.valueOf(Constants.K));
 		
-		return x.multiply(decimalSupplyCurrent).multiply(BigDecimal.valueOf(Constants.ONE_NXT)).longValue();	
+//		return x.multiply(decimalSupplyCurrent).multiply(BigDecimal.valueOf(Constants.ONE_NXT)).longValue();
+		
+		//long to BigInt question mark 5 - need to convert to haeds? Supply current is already in heads.
+		
+		return x.multiply(decimalSupplyCurrent).toBigInteger();
 	
 	}
 	

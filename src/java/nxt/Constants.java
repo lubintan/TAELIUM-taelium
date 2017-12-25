@@ -15,6 +15,7 @@
  */
 
 package nxt;
+import java.math.BigDecimal;
 //seen.
 import java.math.BigInteger;
 
@@ -31,11 +32,12 @@ public final class Constants {
     public static final int MAX_NUMBER_OF_TRANSACTIONS = Nxt.getIntProperty("nxt.maxNumberOfTransactions", 255);
     public static final int MIN_TRANSACTION_SIZE = 176;
     public static final int MAX_PAYLOAD_LENGTH = MAX_NUMBER_OF_TRANSACTIONS * MIN_TRANSACTION_SIZE;
-    public static final long MAX_BALANCE_NXT = 21000000;
-    public static final long ONE_NXT = 100000000;
-    public static final long MAX_BALANCE_NQT = MAX_BALANCE_NXT * ONE_NXT;
-    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(MAX_BALANCE_NQT);
-    public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(BigInteger.valueOf(ONE_NXT));
+    
+    public static final BigInteger ONE_TAEL = BigInteger.valueOf(100000).multiply(BigInteger.valueOf(100000)); // 10 zeroes.
+    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(840).multiply(BigInteger.valueOf(1000000));
+    public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS; // make this non-final
+    public static BigInteger MAX_BALANCE_HAEDS = MAX_BALANCE_TAELS.multiply(ONE_TAEL); // make this non-final
+    public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
     public static final double INTEREST_DIVISOR = 365.0;
     public static final double R_MAX = 0.2;
     public static final double R_MIN = -0.1;
@@ -43,25 +45,24 @@ public final class Constants {
     public static final long H = 1000000; 
     public static final int PRECISION = 10; //dec places
     
-    
+    public static final int EFF_BAL_HEIGHT = 1440;
     public static final int BLOCK_TIME = 10; // should be 60. reducing it for testing purposes. 
-    public static final long INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME * MAX_BALANCE_NXT)).longValue(); //153722867;
-    public static final long MAX_BASE_TARGET = INITIAL_BASE_TARGET * (isTestnet ? MAX_BALANCE_NXT : 50);
-    public static final long MIN_BASE_TARGET = INITIAL_BASE_TARGET * 9 / 10;
+    public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME)).multiply(MAX_BALANCE_TAELS); //153722867;
+    public static final BigInteger MAX_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));
+    public static final BigInteger MIN_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9)).divide(BigInteger.valueOf(10));
     public static final int MIN_BLOCKTIME_LIMIT = BLOCK_TIME - 7;
     public static final int MAX_BLOCKTIME_LIMIT = BLOCK_TIME + 7;
     public static final int BASE_TARGET_GAMMA = 64;
     public static final int MAX_ROLLBACK = Math.max(Nxt.getIntProperty("nxt.maxRollback"), 720);
     public static final int GUARANTEED_BALANCE_CONFIRMATIONS = isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", 1440) : 1440;
     public static final int LEASING_DELAY = isTestnet ? Nxt.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
-    public static final long MIN_FORGING_BALANCE_NQT = 1000 * ONE_NXT;
-//    public static final long REWARD = 3 * ONE_NXT;
+    public static final BigInteger MIN_FORGING_BALANCE_HAEDS = BigInteger.ONE; //One Haed
     public static final int DAILY_BLOCKS = 5; //blocks. Ie. one day's worth of blocks.
     public static final int MA_WINDOW = 10; //days. 
-    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(25000000 * ONE_NXT);
+    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
     public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
 //  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
-    public static final long INITIAL_REWARD = 3 * ONE_NXT;
+    public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(BigDecimal.valueOf(ONE_TAEL.longValue())).toBigInteger(); // 2.5 TAELS
     public static final double INITIAL_R_YEAR = 0.00; 
 
 
@@ -155,8 +156,8 @@ public final class Constants {
     public static final int[] MIN_VERSION = new int[] {1, 0};
     public static final int[] MIN_PROXY_VERSION = new int[] {1, 0};
 
-    static final long UNCONFIRMED_POOL_DEPOSIT_NQT = (isTestnet ? 50 : 100) * ONE_NXT;
-    public static final long SHUFFLING_DEPOSIT_NQT = (isTestnet ? 7 : 1000) * ONE_NXT;
+    static final BigInteger UNCONFIRMED_POOL_DEPOSIT_NQT = BigInteger.valueOf(100).multiply(ONE_TAEL);
+    public static final BigInteger SHUFFLING_DEPOSIT_NQT = BigInteger.valueOf(1000).multiply(ONE_TAEL);
 
     public static final boolean correctInvalidFees = Nxt.getBooleanProperty("nxt.correctInvalidFees");
 
@@ -164,5 +165,18 @@ public final class Constants {
     public static final String ALLOWED_CURRENCY_CODE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     private Constants() {} // never
-
+    
+    public static BigDecimal divideDec(BigInteger numerator, BigInteger denominator) {
+    		BigDecimal num = new BigDecimal(numerator);
+    		BigDecimal denom = new BigDecimal(denominator);
+    		
+    		return num.divide(denom);
+    }
+    
+    public static BigDecimal haedsToTaels(BigInteger haeds) {
+		return divideDec(haeds, ONE_TAEL);
+}
+    public static BigInteger taelsToHaeds(BigInteger taels) {
+    		return taels.multiply(ONE_TAEL);
+    }
 }

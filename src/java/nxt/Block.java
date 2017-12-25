@@ -43,9 +43,9 @@ public interface Block {
 
     long getNextBlockId();
 
-    long getTotalAmountNQT();
+    BigInteger getTotalAmountNQT();
 
-    long getTotalFeeNQT();
+    BigInteger getTotalFeeNQT();
 
     int getPayloadLength();
 
@@ -57,7 +57,7 @@ public interface Block {
 
     byte[] getBlockSignature();
 
-    long getBaseTarget();
+    BigInteger getBaseTarget();
 
     BigInteger getCumulativeDifficulty();
     
@@ -69,7 +69,7 @@ public interface Block {
     
     BigInteger getVault();
     
-    long getBlockReward();
+    BigInteger getBlockReward();
 
     byte[] getBytes();
 

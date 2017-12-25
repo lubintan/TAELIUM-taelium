@@ -150,21 +150,24 @@ public class CalculateInterestAndG {
 		            	while (rs.next()) {
 		                    long accountId = rs.getLong("ID");
 		                    Account thisAcct = Account.getAccount(accountId);
-		                    long payment = (long)(thisAcct.getBalanceNQT() * rDay);
+		                    
+		                    BigDecimal decBalHaeds = new BigDecimal(thisAcct.getBalanceNQT());
+		                    BigDecimal decPayment = decBalHaeds.multiply(BigDecimal.valueOf(rDay));
+		                    BigInteger payment = decPayment.toBigInteger(); 
 		                    
 		                    
 		                    
 		                    if (rDay < 0) {
-		                    		if (payment == 0) {
-		                    			payment = -1;
+		                    		if (payment.compareTo(BigInteger.ZERO) == 0) {
+		                    			payment = BigInteger.ONE.negate();
 		                    		}
 		                    } //if account's balance is too low such that interest is less than smallest denomination (1 haed),
 		                    //if interest > 0 do nothing, if interest < 0 pay -1 haed.
 		                    
-		                    if (thisAcct.getBalanceNQT() >= 0) {
+		                    if (thisAcct.getBalanceNQT().compareTo(BigInteger.ZERO) >= 0) {
 		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, id, payment);
-		                    		long beforeAcct = thisAcct.getBalanceNQT();
-		                    		if (thisAcct.getUnconfirmedBalanceNQT() < 0) {
+		                    		BigInteger beforeAcct = thisAcct.getBalanceNQT();
+		                    		if (thisAcct.getUnconfirmedBalanceNQT().compareTo(BigInteger.ZERO) < 0) {
 		                    			Logger.logDebugMessage("======= Negative Balance Error!! =======");
 		                    			Logger.logDebugMessage(Crypto.rsEncode(accountId));
 		                    			Logger.logDebugMessage("Before balance: " + String.valueOf(beforeAcct));
@@ -173,7 +176,7 @@ public class CalculateInterestAndG {
 		                    			System.exit(1);
 		                    		}
 		                    		
-		                    		totalPayout = totalPayout.add(BigInteger.valueOf(payment));
+		                    		totalPayout = totalPayout.add(payment);
 		                   
 		                    }
 		                    
@@ -193,7 +196,7 @@ public class CalculateInterestAndG {
 		
 	}
 		
-	private static void calculateG(long thisBlockVolume) {
+	private static void calculateG(BigInteger thisBlockVolume) {
 		BigInteger todaysVolume;
 		BigInteger yesterdaysVolume;
 		BigDecimal decimalSupplyCurrent = new BigDecimal(supplyCurrent);
@@ -223,21 +226,21 @@ public class CalculateInterestAndG {
 		//start < end.
 		BigInteger totalTxVolume = BigInteger.ZERO;
 		for (int counter = startHeightInclusive ; counter <= endHeightInclusive; counter++ ) {
-			BigInteger thisBlocksTxVolume = BigInteger.valueOf(Nxt.getBlockchain().getBlockAtHeight(counter).getTotalAmountNQT());
+			BigInteger thisBlocksTxVolume = Nxt.getBlockchain().getBlockAtHeight(counter).getTotalAmountNQT();
 			totalTxVolume = totalTxVolume.add(thisBlocksTxVolume);	
 		}
 		
 		return totalTxVolume;
 	}
 	
-	private static BigInteger calculateTodaysTxVolume(long thisBlockVolume) {
+	private static BigInteger calculateTodaysTxVolume(BigInteger thisBlockVolume) {
 		int currentHeight = Nxt.getBlockchain().getLastBlock().getHeight();
 		//about to gerate 1440th block. So now at 1439th block.
 		return getTotalPastTxVolumeFromDb(currentHeight + 2 - Constants.DAILY_BLOCKS, currentHeight )
-				.add(BigInteger.valueOf(thisBlockVolume));
+				.add(thisBlockVolume);
 	}
 	
-	public static void dailyUpdate(long id, long thisBlockTxVolume, BigInteger currentBlockHoldings) {
+	public static void dailyUpdate(long id, BigInteger thisBlockTxVolume, BigInteger currentBlockHoldings) {
 		//calculate r.
 
 		//for first day, r = default value.

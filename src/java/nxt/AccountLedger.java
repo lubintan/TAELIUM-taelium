@@ -23,6 +23,7 @@ import nxt.util.Listener;
 import nxt.util.Listeners;
 import nxt.util.Logger;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -239,14 +240,14 @@ public class AccountLedger {
         if (index >= 0) {
             LedgerEntry existingEntry = pendingEntries.remove(index);
             ledgerEntry.updateChange(existingEntry.getChange());
-            long adjustedBalance = existingEntry.getBalance() - existingEntry.getChange();
+            BigInteger adjustedBalance = existingEntry.getBalance().subtract(existingEntry.getChange());
             for (; index < pendingEntries.size(); index++) {
                 existingEntry = pendingEntries.get(index);
                 if (existingEntry.getAccountId() == ledgerEntry.getAccountId() &&
                         existingEntry.getHolding() == ledgerEntry.getHolding() &&
                         ((existingEntry.getHoldingId() == null && ledgerEntry.getHoldingId() == null) ||
                         (existingEntry.getHoldingId() != null && existingEntry.getHoldingId().equals(ledgerEntry.getHoldingId())))) {
-                    adjustedBalance += existingEntry.getChange();
+                    adjustedBalance = adjustedBalance.add(existingEntry.getChange());
                     existingEntry.setBalance(adjustedBalance);
                 }
             }
@@ -619,10 +620,10 @@ public class AccountLedger {
         private final Long holdingId;
 
         /** Change in balance */
-        private long change;
+        private BigInteger change;
 
         /** New balance */
-        private long balance;
+        private BigInteger balance;
 
         /** Block identifier */
         private final long blockId;
@@ -645,7 +646,7 @@ public class AccountLedger {
          * @param   balance                 New balance
          */
         public LedgerEntry(LedgerEvent event, long eventId, long accountId, LedgerHolding holding, Long holdingId,
-                                            long change, long balance) {
+                                            BigInteger change, BigInteger balance) {
             this.event = event;
             this.eventId = eventId;
             this.accountId = accountId;
@@ -668,7 +669,7 @@ public class AccountLedger {
          * @param   change                  Change in balance
          * @param   balance                 New balance
          */
-        public LedgerEntry(LedgerEvent event, long eventId, long accountId, long change, long balance) {
+        public LedgerEntry(LedgerEvent event, long eventId, long accountId, BigInteger change, BigInteger balance) {
             this(event, eventId, accountId, null, null, change, balance);
         }
 
@@ -695,8 +696,8 @@ public class AccountLedger {
             } else {
                 holdingId = id;
             }
-            change = rs.getLong("change");
-            balance = rs.getLong("balance");
+            change = new BigInteger(rs.getBytes("change"));
+            balance = new BigInteger(rs.getBytes("balance"));
             blockId = rs.getLong("block_id");
             height = rs.getInt("height");
             timestamp = rs.getInt("timestamp");
@@ -761,8 +762,8 @@ public class AccountLedger {
          *
          * @param   amount                  Change amount
          */
-        private void updateChange(long amount) {
-            change += amount;
+        private void updateChange(BigInteger amount) {
+            change.add(amount);
         }
 
         /**
@@ -770,7 +771,7 @@ public class AccountLedger {
          *
          * @return                          Balance changes
          */
-        public long getChange() {
+        public BigInteger getChange() {
             return change;
         }
 
@@ -779,7 +780,7 @@ public class AccountLedger {
          *
          * @param balance                   New balance
          */
-        private void setBalance(long balance) {
+        private void setBalance(BigInteger balance) {
             this.balance = balance;
         }
 
@@ -788,7 +789,7 @@ public class AccountLedger {
          *
          * @return                          New balance
          */
-        public long getBalance() {
+        public BigInteger getBalance() {
             return balance;
         }
 
@@ -865,8 +866,8 @@ public class AccountLedger {
                     stmt.setByte(++i, (byte)-1);
                 }
                 DbUtils.setLong(stmt, ++i, holdingId);
-                stmt.setLong(++i, change);
-                stmt.setLong(++i, balance);
+                stmt.setBytes(++i, change.toByteArray());
+                stmt.setBytes(++i, balance.toByteArray());
                 stmt.setLong(++i, blockId);
                 stmt.setInt(++i, height);
                 stmt.setInt(++i, timestamp);

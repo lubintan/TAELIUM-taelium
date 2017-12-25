@@ -30,8 +30,8 @@ import java.util.List;
 
 public final class BaseTargetTest {
 
-    private static final long MIN_BASE_TARGET = Constants.INITIAL_BASE_TARGET * 9 / 10;
-    private static final long MAX_BASE_TARGET = Constants.INITIAL_BASE_TARGET * (Constants.isTestnet ? Constants.MAX_BALANCE_NXT : 50);
+    private static final BigInteger MIN_BASE_TARGET = Constants.INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9).divide(BigInteger.TEN));
+    private static final BigInteger MAX_BASE_TARGET = Constants.INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));
 
     private static final int MIN_BLOCKTIME_LIMIT = Constants.BLOCK_TIME - 7;
     private static final int MAX_BLOCKTIME_LIMIT = Constants.BLOCK_TIME + 7;
@@ -45,17 +45,22 @@ public final class BaseTargetTest {
     private static final int SMA_N = 3;
     private static final int FREQUENCY = 2;
 
-    private static long calculateBaseTarget(long previousBaseTarget, long blocktimeEMA) {
-        long baseTarget;
+    private static BigInteger calculateBaseTarget(BigInteger previousBaseTarget, long blocktimeEMA) {
+        BigInteger baseTarget;
         if (blocktimeEMA > Constants.BLOCK_TIME) {
-            baseTarget = (previousBaseTarget * Math.min(blocktimeEMA, MAX_BLOCKTIME_LIMIT)) / Constants.BLOCK_TIME;
+            baseTarget = previousBaseTarget.multiply(BigInteger.valueOf(Math.min(blocktimeEMA, MAX_BLOCKTIME_LIMIT)))
+            					.divide(BigInteger.valueOf(Constants.BLOCK_TIME));
         } else {
-            baseTarget = previousBaseTarget - previousBaseTarget * GAMMA * (Constants.BLOCK_TIME - Math.max(blocktimeEMA, MIN_BLOCKTIME_LIMIT)) / (100 * Constants.BLOCK_TIME);
+            baseTarget = previousBaseTarget.subtract(
+            		previousBaseTarget.multiply(BigInteger.valueOf(GAMMA)).multiply
+            		(BigInteger.valueOf((Constants.BLOCK_TIME - Math.max(blocktimeEMA, MIN_BLOCKTIME_LIMIT))))
+            		.divide(BigInteger.valueOf(100 * Constants.BLOCK_TIME))
+            		);
         }
-        if (baseTarget < 0 || baseTarget > MAX_BASE_TARGET) {
+        if (baseTarget.compareTo(BigInteger.ZERO) < 0 || baseTarget.compareTo(MAX_BASE_TARGET) > 0) {
             baseTarget = MAX_BASE_TARGET;
         }
-        if (baseTarget < MIN_BASE_TARGET) {
+        if (baseTarget.compareTo(MIN_BASE_TARGET) < 0) {
             baseTarget = MIN_BASE_TARGET;
         }
         return baseTarget;
@@ -66,19 +71,19 @@ public final class BaseTargetTest {
         try {
 
             BigInteger testCumulativeDifficulty = BigInteger.ZERO;
-            long testBaseTarget;
+            BigInteger testBaseTarget = BigInteger.ZERO;;
             int testTimestamp;
 
             BigInteger cumulativeDifficulty = BigInteger.ZERO;
-            long baseTarget;
+            BigInteger baseTarget= BigInteger.ZERO;
             int timestamp;
 
             BigInteger previousCumulativeDifficulty = null;
-            long previousBaseTarget = 0;
+            BigInteger previousBaseTarget = BigInteger.ZERO;
             int previousTimestamp = 0;
 
             BigInteger previousTestCumulativeDifficulty = null;
-            long previousTestBaseTarget = 0;
+            BigInteger previousTestBaseTarget = BigInteger.ZERO;
             int previousTestTimestamp = 0;
 
             int height = START_HEIGHT;
@@ -110,8 +115,8 @@ public final class BaseTargetTest {
 
                 while (rs.next()) {
 
-                    cumulativeDifficulty = new BigInteger(rs.getBytes("cumulative_difficulty"));
-                    baseTarget = rs.getLong("base_target");
+                    cumulativeDifficulty = new BigInteger(rs.getString("cumulative_difficulty"));
+                    baseTarget = new BigInteger(rs.getString("base_target"));
                     timestamp = rs.getInt("timestamp");
                     height = rs.getInt("height");
 
@@ -128,7 +133,12 @@ public final class BaseTargetTest {
                         continue;
                     }
 
-                    int testBlocktime = (int)((previousBaseTarget * (timestamp - previousTimestamp - 1)) / previousTestBaseTarget) + 1;
+                    int testBlocktime = previousBaseTarget.multiply( 
+                    							BigInteger.valueOf(timestamp - previousTimestamp - 1))
+                    								.divide(previousTestBaseTarget).intValue() + 1;
+//                    int testBlocktime = (int)((previousBaseTarget * (timestamp - previousTimestamp - 1)) / previousTestBaseTarget) + 1;
+//
+                    
                     if (testBlocktimeEMA == 0) {
                         testBlocktimeEMA = testBlocktime;
                     } else {
@@ -153,7 +163,7 @@ public final class BaseTargetTest {
                     } else {
                         testBaseTarget = previousTestBaseTarget;
                     }
-                    testCumulativeDifficulty = previousTestCumulativeDifficulty.add(Convert.two64.divide(BigInteger.valueOf(testBaseTarget)));
+                    testCumulativeDifficulty = previousTestCumulativeDifficulty.add(Convert.two64.divide(testBaseTarget));
 
                     int blocktime = timestamp - previousTimestamp;
                     if (blocktime > maxBlocktime) {

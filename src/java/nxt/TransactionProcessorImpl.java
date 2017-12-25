@@ -122,9 +122,11 @@ final class TransactionProcessorImpl implements TransactionProcessor {
                         o1.getTransaction().referencedTransactionFullHash() != null)) != 0) {
                     return result;
                 }
-                if ((result = Long.compare(o1.getFeePerByte(), o2.getFeePerByte())) != 0) {
+                if ((result = o1.getFeePerByte().compareTo(o2.getFeePerByte())) != 0) {
                     return result;
                 }
+                
+                
                 if ((result = Long.compare(o2.getArrivalTimestamp(), o1.getArrivalTimestamp())) != 0) {
                     return result;
                 }
@@ -717,7 +719,7 @@ final class TransactionProcessorImpl implements TransactionProcessor {
         if (compare != 0)
             return compare;
         // Sort by fee_per_byte DESC
-        compare = Long.compare(t1.getFeePerByte(), t2.getFeePerByte());
+        compare = t1.getFeePerByte().compareTo(t2.getFeePerByte());
         if (compare != 0)
             return -compare;
         // Sort by arrival_timestamp ASC

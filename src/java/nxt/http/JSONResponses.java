@@ -489,10 +489,10 @@ public final class JSONResponses {
         switch (holdingType) {
             case NXT:
                 return JSONResponses.NOT_ENOUGH_FUNDS;
-            case ASSET:
-                return JSONResponses.NOT_ENOUGH_ASSETS;
-            case CURRENCY:
-                return JSONResponses.NOT_ENOUGH_CURRENCY;
+//            case ASSET:
+//                return JSONResponses.NOT_ENOUGH_ASSETS;
+//            case CURRENCY:
+//                return JSONResponses.NOT_ENOUGH_CURRENCY;
             default:
                 throw new RuntimeException();
         }

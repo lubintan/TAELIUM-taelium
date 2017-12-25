@@ -20,6 +20,8 @@ import nxt.Account;
 import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
+import java.math.BigInteger;
+
 import javax.servlet.http.HttpServletRequest;
 
 public final class SendMoney extends CreateTransaction {
@@ -33,7 +35,7 @@ public final class SendMoney extends CreateTransaction {
     @Override
     protected JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         long recipient = ParameterParser.getAccountId(req, "recipient", true);
-        long amountNQT = ParameterParser.getAmountNQT(req);
+        BigInteger amountNQT = ParameterParser.getAmountNQT(req);
         Account account = ParameterParser.getSenderAccount(req);
         return createTransaction(req, account, recipient, amountNQT);
     }

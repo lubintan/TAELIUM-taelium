@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.math.BigInteger;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -294,7 +295,7 @@ public final class Nxt { //only public class in a Java file must also have the m
         return TransactionProcessorImpl.getInstance();
     }
 
-    public static Transaction.Builder newTransactionBuilder(byte[] senderPublicKey, long amountNQT, long feeNQT, short deadline, Attachment attachment) {
+    public static Transaction.Builder newTransactionBuilder(byte[] senderPublicKey, BigInteger amountNQT, BigInteger feeNQT, short deadline, Attachment attachment) {
         return new TransactionImpl.BuilderImpl((byte)1, senderPublicKey, amountNQT, feeNQT, deadline, (Attachment.AbstractAttachment)attachment);
     }
 
@@ -375,7 +376,7 @@ public final class Nxt { //only public class in a Java file must also have the m
         Logger.logShutdownMessage("Shutting down...");
         AddOns.shutdown();
         API.shutdown();
-        FundingMonitor.shutdown();
+//        FundingMonitor.shutdown();
         ThreadPool.shutdown();
         BlockchainProcessorImpl.getInstance().shutdown();
         Peers.shutdown();
@@ -410,28 +411,28 @@ public final class Nxt { //only public class in a Java file must also have the m
                 Account.init();
                 AccountRestrictions.init();
                 AccountLedger.init();
-                Alias.init();
-                Asset.init();
-                DigitalGoodsStore.init();
-                Order.init();
-                Poll.init();
-                PhasingPoll.init();
-                Trade.init();
-                AssetTransfer.init();
-                AssetDelete.init();
-                AssetDividend.init();
-                Vote.init();
-                PhasingVote.init();
-                Currency.init();
-                CurrencyBuyOffer.init();
-                CurrencySellOffer.init();
-                CurrencyFounder.init();
-                CurrencyMint.init();
-                CurrencyTransfer.init();
-                Exchange.init();
-                ExchangeRequest.init();
-                Shuffling.init();
-                ShufflingParticipant.init();
+//                Alias.init();
+//                Asset.init();
+//                DigitalGoodsStore.init();
+//                Order.init();
+//                Poll.init();
+//                PhasingPoll.init();
+//                Trade.init();
+//                AssetTransfer.init();
+//                AssetDelete.init();
+//                AssetDividend.init();
+//                Vote.init();
+//                PhasingVote.init();
+//                Currency.init();
+//                CurrencyBuyOffer.init();
+//                CurrencySellOffer.init();
+//                CurrencyFounder.init();
+//                CurrencyMint.init();
+//                CurrencyTransfer.init();
+//                Exchange.init();
+//                ExchangeRequest.init();
+//                Shuffling.init();
+//                ShufflingParticipant.init();
                 PrunableMessage.init();
                 TaggedData.init();
                 Peers.init();

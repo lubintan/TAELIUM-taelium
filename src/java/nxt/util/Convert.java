@@ -44,6 +44,7 @@ public final class Convert {
 
     public static final BigInteger two64 = new BigInteger("18446744073709551616"); //2**64
     public static final long[] EMPTY_LONG = new long[0];
+    public static final BigInteger[] EMPTY_BIGINT = new BigInteger[0];
     public static final byte[] EMPTY_BYTE = new byte[0];
     public static final byte[][] EMPTY_BYTES = new byte[0][];
     public static final String[] EMPTY_STRING = new String[0];
@@ -250,32 +251,32 @@ public final class Convert {
     public static String truncate(String s, String replaceNull, int limit, boolean dots) {
         return s == null ? replaceNull : s.length() > limit ? (s.substring(0, dots ? limit - 3 : limit) + (dots ? "..." : "")) : s;
     }
-
-    public static long parseNXT(String nxt) {
-        return parseStringFraction(nxt, 8, Constants.MAX_BALANCE_NXT);
-    }
-
-    private static long parseStringFraction(String value, int decimals, long maxValue) {
-        String[] s = value.trim().split("\\.");
-        if (s.length == 0 || s.length > 2) {
-            throw new NumberFormatException("Invalid number: " + value);
-        }
-        long wholePart = Long.parseLong(s[0]);
-        if (wholePart > maxValue) {
-            throw new IllegalArgumentException("Whole part of value exceeds maximum possible");
-        }
-        if (s.length == 1) {
-            return wholePart * multipliers[decimals];
-        }
-        long fractionalPart = Long.parseLong(s[1]);
-        if (fractionalPart >= multipliers[decimals] || s[1].length() > decimals) {
-            throw new IllegalArgumentException("Fractional part exceeds maximum allowed divisibility");
-        }
-        for (int i = s[1].length(); i < decimals; i++) {
-            fractionalPart *= 10;
-        }
-        return wholePart * multipliers[decimals] + fractionalPart;
-    }
+//
+//    public static long parseNXT(String nxt) {
+//        return parseStringFraction(nxt, 8, Constants.MAX_BALANCE_TAELS);
+//    }
+//
+//    private static long parseStringFraction(String value, int decimals, long maxValue) {
+//        String[] s = value.trim().split("\\.");
+//        if (s.length == 0 || s.length > 2) {
+//            throw new NumberFormatException("Invalid number: " + value);
+//        }
+//        long wholePart = Long.parseLong(s[0]);
+//        if (wholePart > maxValue) {
+//            throw new IllegalArgumentException("Whole part of value exceeds maximum possible");
+//        }
+//        if (s.length == 1) {
+//            return wholePart * multipliers[decimals];
+//        }
+//        long fractionalPart = Long.parseLong(s[1]);
+//        if (fractionalPart >= multipliers[decimals] || s[1].length() > decimals) {
+//            throw new IllegalArgumentException("Fractional part exceeds maximum allowed divisibility");
+//        }
+//        for (int i = s[1].length(); i < decimals; i++) {
+//            fractionalPart *= 10;
+//        }
+//        return wholePart * multipliers[decimals] + fractionalPart;
+//    }
 
     public static byte[] compress(byte[] bytes) {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();

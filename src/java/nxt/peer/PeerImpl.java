@@ -56,6 +56,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.lang.Thread;
+import java.math.BigInteger;
 
 final class PeerImpl implements Peer {
 
@@ -75,7 +76,7 @@ final class PeerImpl implements Peer {
     private volatile int apiServerIdleTimeout;
     private volatile String version;
     private volatile boolean isOldVersion;
-    private volatile long adjustedWeight;
+    private volatile BigInteger adjustedWeight;
     private volatile int blacklistingTime;
     private volatile String blacklistingCause;
     private volatile State state;
@@ -84,7 +85,7 @@ final class PeerImpl implements Peer {
     private volatile int lastUpdated;
     private volatile int lastConnectAttempt;
     private volatile int lastInboundRequest;
-    private volatile long hallmarkBalance = -1;
+    private volatile BigInteger hallmarkBalance = BigInteger.valueOf(-1);
     private volatile int hallmarkBalanceHeight;
     private volatile long services;
     private volatile BlockchainState blockchainState;
@@ -324,17 +325,17 @@ final class PeerImpl implements Peer {
     }
 
     @Override
-    public int getWeight() {
+    public BigInteger getWeight() {
         if (hallmark == null) {
-            return 0;
+            return BigInteger.ZERO;
         }
-        if (hallmarkBalance == -1 || hallmarkBalanceHeight < Nxt.getBlockchain().getHeight() - 60) {
+        if (hallmarkBalance.compareTo(BigInteger.valueOf(-1)) == 0 || hallmarkBalanceHeight < Nxt.getBlockchain().getHeight() - 60) {
             long accountId = hallmark.getAccountId();
             Account account = Account.getAccount(accountId);
-            hallmarkBalance = account == null ? 0 : account.getBalanceNQT();
+            hallmarkBalance = account == null ? BigInteger.ZERO : account.getBalanceNQT();
             hallmarkBalanceHeight = Nxt.getBlockchain().getHeight();
         }
-        return (int)(adjustedWeight * (hallmarkBalance / Constants.ONE_NXT) / Constants.MAX_BALANCE_NXT);
+        return adjustedWeight.multiply(hallmarkBalance.divide(Constants.ONE_TAEL).divide(Constants.MAX_BALANCE_TAELS));
     }
 
     @Override
@@ -619,9 +620,9 @@ final class PeerImpl implements Peer {
 
     @Override
     public int compareTo(Peer o) {
-        if (getWeight() > o.getWeight()) {
+        if (getWeight().compareTo(o.getWeight()) > 0) {
             return -1;
-        } else if (getWeight() < o.getWeight()) {
+        } else if (getWeight().compareTo(o.getWeight()) < 0) {
             return 1;
         }
         return getHost().compareTo(o.getHost());
@@ -805,7 +806,7 @@ final class PeerImpl implements Peer {
             long accountId = Account.getId(hallmark.getPublicKey());
             List<PeerImpl> groupedPeers = new ArrayList<>();
             int mostRecentDate = 0;
-            long totalWeight = 0;
+            BigInteger totalWeight = BigInteger.ZERO;
             for (PeerImpl peer : Peers.allPeers) {
                 if (peer.hallmark == null) {
                     continue;
@@ -816,13 +817,13 @@ final class PeerImpl implements Peer {
                         mostRecentDate = peer.hallmark.getDate();
                         totalWeight = peer.getHallmarkWeight(mostRecentDate);
                     } else {
-                        totalWeight += peer.getHallmarkWeight(mostRecentDate);
+                        totalWeight = totalWeight.add(peer.getHallmarkWeight(mostRecentDate));
                     }
                 }
             }
 
             for (PeerImpl peer : groupedPeers) {
-                peer.adjustedWeight = Constants.MAX_BALANCE_NXT * peer.getHallmarkWeight(mostRecentDate) / totalWeight;
+                peer.adjustedWeight = Constants.MAX_BALANCE_TAELS.multiply(peer.getHallmarkWeight(mostRecentDate).divide(totalWeight));
                 Peers.notifyListeners(peer, Peers.Event.WEIGHT);
             }
 
@@ -837,9 +838,9 @@ final class PeerImpl implements Peer {
 
     }
 
-    private int getHallmarkWeight(int date) {
+    private BigInteger getHallmarkWeight(int date) {
         if (hallmark == null || ! hallmark.isValid() || hallmark.getDate() != date) {
-            return 0;
+            return BigInteger.ZERO;
         }
         return hallmark.getWeight();
     }

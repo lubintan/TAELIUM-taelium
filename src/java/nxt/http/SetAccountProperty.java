@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import static nxt.http.JSONResponses.INCORRECT_ACCOUNT_PROPERTY_NAME_LENGTH;
 import static nxt.http.JSONResponses.INCORRECT_ACCOUNT_PROPERTY_VALUE_LENGTH;
 
+import java.math.BigInteger;
+
 public final class SetAccountProperty extends CreateTransaction {
 
     static final SetAccountProperty instance = new SetAccountProperty();
@@ -56,7 +58,7 @@ public final class SetAccountProperty extends CreateTransaction {
         }
 
         Attachment attachment = new Attachment.MessagingAccountProperty(property, value);
-        return createTransaction(req, senderAccount, recipientId, 0, attachment);
+        return createTransaction(req, senderAccount, recipientId, BigInteger.ZERO, attachment);
 
     }
 

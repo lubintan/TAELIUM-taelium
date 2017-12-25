@@ -109,7 +109,7 @@ public class GetAllForgersBalances {
 //			System.out.println(Crypto.rsEncode(eachForgerId));
 //			System.out.println(BigInteger.valueOf(account.getBalanceNQT()));
 			
-    			allForgersBalances.put(eachForgerId, BigInteger.valueOf(account.getBalanceNQT()) );
+    			allForgersBalances.put(eachForgerId, account.getBalanceNQT());
 		}
 		
 //		System.out.println(allForgersBalances.values());

@@ -15,25 +15,28 @@
  */
 
 package nxt;
+
+import java.math.BigInteger;
+
 //seen.
 public interface Fee {
 
-    long getFee(TransactionImpl transaction, Appendix appendage);
+    BigInteger getFee(TransactionImpl transaction, Appendix appendage);
 
-    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.ONE_NXT);
+    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.ONE_TAEL);
 
-    Fee NONE = new Fee.ConstantFee(0L);
+    Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
 
     final class ConstantFee implements Fee {
 
-        private final long fee;
+        private final BigInteger fee;
 
-        public ConstantFee(long fee) {
+        public ConstantFee(BigInteger fee) {
             this.fee = fee;
         }
 
         @Override
-        public long getFee(TransactionImpl transaction, Appendix appendage) {
+        public BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
             return fee;
         }
 
@@ -41,19 +44,19 @@ public interface Fee {
 
     abstract class SizeBasedFee implements Fee {
 
-        private final long constantFee;
-        private final long feePerSize;
+        private final BigInteger constantFee;
+        private final BigInteger feePerSize;
         private final int unitSize;
 
-        public SizeBasedFee(long feePerSize) {
-            this(0, feePerSize);
+        public SizeBasedFee(BigInteger feePerSize) {
+            this(BigInteger.ZERO, feePerSize);
         }
 
-        public SizeBasedFee(long constantFee, long feePerSize) {
+        public SizeBasedFee(BigInteger constantFee, BigInteger feePerSize) {
             this(constantFee, feePerSize, 1024);
         }
 
-        public SizeBasedFee(long constantFee, long feePerSize, int unitSize) {
+        public SizeBasedFee(BigInteger constantFee, BigInteger feePerSize, int unitSize) {
             this.constantFee = constantFee;
             this.feePerSize = feePerSize;
             this.unitSize = unitSize;
@@ -61,12 +64,13 @@ public interface Fee {
 
         // the first size unit is free if constantFee is 0
         @Override
-        public final long getFee(TransactionImpl transaction, Appendix appendage) {
+        public final BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
             int size = getSize(transaction, appendage) - 1;
             if (size < 0) {
                 return constantFee;
             }
-            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
+            return constantFee.add(feePerSize.multiply(BigInteger.valueOf((long)(size/unitSize))));
+//            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
         }
 
         public abstract int getSize(TransactionImpl transaction, Appendix appendage);

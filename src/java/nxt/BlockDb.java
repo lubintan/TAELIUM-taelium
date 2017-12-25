@@ -19,6 +19,7 @@ package nxt;
 import nxt.db.DbUtils;
 import nxt.util.Logger;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -226,18 +227,26 @@ final class BlockDb {
             int version = rs.getInt("version");
             int timestamp = rs.getInt("timestamp");
             long previousBlockId = rs.getLong("previous_block_id");
-            long totalAmountNQT = rs.getLong("total_amount");
-            long totalFeeNQT = rs.getLong("total_fee");
+//            BigInteger totalAmountNQT = new BigInteger(rs.getString("total_amount"));
+//            BigInteger totalFeeNQT = new BigInteger(rs.getString("total_fee"));
+            BigInteger totalAmountNQT = rs.getBigDecimal("total_amount").toBigInteger();
+            BigInteger totalFeeNQT = rs.getBigDecimal("total_fee").toBigInteger();
             int payloadLength = rs.getInt("payload_length");
             long generatorId = rs.getLong("generator_id");
             byte[] previousBlockHash = rs.getBytes("previous_block_hash");
-            BigInteger cumulativeDifficulty = new BigInteger(rs.getBytes("cumulative_difficulty"));
-            BigInteger totalForgingHoldings = new BigInteger(rs.getBytes("total_forging_holdings"));
+//            BigInteger cumulativeDifficulty = new BigInteger(rs.getString("cumulative_difficulty"));
+//            BigInteger totalForgingHoldings = new BigInteger(rs.getString("total_forging_holdings"));
+            BigInteger cumulativeDifficulty = rs.getBigDecimal("cumulative_difficulty").toBigInteger();
+            BigInteger totalForgingHoldings = rs.getBigDecimal("total_forging_holdings").toBigInteger();
             double latestRYear = rs.getDouble("latest_annual_interest_rate");
-            BigInteger supplyCurrent = new BigInteger(rs.getBytes("supply_current"));
-            BigInteger vault = new BigInteger(rs.getBytes("vault"));
-            long blockReward = rs.getLong("block_reward");
-            long baseTarget = rs.getLong("base_target");
+//            BigInteger supplyCurrent = new BigInteger(rs.getString("supply_current"));
+//            BigInteger vault = new BigInteger(rs.getString("vault"));
+//            BigInteger blockReward = new BigInteger(rs.getString("block_reward"));
+//            BigInteger baseTarget = new BigInteger(rs.getString("base_target"));
+            BigInteger supplyCurrent = rs.getBigDecimal("supply_current").toBigInteger();
+            BigInteger vault = rs.getBigDecimal("vault").toBigInteger();
+            BigInteger blockReward = rs.getBigDecimal("block_reward").toBigInteger();
+            BigInteger baseTarget = rs.getBigDecimal("base_target").toBigInteger();
             long nextBlockId = rs.getLong("next_block_id");
             if (nextBlockId == 0 && !rs.wasNull()) {
                 throw new IllegalStateException("Attempting to load invalid block");
@@ -269,23 +278,36 @@ final class BlockDb {
                 pstmt.setInt(++i, block.getVersion());
                 pstmt.setInt(++i, block.getTimestamp());
                 DbUtils.setLongZeroToNull(pstmt, ++i, block.getPreviousBlockId());
-                pstmt.setLong(++i, block.getTotalAmountNQT());
-                pstmt.setLong(++i, block.getTotalFeeNQT());
+//                pstmt.setString(++i, block.getTotalAmountNQT().toString());
+//                pstmt.setString(++i, block.getTotalFeeNQT().toString());
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getTotalAmountNQT()));
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getTotalFeeNQT()));
+                
                 pstmt.setInt(++i, block.getPayloadLength());
                 pstmt.setBytes(++i, block.getPreviousBlockHash());
                 pstmt.setLong(++i, 0L); // next_block_id set to 0 at first
-                pstmt.setBytes(++i, block.getCumulativeDifficulty().toByteArray());
-                pstmt.setLong(++i, block.getBaseTarget());
+//                pstmt.setString(++i, block.getCumulativeDifficulty().toString());
+//                pstmt.setString(++i, block.getBaseTarget().toString());
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getCumulativeDifficulty()));
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getBaseTarget()));
+                
                 pstmt.setInt(++i, block.getHeight());
                 pstmt.setBytes(++i, block.getGenerationSignature());
                 pstmt.setBytes(++i, block.getBlockSignature());
                 pstmt.setBytes(++i, block.getPayloadHash());
                 pstmt.setLong(++i, block.getGeneratorId());
-                pstmt.setBytes(++i, block.getTotalForgingHoldings().toByteArray());
+//                pstmt.setString(++i, block.getTotalForgingHoldings().toString());
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getTotalForgingHoldings()));
+
                 pstmt.setDouble(++i, block.getLatestRYear());
-                pstmt.setBytes(++i, block.getSupplyCurrent().toByteArray());
-                pstmt.setBytes(++i,  block.getVault().toByteArray());
-                pstmt.setLong(++i, block.getBlockReward());
+//                pstmt.setString(++i, block.getSupplyCurrent().toString());
+//                pstmt.setString(++i,  block.getVault().toString());
+//                pstmt.setString(++i, block.getBlockReward().toString());
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getSupplyCurrent()));
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getVault()));
+                pstmt.setBigDecimal(++i, new BigDecimal(block.getBlockReward()));
+
+                
                 pstmt.executeUpdate();
                 TransactionDb.saveTransactions(con, block.getTransactions());
             }

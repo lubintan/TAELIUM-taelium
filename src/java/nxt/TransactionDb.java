@@ -19,6 +19,8 @@ package nxt;
 import nxt.db.DbUtils;
 import nxt.util.Convert;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.sql.Connection;
@@ -165,13 +167,17 @@ final class TransactionDb {
 
     static TransactionImpl loadTransaction(Connection con, ResultSet rs) throws NxtException.NotValidException {
         try {
-
             byte type = rs.getByte("type");
             byte subtype = rs.getByte("subtype");
             int timestamp = rs.getInt("timestamp");
             short deadline = rs.getShort("deadline");
-            long amountNQT = rs.getLong("amount");
-            long feeNQT = rs.getLong("fee");
+//            long amountNQT = rs.getLong("amount");
+//            long feeNQT = rs.getLong("fee");
+//            BigInteger amountNQT = new BigInteger(rs.getString("amount"));
+//            BigInteger feeNQT = new BigInteger(rs.getString("fee"));
+            BigInteger amountNQT = rs.getBigDecimal("amount").toBigInteger();
+            BigInteger feeNQT = rs.getBigDecimal("fee").toBigInteger();
+            
             byte[] referencedTransactionFullHash = rs.getBytes("referenced_transaction_full_hash");
             int ecBlockHeight = rs.getInt("ec_block_height");
             long ecBlockId = rs.getLong("ec_block_id");
@@ -225,9 +231,9 @@ final class TransactionDb {
             if (rs.getBoolean("has_encrypttoself_message")) {
                 builder.appendix(new Appendix.EncryptToSelfMessage(buffer));
             }
-            if (rs.getBoolean("phased")) {
-                builder.appendix(new Appendix.Phasing(buffer));
-            }
+//            if (rs.getBoolean("phased")) {
+////                builder.appendix(new Appendix.Phasing(buffer));
+//            }
             if (rs.getBoolean("has_prunable_message")) {
                 builder.appendix(new Appendix.PrunablePlainMessage(buffer));
             }
@@ -320,8 +326,11 @@ final class TransactionDb {
                     pstmt.setLong(++i, transaction.getId());
                     pstmt.setShort(++i, transaction.getDeadline());
                     DbUtils.setLongZeroToNull(pstmt, ++i, transaction.getRecipientId());
-                    pstmt.setLong(++i, transaction.getAmountNQT());
-                    pstmt.setLong(++i, transaction.getFeeNQT());
+//                    pstmt.setString(++i, transaction.getAmountNQT().toString());
+//                    pstmt.setString(++i, transaction.getFeeNQT().toString());
+                    pstmt.setBigDecimal(++i, new BigDecimal(transaction.getAmountNQT()));
+                    pstmt.setBigDecimal(++i, new BigDecimal(transaction.getFeeNQT()));
+                    
                     DbUtils.setBytes(pstmt, ++i, transaction.referencedTransactionFullHash());
                     pstmt.setInt(++i, transaction.getHeight());
                     pstmt.setLong(++i, transaction.getBlockId());
@@ -351,7 +360,8 @@ final class TransactionDb {
                     pstmt.setBoolean(++i, transaction.getEncryptedMessage() != null);
                     pstmt.setBoolean(++i, transaction.getPublicKeyAnnouncement() != null);
                     pstmt.setBoolean(++i, transaction.getEncryptToSelfMessage() != null);
-                    pstmt.setBoolean(++i, transaction.getPhasing() != null);
+//                    pstmt.setBoolean(++i, transaction.getPhasing() != null);
+                    pstmt.setBoolean(++i, false);
                     pstmt.setBoolean(++i, transaction.hasPrunablePlainMessage());
                     pstmt.setBoolean(++i, transaction.hasPrunableEncryptedMessage());
                     pstmt.setBoolean(++i, transaction.getAttachment() instanceof Appendix.Prunable);

@@ -21,6 +21,7 @@ import nxt.util.Filter;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,12 +33,12 @@ class UnconfirmedTransaction implements Transaction {
 
     private final TransactionImpl transaction;
     private final long arrivalTimestamp;
-    private final long feePerByte;
+    private final BigInteger feePerByte;
 
     UnconfirmedTransaction(TransactionImpl transaction, long arrivalTimestamp) {
         this.transaction = transaction;
         this.arrivalTimestamp = arrivalTimestamp;
-        this.feePerByte = transaction.getFeeNQT() / transaction.getFullSize();
+        this.feePerByte = transaction.getFeeNQT().divide(BigInteger.valueOf(transaction.getFullSize()));
     }
 
     UnconfirmedTransaction(ResultSet rs) throws SQLException {
@@ -52,7 +53,9 @@ class UnconfirmedTransaction implements Transaction {
             this.transaction = builder.build();
             this.transaction.setHeight(rs.getInt("transaction_height"));
             this.arrivalTimestamp = rs.getLong("arrival_timestamp");
-            this.feePerByte = rs.getLong("fee_per_byte");
+            this.feePerByte = new BigInteger(rs.getBytes("fee_per_byte"));
+//            BigInteger amountNQT = new BigInteger(rs.getBytes("amount"));
+//            this.feePerByte = rs.getLong("fee_per_byte");
         } catch (NxtException.ValidationException e) {
             throw new RuntimeException(e.toString(), e);
         }
@@ -65,7 +68,8 @@ class UnconfirmedTransaction implements Transaction {
             int i = 0;
             pstmt.setLong(++i, transaction.getId());
             pstmt.setInt(++i, transaction.getHeight());
-            pstmt.setLong(++i, feePerByte);
+//            pstmt.setBytes(++i, transaction.getAmountNQT().toByteArray());
+            pstmt.setBytes(++i, feePerByte.toByteArray());
             pstmt.setInt(++i, transaction.getExpiration());
             pstmt.setBytes(++i, transaction.bytes());
             JSONObject prunableJSON = transaction.getPrunableAttachmentJSON();
@@ -88,7 +92,7 @@ class UnconfirmedTransaction implements Transaction {
         return arrivalTimestamp;
     }
 
-    long getFeePerByte() {
+    BigInteger getFeePerByte() {
         return feePerByte;
     }
 
@@ -167,12 +171,12 @@ class UnconfirmedTransaction implements Transaction {
     }
 
     @Override
-    public long getAmountNQT() {
+    public BigInteger getAmountNQT() {
         return transaction.getAmountNQT();
     }
 
     @Override
-    public long getFeeNQT() {
+    public BigInteger getFeeNQT() {
         return transaction.getFeeNQT();
     }
 
@@ -265,10 +269,10 @@ class UnconfirmedTransaction implements Transaction {
         return transaction.getEncryptToSelfMessage();
     }
 
-    @Override
-    public Appendix.Phasing getPhasing() {
-        return transaction.getPhasing();
-    }
+//    @Override
+//    public Appendix.Phasing getPhasing() {
+//        return transaction.getPhasing();
+//    }
 
     @Override
     public List<? extends Appendix> getAppendages() {

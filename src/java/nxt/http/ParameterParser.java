@@ -17,20 +17,20 @@
 package nxt.http;
 
 import nxt.Account;
-import nxt.Alias;
+//import nxt.Alias;
 import nxt.Appendix;
-import nxt.Asset;
+//import nxt.Asset;
 import nxt.Attachment;
 import nxt.Constants;
-import nxt.Currency;
-import nxt.CurrencyBuyOffer;
-import nxt.CurrencySellOffer;
-import nxt.DigitalGoodsStore;
+//import nxt.Currency;
+//import nxt.CurrencyBuyOffer;
+//import nxt.CurrencySellOffer;
+//import nxt.DigitalGoodsStore;
 import nxt.HoldingType;
 import nxt.Nxt;
 import nxt.NxtException;
-import nxt.Poll;
-import nxt.Shuffling;
+//import nxt.Poll;
+//import nxt.Shuffling;
 import nxt.Transaction;
 import nxt.crypto.Crypto;
 import nxt.crypto.EncryptedData;
@@ -47,6 +47,7 @@ import javax.servlet.http.Part;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,6 +115,28 @@ public final class ParameterParser {
         }
     }
 
+    public static BigInteger getBigInt(HttpServletRequest req, String name, BigInteger min, BigInteger max,
+            boolean isMandatory) throws ParameterException {
+		String paramValue = Convert.emptyToNull(req.getParameter(name));
+		if (paramValue == null) {
+		if (isMandatory) {
+		    throw new ParameterException(missing(name));
+		}
+		return BigInteger.ZERO;
+		}
+		try {
+//		long value = Long.parseLong(paramValue);
+		BigInteger value = new BigInteger(paramValue);
+		if (value.compareTo(min) < 0 || value.compareTo(max) > 0) {
+		    throw new ParameterException(incorrect(name, String.format("value %s not in range [%s-%s]", 
+		    		value.toString(), min.toString(), max.toString())));
+		}
+		return value;
+		} catch (RuntimeException e) {
+		throw new ParameterException(incorrect(name, String.format("value %s is not numeric", paramValue)));
+		}
+		}
+    
     public static long getUnsignedLong(HttpServletRequest req, String name, boolean isMandatory) throws ParameterException {
         String paramValue = Convert.emptyToNull(req.getParameter(name));
         if (paramValue == null) {
@@ -214,108 +237,108 @@ public final class ParameterParser {
         }
         return values;
     }
+//
+//    public static Alias getAlias(HttpServletRequest req) throws ParameterException {
+//        long aliasId;
+//        try {
+//            aliasId = Convert.parseUnsignedLong(Convert.emptyToNull(req.getParameter("alias")));
+//        } catch (RuntimeException e) {
+//            throw new ParameterException(INCORRECT_ALIAS);
+//        }
+//        String aliasName = Convert.emptyToNull(req.getParameter("aliasName"));
+//        Alias alias;
+//        if (aliasId != 0) {
+//            alias = Alias.getAlias(aliasId);
+//        } else if (aliasName != null) {
+//            alias = Alias.getAlias(aliasName);
+//        } else {
+//            throw new ParameterException(MISSING_ALIAS_OR_ALIAS_NAME);
+//        }
+//        if (alias == null) {
+//            throw new ParameterException(UNKNOWN_ALIAS);
+//        }
+//        return alias;
+//    }
 
-    public static Alias getAlias(HttpServletRequest req) throws ParameterException {
-        long aliasId;
-        try {
-            aliasId = Convert.parseUnsignedLong(Convert.emptyToNull(req.getParameter("alias")));
-        } catch (RuntimeException e) {
-            throw new ParameterException(INCORRECT_ALIAS);
-        }
-        String aliasName = Convert.emptyToNull(req.getParameter("aliasName"));
-        Alias alias;
-        if (aliasId != 0) {
-            alias = Alias.getAlias(aliasId);
-        } else if (aliasName != null) {
-            alias = Alias.getAlias(aliasName);
-        } else {
-            throw new ParameterException(MISSING_ALIAS_OR_ALIAS_NAME);
-        }
-        if (alias == null) {
-            throw new ParameterException(UNKNOWN_ALIAS);
-        }
-        return alias;
+    public static BigInteger getAmountNQT(HttpServletRequest req) throws ParameterException {
+        return getBigInt(req, "amountNQT", BigInteger.ONE, Constants.MAX_BALANCE_HAEDS, true);
     }
 
-    public static long getAmountNQT(HttpServletRequest req) throws ParameterException {
-        return getLong(req, "amountNQT", 1L, Constants.MAX_BALANCE_NQT, true);
+    public static BigInteger getFeeNQT(HttpServletRequest req) throws ParameterException {
+        return getBigInt(req, "feeNQT", BigInteger.ZERO, Constants.MAX_BALANCE_HAEDS, true);
     }
+//
+//    public static long getPriceNQT(HttpServletRequest req) throws ParameterException {
+//        return getLong(req, "priceNQT", 1L, Constants.MAX_BALANCE_NQT, true);
+//    }
 
-    public static long getFeeNQT(HttpServletRequest req) throws ParameterException {
-        return getLong(req, "feeNQT", 0L, Constants.MAX_BALANCE_NQT, true);
-    }
+//    public static Poll getPoll(HttpServletRequest req) throws ParameterException {
+//        Poll poll = Poll.getPoll(getUnsignedLong(req, "poll", true));
+//        if (poll == null) {
+//            throw new ParameterException(UNKNOWN_POLL);
+//        }
+//        return poll;
+//    }
+//
+//    public static Asset getAsset(HttpServletRequest req) throws ParameterException {
+//        Asset asset = Asset.getAsset(getUnsignedLong(req, "asset", true));
+//        if (asset == null) {
+//            throw new ParameterException(UNKNOWN_ASSET);
+//        }
+//        return asset;
+//    }
 
-    public static long getPriceNQT(HttpServletRequest req) throws ParameterException {
-        return getLong(req, "priceNQT", 1L, Constants.MAX_BALANCE_NQT, true);
-    }
+//    public static Currency getCurrency(HttpServletRequest req) throws ParameterException {
+//        return getCurrency(req, true);
+//    }
+//
+//    public static Currency getCurrency(HttpServletRequest req, boolean isMandatory) throws ParameterException {
+//        Currency currency = Currency.getCurrency(getUnsignedLong(req, "currency", isMandatory));
+//        if (isMandatory && currency == null) {
+//            throw new ParameterException(UNKNOWN_CURRENCY);
+//        }
+//        return currency;
+//    }
 
-    public static Poll getPoll(HttpServletRequest req) throws ParameterException {
-        Poll poll = Poll.getPoll(getUnsignedLong(req, "poll", true));
-        if (poll == null) {
-            throw new ParameterException(UNKNOWN_POLL);
-        }
-        return poll;
-    }
-
-    public static Asset getAsset(HttpServletRequest req) throws ParameterException {
-        Asset asset = Asset.getAsset(getUnsignedLong(req, "asset", true));
-        if (asset == null) {
-            throw new ParameterException(UNKNOWN_ASSET);
-        }
-        return asset;
-    }
-
-    public static Currency getCurrency(HttpServletRequest req) throws ParameterException {
-        return getCurrency(req, true);
-    }
-
-    public static Currency getCurrency(HttpServletRequest req, boolean isMandatory) throws ParameterException {
-        Currency currency = Currency.getCurrency(getUnsignedLong(req, "currency", isMandatory));
-        if (isMandatory && currency == null) {
-            throw new ParameterException(UNKNOWN_CURRENCY);
-        }
-        return currency;
-    }
-
-    public static CurrencyBuyOffer getBuyOffer(HttpServletRequest req) throws ParameterException {
-        CurrencyBuyOffer offer = CurrencyBuyOffer.getOffer(getUnsignedLong(req, "offer", true));
-        if (offer == null) {
-            throw new ParameterException(UNKNOWN_OFFER);
-        }
-        return offer;
-    }
-
-    public static CurrencySellOffer getSellOffer(HttpServletRequest req) throws ParameterException {
-        CurrencySellOffer offer = CurrencySellOffer.getOffer(getUnsignedLong(req, "offer", true));
-        if (offer == null) {
-            throw new ParameterException(UNKNOWN_OFFER);
-        }
-        return offer;
-    }
-
-    public static Shuffling getShuffling(HttpServletRequest req) throws ParameterException {
-        Shuffling shuffling = Shuffling.getShuffling(getUnsignedLong(req, "shuffling", true));
-        if (shuffling == null) {
-            throw new ParameterException(UNKNOWN_SHUFFLING);
-        }
-        return shuffling;
-    }
+//    public static CurrencyBuyOffer getBuyOffer(HttpServletRequest req) throws ParameterException {
+//        CurrencyBuyOffer offer = CurrencyBuyOffer.getOffer(getUnsignedLong(req, "offer", true));
+//        if (offer == null) {
+//            throw new ParameterException(UNKNOWN_OFFER);
+//        }
+//        return offer;
+//    }
+//
+//    public static CurrencySellOffer getSellOffer(HttpServletRequest req) throws ParameterException {
+//        CurrencySellOffer offer = CurrencySellOffer.getOffer(getUnsignedLong(req, "offer", true));
+//        if (offer == null) {
+//            throw new ParameterException(UNKNOWN_OFFER);
+//        }
+//        return offer;
+//    }
+//
+//    public static Shuffling getShuffling(HttpServletRequest req) throws ParameterException {
+//        Shuffling shuffling = Shuffling.getShuffling(getUnsignedLong(req, "shuffling", true));
+//        if (shuffling == null) {
+//            throw new ParameterException(UNKNOWN_SHUFFLING);
+//        }
+//        return shuffling;
+//    }
 
     public static long getQuantityQNT(HttpServletRequest req) throws ParameterException {
         return getLong(req, "quantityQNT", 1L, Constants.MAX_ASSET_QUANTITY_QNT, true);
     }
 
-    public static long getAmountNQTPerQNT(HttpServletRequest req) throws ParameterException {
-        return getLong(req, "amountNQTPerQNT", 1L, Constants.MAX_BALANCE_NQT, true);
+    public static BigInteger getAmountNQTPerQNT(HttpServletRequest req) throws ParameterException {
+        return getBigInt(req, "amountNQTPerQNT", BigInteger.ONE, Constants.MAX_BALANCE_HAEDS, true);
     }
-
-    public static DigitalGoodsStore.Goods getGoods(HttpServletRequest req) throws ParameterException {
-        DigitalGoodsStore.Goods goods = DigitalGoodsStore.Goods.getGoods(getUnsignedLong(req, "goods", true));
-        if (goods == null) {
-            throw new ParameterException(UNKNOWN_GOODS);
-        }
-        return goods;
-    }
+//
+//    public static DigitalGoodsStore.Goods getGoods(HttpServletRequest req) throws ParameterException {
+//        DigitalGoodsStore.Goods goods = DigitalGoodsStore.Goods.getGoods(getUnsignedLong(req, "goods", true));
+//        if (goods == null) {
+//            throw new ParameterException(UNKNOWN_GOODS);
+//        }
+//        return goods;
+//    }
 
     public static int getGoodsQuantity(HttpServletRequest req) throws ParameterException {
         return getInt(req, "quantity", 0, Constants.MAX_DGS_LISTING_QUANTITY, true);
@@ -386,14 +409,14 @@ public final class ParameterParser {
             return new Appendix.UnencryptedEncryptToSelfMessage(plainMessageBytes, isText, compress);
         }
     }
-
-    public static DigitalGoodsStore.Purchase getPurchase(HttpServletRequest req) throws ParameterException {
-        DigitalGoodsStore.Purchase purchase = DigitalGoodsStore.Purchase.getPurchase(getUnsignedLong(req, "purchase", true));
-        if (purchase == null) {
-            throw new ParameterException(INCORRECT_PURCHASE);
-        }
-        return purchase;
-    }
+//
+//    public static DigitalGoodsStore.Purchase getPurchase(HttpServletRequest req) throws ParameterException {
+//        DigitalGoodsStore.Purchase purchase = DigitalGoodsStore.Purchase.getPurchase(getUnsignedLong(req, "purchase", true));
+//        if (purchase == null) {
+//            throw new ParameterException(INCORRECT_PURCHASE);
+//        }
+//        return purchase;
+//    }
 
     public static String getSecretPhrase(HttpServletRequest req, boolean isMandatory) throws ParameterException {
         String secretPhrase = Convert.emptyToNull(req.getParameter("secretPhrase"));

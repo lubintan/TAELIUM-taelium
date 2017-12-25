@@ -1,2 +1,0 @@
-MintWorker.java
-files.txt

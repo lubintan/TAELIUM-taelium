@@ -22,6 +22,8 @@ import nxt.NxtException;
 import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
+import java.math.BigInteger;
+
 import javax.servlet.http.HttpServletRequest;
 
 public final class DeleteAccountProperty extends CreateTransaction {
@@ -56,7 +58,7 @@ public final class DeleteAccountProperty extends CreateTransaction {
             return JSONResponses.INCORRECT_PROPERTY;
         }
         Attachment attachment = new Attachment.MessagingAccountPropertyDelete(accountProperty.getId());
-        return createTransaction(req, senderAccount, recipientId, 0, attachment);
+        return createTransaction(req, senderAccount, recipientId, BigInteger.ZERO, attachment);
 
     }
 

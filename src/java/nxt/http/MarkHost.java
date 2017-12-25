@@ -31,6 +31,8 @@ import static nxt.http.JSONResponses.MISSING_DATE;
 import static nxt.http.JSONResponses.MISSING_HOST;
 import static nxt.http.JSONResponses.MISSING_WEIGHT;
 
+import java.math.BigInteger;
+
 
 public final class MarkHost extends APIServlet.APIRequestHandler {
 
@@ -59,10 +61,11 @@ public final class MarkHost extends APIServlet.APIRequestHandler {
             return INCORRECT_HOST;
         }
 
-        int weight;
+        BigInteger weight;
         try {
-            weight = Integer.parseInt(weightValue);
-            if (weight <= 0 || weight > Constants.MAX_BALANCE_NXT) {
+//            weight = Integer.parseInt(weightValue);
+        		weight = new BigInteger(weightValue);
+            if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.MAX_BALANCE_TAELS) > 0) {
                 return INCORRECT_WEIGHT;
             }
         } catch (NumberFormatException e) {

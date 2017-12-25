@@ -21,6 +21,8 @@ import nxt.Attachment;
 import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
+import java.math.BigInteger;
+
 import javax.servlet.http.HttpServletRequest;
 
 public final class SendMessage extends CreateTransaction {
@@ -35,7 +37,7 @@ public final class SendMessage extends CreateTransaction {
     protected JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         long recipientId = ParameterParser.getAccountId(req, "recipient", false);
         Account account = ParameterParser.getSenderAccount(req);
-        return createTransaction(req, account, recipientId, 0, Attachment.ARBITRARY_MESSAGE);
+        return createTransaction(req, account, recipientId, BigInteger.ZERO, Attachment.ARBITRARY_MESSAGE);
     }
 
 }

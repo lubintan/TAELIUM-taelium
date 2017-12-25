@@ -25,23 +25,23 @@ class NxtDbVersion extends DbVersion {
             case 1:
                 apply("CREATE TABLE IF NOT EXISTS block (db_id IDENTITY, id BIGINT NOT NULL, version INT NOT NULL, "
                         + "timestamp INT NOT NULL, previous_block_id BIGINT, "
-                        + "total_amount BIGINT NOT NULL, "
-                        + "total_fee BIGINT NOT NULL, payload_length INT NOT NULL, "
-                        + "previous_block_hash BINARY(32), cumulative_difficulty VARBINARY NOT NULL, base_target BIGINT NOT NULL, "
+                        + "total_amount DECIMAL NOT NULL, "
+                        + "total_fee DECIMAL NOT NULL, payload_length INT NOT NULL, "
+                        + "previous_block_hash BINARY(32), cumulative_difficulty DECIMAL NOT NULL, base_target DECIMAL NOT NULL, "
                         + "next_block_id BIGINT, "
                         + "height INT NOT NULL, generation_signature BINARY(64) NOT NULL, "
                         + "block_signature BINARY(64) NOT NULL, payload_hash BINARY(32) NOT NULL, generator_id BIGINT NOT NULL,"
-                        + "total_forging_holdings VARBINARY NOT NULL,"
+                        + "total_forging_holdings DECIMAL NOT NULL,"
                         + "latest_annual_interest_rate FLOAT NOT NULL,"
-                        + "supply_current VARBINARY NOT NULL,"
-                        + "vault VARBINARY NOT NULL,"
-                        + "block_reward BIGINT NOT NULL)");
+                        + "supply_current DECIMAL NOT NULL,"
+                        + "vault DECIMAL NOT NULL,"
+                        + "block_reward DECIMAL NOT NULL)");
             case 2:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS block_id_idx ON block (id)");
             case 3:
                 apply("CREATE TABLE IF NOT EXISTS transaction (db_id IDENTITY, id BIGINT NOT NULL, "
                         + "deadline SMALLINT NOT NULL, recipient_id BIGINT, transaction_index SMALLINT NOT NULL, "
-                        + "amount BIGINT NOT NULL, fee BIGINT NOT NULL, full_hash BINARY(32) NOT NULL, "
+                        + "amount DECIMAL NOT NULL, fee DECIMAL NOT NULL, full_hash BINARY(32) NOT NULL, "
                         + "height INT NOT NULL, block_id BIGINT NOT NULL, FOREIGN KEY (block_id) REFERENCES block (id) ON DELETE CASCADE, "
                         + "signature BINARY(64) NOT NULL, timestamp INT NOT NULL, type TINYINT NOT NULL, subtype TINYINT NOT NULL, "
                         + "sender_id BIGINT NOT NULL, block_timestamp INT NOT NULL, referenced_transaction_full_hash BINARY(32), "
@@ -168,7 +168,7 @@ class NxtDbVersion extends DbVersion {
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS account_asset_id_height_idx ON account_asset (account_id, asset_id, height DESC)");
             case 44:
                 apply("CREATE TABLE IF NOT EXISTS account_guaranteed_balance (db_id IDENTITY, account_id BIGINT NOT NULL, "
-                        + "additions BIGINT NOT NULL, height INT NOT NULL)");
+                        + "additions DECIMAL NOT NULL, height INT NOT NULL)");
             case 45:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS account_guaranteed_balance_id_height_idx ON account_guaranteed_balance "
                         + "(account_id, height DESC)");

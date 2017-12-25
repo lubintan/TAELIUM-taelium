@@ -544,23 +544,23 @@ final class BlockchainImpl implements Blockchain {
         List<TransactionImpl> result = new ArrayList<>();
         readLock();
         try {
-            try (DbIterator<TransactionImpl> phasedTransactions = PhasingPoll.getFinishingTransactions(getHeight() + 1)) {
-                for (TransactionImpl phasedTransaction : phasedTransactions) {
-                    try {
-                        phasedTransaction.validate();
-                        if (!phasedTransaction.attachmentIsDuplicate(duplicates, false) && filter.ok(phasedTransaction)) {
-                            result.add(phasedTransaction);
-                        }
-                    } catch (NxtException.ValidationException ignore) {
-                    }
-                }
-            }
+//            try (DbIterator<TransactionImpl> phasedTransactions = PhasingPoll.getFinishingTransactions(getHeight() + 1)) {
+//                for (TransactionImpl phasedTransaction : phasedTransactions) {
+//                    try {
+//                        phasedTransaction.validate();
+//                        if (!phasedTransaction.attachmentIsDuplicate(duplicates, false) && filter.ok(phasedTransaction)) {
+//                            result.add(phasedTransaction);
+//                        }
+//                    } catch (NxtException.ValidationException ignore) {
+//                    }
+//                }
+//            }
             blockchainProcessor.selectUnconfirmedTransactions(duplicates, getLastBlock(), -1).forEach(
                     unconfirmedTransaction -> {
                         TransactionImpl transaction = unconfirmedTransaction.getTransaction();
-                        if (transaction.getPhasing() == null && filter.ok(transaction)) {
-                            result.add(transaction);
-                        }
+//                        if (transaction.getPhasing() == null && filter.ok(transaction)) {
+//                            result.add(transaction);
+//                        }
                     }
             );
         } finally {

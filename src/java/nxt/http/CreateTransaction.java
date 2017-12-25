@@ -23,6 +23,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.math.BigInteger;
 import java.util.Arrays;
 
 import static nxt.http.JSONResponses.*;
@@ -63,62 +65,62 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
 
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, Attachment attachment)
             throws NxtException {
-        return createTransaction(req, senderAccount, 0, 0, attachment);
+        return createTransaction(req, senderAccount, 0, BigInteger.ZERO, attachment);
     }
 
-    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, long recipientId, long amountNQT)
+    final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, long recipientId, BigInteger amountNQT)
             throws NxtException {
         return createTransaction(req, senderAccount, recipientId, amountNQT, Attachment.ORDINARY_PAYMENT);
     }
 
-    private Appendix.Phasing parsePhasing(HttpServletRequest req) throws ParameterException {
-        int finishHeight = ParameterParser.getInt(req, "phasingFinishHeight",
-                Nxt.getBlockchain().getHeight() + 1,
-                Nxt.getBlockchain().getHeight() + Constants.MAX_PHASING_DURATION + 1,
-                true);
-        
-        PhasingParams phasingParams = parsePhasingParams(req, "phasing");
-        
-        byte[][] linkedFullHashes = null;
-        String[] linkedFullHashesValues = req.getParameterValues("phasingLinkedFullHash");
-        if (linkedFullHashesValues != null && linkedFullHashesValues.length > 0) {
-            linkedFullHashes = new byte[linkedFullHashesValues.length][];
-            for (int i = 0; i < linkedFullHashes.length; i++) {
-                linkedFullHashes[i] = Convert.parseHexString(linkedFullHashesValues[i]);
-                if (Convert.emptyToNull(linkedFullHashes[i]) == null || linkedFullHashes[i].length != 32) {
-                    throw new ParameterException(INCORRECT_LINKED_FULL_HASH);
-                }
-            }
-        }
-
-        byte[] hashedSecret = Convert.parseHexString(Convert.emptyToNull(req.getParameter("phasingHashedSecret")));
-        byte algorithm = ParameterParser.getByte(req, "phasingHashedSecretAlgorithm", (byte) 0, Byte.MAX_VALUE, false);
-
-        return new Appendix.Phasing(finishHeight, phasingParams, linkedFullHashes, hashedSecret, algorithm);
-    }
-
-    final PhasingParams parsePhasingParams(HttpServletRequest req, String parameterPrefix) throws ParameterException {
-        byte votingModel = ParameterParser.getByte(req, parameterPrefix + "VotingModel", (byte)-1, (byte)5, true);
-        long quorum = ParameterParser.getLong(req, parameterPrefix + "Quorum", 0, Long.MAX_VALUE, false);
-        long minBalance = ParameterParser.getLong(req, parameterPrefix + "MinBalance", 0, Long.MAX_VALUE, false);
-        byte minBalanceModel = ParameterParser.getByte(req, parameterPrefix + "MinBalanceModel", (byte)0, (byte)3, false);
-        long holdingId = ParameterParser.getUnsignedLong(req, parameterPrefix + "Holding", false);
-        long[] whitelist = null;
-        String[] whitelistValues = req.getParameterValues(parameterPrefix + "Whitelisted");
-        if (whitelistValues != null && whitelistValues.length > 0) {
-            whitelist = new long[whitelistValues.length];
-            for (int i = 0; i < whitelistValues.length; i++) {
-                whitelist[i] = Convert.parseAccountId(whitelistValues[i]);
-                if (whitelist[i] == 0) {
-                    throw new ParameterException(INCORRECT_WHITELIST);
-                }
-            }
-        }
-        return new PhasingParams(votingModel, holdingId, quorum, minBalance, minBalanceModel, whitelist);
-    }
-
+//    private Appendix.Phasing parsePhasing(HttpServletRequest req) throws ParameterException {
+//        int finishHeight = ParameterParser.getInt(req, "phasingFinishHeight",
+//                Nxt.getBlockchain().getHeight() + 1,
+//                Nxt.getBlockchain().getHeight() + Constants.MAX_PHASING_DURATION + 1,
+//                true);
+//        
+//        PhasingParams phasingParams = parsePhasingParams(req, "phasing");
+//        
+//        byte[][] linkedFullHashes = null;
+//        String[] linkedFullHashesValues = req.getParameterValues("phasingLinkedFullHash");
+//        if (linkedFullHashesValues != null && linkedFullHashesValues.length > 0) {
+//            linkedFullHashes = new byte[linkedFullHashesValues.length][];
+//            for (int i = 0; i < linkedFullHashes.length; i++) {
+//                linkedFullHashes[i] = Convert.parseHexString(linkedFullHashesValues[i]);
+//                if (Convert.emptyToNull(linkedFullHashes[i]) == null || linkedFullHashes[i].length != 32) {
+//                    throw new ParameterException(INCORRECT_LINKED_FULL_HASH);
+//                }
+//            }
+//        }
+//
+//        byte[] hashedSecret = Convert.parseHexString(Convert.emptyToNull(req.getParameter("phasingHashedSecret")));
+//        byte algorithm = ParameterParser.getByte(req, "phasingHashedSecretAlgorithm", (byte) 0, Byte.MAX_VALUE, false);
+//
+//        return new Appendix.Phasing(finishHeight, phasingParams, linkedFullHashes, hashedSecret, algorithm);
+//    }
+//
+//    final PhasingParams parsePhasingParams(HttpServletRequest req, String parameterPrefix) throws ParameterException {
+//        byte votingModel = ParameterParser.getByte(req, parameterPrefix + "VotingModel", (byte)-1, (byte)5, true);
+//        long quorum = ParameterParser.getLong(req, parameterPrefix + "Quorum", 0, Long.MAX_VALUE, false);
+//        long minBalance = ParameterParser.getLong(req, parameterPrefix + "MinBalance", 0, Long.MAX_VALUE, false);
+//        byte minBalanceModel = ParameterParser.getByte(req, parameterPrefix + "MinBalanceModel", (byte)0, (byte)3, false);
+//        long holdingId = ParameterParser.getUnsignedLong(req, parameterPrefix + "Holding", false);
+//        long[] whitelist = null;
+//        String[] whitelistValues = req.getParameterValues(parameterPrefix + "Whitelisted");
+//        if (whitelistValues != null && whitelistValues.length > 0) {
+//            whitelist = new long[whitelistValues.length];
+//            for (int i = 0; i < whitelistValues.length; i++) {
+//                whitelist[i] = Convert.parseAccountId(whitelistValues[i]);
+//                if (whitelist[i] == 0) {
+//                    throw new ParameterException(INCORRECT_WHITELIST);
+//                }
+//            }
+//        }
+//        return new PhasingParams(votingModel, holdingId, quorum, minBalance, minBalanceModel, whitelist);
+//    }
+//
     final JSONStreamAware createTransaction(HttpServletRequest req, Account senderAccount, long recipientId,
-                                            long amountNQT, Attachment attachment) throws NxtException {
+                                            BigInteger amountNQT, Attachment attachment) throws NxtException {
         String deadlineValue = req.getParameter("deadline");
         String referencedTransactionFullHash = Convert.emptyToNull(req.getParameter("referencedTransactionFullHash"));
         String secretPhrase = ParameterParser.getSecretPhrase(req, false);
@@ -148,11 +150,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             publicKeyAnnouncement = new Appendix.PublicKeyAnnouncement(Convert.parseHexString(recipientPublicKey));
         }
 
-        Appendix.Phasing phasing = null;
-        boolean phased = "true".equalsIgnoreCase(req.getParameter("phased"));
-        if (phased) {
-            phasing = parsePhasing(req);
-        }
+//        Appendix.Phasing phasing = null;
+//        boolean phased = "true".equalsIgnoreCase(req.getParameter("phased"));
+//        if (phased) {
+//            phasing = parsePhasing(req);
+//        }
 
         if (secretPhrase == null && publicKeyValue == null) {
             return MISSING_SECRET_PHRASE;
@@ -170,7 +172,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             return INCORRECT_DEADLINE;
         }
 
-        long feeNQT = ParameterParser.getFeeNQT(req);
+        BigInteger feeNQT = ParameterParser.getFeeNQT(req);
         int ecBlockHeight = ParameterParser.getInt(req, "ecBlockHeight", 0, Integer.MAX_VALUE, false);
         long ecBlockId = Convert.parseUnsignedLong(req.getParameter("ecBlockId"));
         if (ecBlockId != 0 && ecBlockId != Nxt.getBlockchain().getBlockIdAtHeight(ecBlockHeight)) {
@@ -195,7 +197,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             builder.appendix(message);
             builder.appendix(publicKeyAnnouncement);
             builder.appendix(encryptToSelfMessage);
-            builder.appendix(phasing);
+//            builder.appendix(phasing);
             builder.appendix(prunablePlainMessage);
             builder.appendix(prunableEncryptedMessage);
             if (ecBlockId != 0) {
@@ -204,7 +206,8 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             }
             Transaction transaction = builder.build(secretPhrase);
             try {
-                if (Math.addExact(amountNQT, transaction.getFeeNQT()) > senderAccount.getUnconfirmedBalanceNQT()) {
+//                if (Math.addExact(amountNQT, transaction.getFeeNQT()) > senderAccount.getUnconfirmedBalanceNQT()) {
+            		if (amountNQT.add(transaction.getFeeNQT()).compareTo(senderAccount.getUnconfirmedBalanceNQT()) > 0) {
                     return NOT_ENOUGH_FUNDS;
                 }
             } catch (ArithmeticException e) {

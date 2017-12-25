@@ -66,67 +66,67 @@ public final class GetAccount extends APIServlet.APIRequestHandler {
                 response.put("nextLeasingHeightTo", accountLease.getNextLeasingHeightTo());
             }
         }
+//
+//        if (!account.getControls().isEmpty()) {
+//            JSONArray accountControlsJson = new JSONArray();
+//            account.getControls().forEach(accountControl -> accountControlsJson.add(accountControl.toString()));
+//            response.put("accountControls", accountControlsJson);
+//        }
+//
+//        if (includeLessors) {
+//            try (DbIterator<Account> lessors = account.getLessors()) {
+//                if (lessors.hasNext()) {
+//                    JSONArray lessorIds = new JSONArray();
+//                    JSONArray lessorIdsRS = new JSONArray();
+//                    JSONArray lessorInfo = new JSONArray();
+//                    while (lessors.hasNext()) {
+//                        Account lessor = lessors.next();
+//                        lessorIds.add(Long.toUnsignedString(lessor.getId()));
+//                        lessorIdsRS.add(Convert.rsAccount(lessor.getId()));
+//                        lessorInfo.add(JSONData.lessor(lessor, includeEffectiveBalance));
+//                    }
+//                    response.put("lessors", lessorIds);
+//                    response.put("lessorsRS", lessorIdsRS);
+//                    response.put("lessorsInfo", lessorInfo);
+//                }
+//            }
+//        }
 
-        if (!account.getControls().isEmpty()) {
-            JSONArray accountControlsJson = new JSONArray();
-            account.getControls().forEach(accountControl -> accountControlsJson.add(accountControl.toString()));
-            response.put("accountControls", accountControlsJson);
-        }
+//        if (includeAssets) {
+//            try (DbIterator<Account.AccountAsset> accountAssets = account.getAssets(0, -1)) {
+//                JSONArray assetBalances = new JSONArray();
+//                JSONArray unconfirmedAssetBalances = new JSONArray();
+//                while (accountAssets.hasNext()) {
+//                    Account.AccountAsset accountAsset = accountAssets.next();
+//                    JSONObject assetBalance = new JSONObject();
+//                    assetBalance.put("asset", Long.toUnsignedString(accountAsset.getAssetId()));
+//                    assetBalance.put("balanceQNT", String.valueOf(accountAsset.getQuantityQNT()));
+//                    assetBalances.add(assetBalance);
+//                    JSONObject unconfirmedAssetBalance = new JSONObject();
+//                    unconfirmedAssetBalance.put("asset", Long.toUnsignedString(accountAsset.getAssetId()));
+//                    unconfirmedAssetBalance.put("unconfirmedBalanceQNT", String.valueOf(accountAsset.getUnconfirmedQuantityQNT()));
+//                    unconfirmedAssetBalances.add(unconfirmedAssetBalance);
+//                }
+//                if (assetBalances.size() > 0) {
+//                    response.put("assetBalances", assetBalances);
+//                }
+//                if (unconfirmedAssetBalances.size() > 0) {
+//                    response.put("unconfirmedAssetBalances", unconfirmedAssetBalances);
+//                }
+//            }
+//        }
 
-        if (includeLessors) {
-            try (DbIterator<Account> lessors = account.getLessors()) {
-                if (lessors.hasNext()) {
-                    JSONArray lessorIds = new JSONArray();
-                    JSONArray lessorIdsRS = new JSONArray();
-                    JSONArray lessorInfo = new JSONArray();
-                    while (lessors.hasNext()) {
-                        Account lessor = lessors.next();
-                        lessorIds.add(Long.toUnsignedString(lessor.getId()));
-                        lessorIdsRS.add(Convert.rsAccount(lessor.getId()));
-                        lessorInfo.add(JSONData.lessor(lessor, includeEffectiveBalance));
-                    }
-                    response.put("lessors", lessorIds);
-                    response.put("lessorsRS", lessorIdsRS);
-                    response.put("lessorsInfo", lessorInfo);
-                }
-            }
-        }
-
-        if (includeAssets) {
-            try (DbIterator<Account.AccountAsset> accountAssets = account.getAssets(0, -1)) {
-                JSONArray assetBalances = new JSONArray();
-                JSONArray unconfirmedAssetBalances = new JSONArray();
-                while (accountAssets.hasNext()) {
-                    Account.AccountAsset accountAsset = accountAssets.next();
-                    JSONObject assetBalance = new JSONObject();
-                    assetBalance.put("asset", Long.toUnsignedString(accountAsset.getAssetId()));
-                    assetBalance.put("balanceQNT", String.valueOf(accountAsset.getQuantityQNT()));
-                    assetBalances.add(assetBalance);
-                    JSONObject unconfirmedAssetBalance = new JSONObject();
-                    unconfirmedAssetBalance.put("asset", Long.toUnsignedString(accountAsset.getAssetId()));
-                    unconfirmedAssetBalance.put("unconfirmedBalanceQNT", String.valueOf(accountAsset.getUnconfirmedQuantityQNT()));
-                    unconfirmedAssetBalances.add(unconfirmedAssetBalance);
-                }
-                if (assetBalances.size() > 0) {
-                    response.put("assetBalances", assetBalances);
-                }
-                if (unconfirmedAssetBalances.size() > 0) {
-                    response.put("unconfirmedAssetBalances", unconfirmedAssetBalances);
-                }
-            }
-        }
-
-        if (includeCurrencies) {
-            try (DbIterator<Account.AccountCurrency> accountCurrencies = account.getCurrencies(0, -1)) {
-                JSONArray currencyJSON = new JSONArray();
-                while (accountCurrencies.hasNext()) {
-                    currencyJSON.add(JSONData.accountCurrency(accountCurrencies.next(), false, true));
-                }
-                if (currencyJSON.size() > 0) {
-                    response.put("accountCurrencies", currencyJSON);
-                }
-            }
-        }
+//        if (includeCurrencies) {
+//            try (DbIterator<Account.AccountCurrency> accountCurrencies = account.getCurrencies(0, -1)) {
+//                JSONArray currencyJSON = new JSONArray();
+//                while (accountCurrencies.hasNext()) {
+//                    currencyJSON.add(JSONData.accountCurrency(accountCurrencies.next(), false, true));
+//                }
+//                if (currencyJSON.size() > 0) {
+//                    response.put("accountCurrencies", currencyJSON);
+//                }
+//            }
+//        }
 
         return response;
 

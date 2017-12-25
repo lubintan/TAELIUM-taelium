@@ -20,6 +20,7 @@ import nxt.http.APIEnum;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
+import java.math.BigInteger;
 import java.util.Set;
 
 public interface Peer extends Comparable<Peer> {
@@ -85,7 +86,7 @@ public interface Peer extends Comparable<Peer> {
 
     Hallmark getHallmark();
 
-    int getWeight();
+    BigInteger getWeight();
 
     boolean shareAddress();
 

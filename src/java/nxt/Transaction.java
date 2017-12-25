@@ -19,6 +19,7 @@ package nxt;
 import nxt.util.Filter;
 import org.json.simple.JSONObject;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface Transaction {
@@ -41,7 +42,7 @@ public interface Transaction {
 
         Builder appendix(Appendix.PrunableEncryptedMessage prunableEncryptedMessage);
 
-        Builder appendix(Appendix.Phasing phasing);
+//        Builder appendix(Appendix.Phasing phasing);
 
         Builder timestamp(int timestamp);
 
@@ -81,9 +82,9 @@ public interface Transaction {
 
     int getExpiration();
 
-    long getAmountNQT();
+    BigInteger getAmountNQT();
 
-    long getFeeNQT();
+    BigInteger getFeeNQT();
 
     String getReferencedTransactionFullHash();
 
@@ -117,7 +118,7 @@ public interface Transaction {
 
     Appendix.EncryptToSelfMessage getEncryptToSelfMessage();
 
-    Appendix.Phasing getPhasing();
+//    Appendix.Phasing getPhasing();
 
     Appendix.PrunablePlainMessage getPrunablePlainMessage();
 
