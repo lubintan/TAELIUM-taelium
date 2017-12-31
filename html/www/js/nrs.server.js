@@ -532,7 +532,8 @@ var NRS = (function (NRS, $, undefined) {
                 isSchedule = true;
             }
         }
-        var payload = transactionBytes.substr(0, 192) + signature + transactionBytes.substr(320);
+        var payload = transactionBytes.substr(0, 200) + signature + transactionBytes.substr(328);
+        //size of everything x 2! Eg. 96 -> 192, so if bytes before signatures size is now 100, change to 200.
         if (data.broadcast == "false" && !isSchedule) {
             response.transactionBytes = payload;
             response.transactionJSON.signature = signature;
@@ -555,23 +556,23 @@ var NRS = (function (NRS, $, undefined) {
         transaction.publicKey = converters.byteArrayToHexString(byteArray.slice(8, 40));
         transaction.recipient = String(converters.byteArrayToBigInteger(byteArray, 40));
         transaction.amountNQT = String(converters.byteArrayToBigInteger(byteArray, 48));
-        transaction.feeNQT = String(converters.byteArrayToBigInteger(byteArray, 56));
+        transaction.feeNQT = String(converters.byteArrayToBigInteger(byteArray, 58));
 
-        var refHash = byteArray.slice(64, 96);
+        var refHash = byteArray.slice(68, 100);
         transaction.referencedTransactionFullHash = converters.byteArrayToHexString(refHash);
         if (transaction.referencedTransactionFullHash == "0000000000000000000000000000000000000000000000000000000000000000") {
             transaction.referencedTransactionFullHash = "";
         }
         transaction.flags = 0;
         if (transaction.version > 0) {
-            transaction.flags = converters.byteArrayToSignedInt32(byteArray, 160);
-            transaction.ecBlockHeight = String(converters.byteArrayToSignedInt32(byteArray, 164));
-            transaction.ecBlockId = String(converters.byteArrayToBigInteger(byteArray, 168));
+            transaction.flags = converters.byteArrayToSignedInt32(byteArray, 164);
+            transaction.ecBlockHeight = String(converters.byteArrayToSignedInt32(byteArray, 168));
+            transaction.ecBlockId = String(converters.byteArrayToBigInteger(byteArray, 172));
             if (isVerifyECBlock) {
                 var ecBlock = NRS.constants.LAST_KNOWN_BLOCK;
                 if (ecBlock.id != "0") {
                     if (transaction.ecBlockHeight != ecBlock.height) {
-                        return false;
+                   		return false;
                     }
                     if (transaction.ecBlockId != ecBlock.id) {
                         return false;

@@ -140,13 +140,23 @@ public final class Crypto {
         byte[] signature = new byte[64];
         System.arraycopy(v, 0, signature, 0, 32);
         System.arraycopy(h, 0, signature, 32, 32);
+        
+        
+//        Logger.logDebugMessage("@@@@@ Signing Canon Check:" + canon(signature));
+        
         return signature;
     }
 
+    	public static boolean canon(byte[] signature) {
+    		return Curve25519.isCanonicalSignature(signature);
+    	}
+    
     public static boolean verify(byte[] signature, byte[] message, byte[] publicKey) {
-        try {
+
+    		try {
             if (signature.length != 64) {
-                return false;
+            	Logger.logDebugMessage("SIGNATURE LENGTH WRONG SIZE");
+            		return false;
             }
             if (!Curve25519.isCanonicalSignature(signature)) {
                 Logger.logDebugMessage("Rejecting non-canonical signature");

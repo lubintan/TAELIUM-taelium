@@ -33,21 +33,30 @@ public final class Constants {
     public static final int MIN_TRANSACTION_SIZE = 176;
     public static final int MAX_PAYLOAD_LENGTH = MAX_NUMBER_OF_TRANSACTIONS * MIN_TRANSACTION_SIZE;
     
-    public static final BigInteger ONE_TAEL = BigInteger.valueOf(100000).multiply(BigInteger.valueOf(100000)); // 10 zeroes.
-    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(840).multiply(BigInteger.valueOf(1000000));
-    public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS; // make this non-final
+    public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
+    public static final int DAILY_BLOCKS = 3; //blocks. Ie. one day's worth of blocks.
+    public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
+    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(21).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
+    public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
     public static BigInteger MAX_BALANCE_HAEDS = MAX_BALANCE_TAELS.multiply(ONE_TAEL); // make this non-final
     public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
+    public static final int MA_WINDOW = 10; //days. 
+    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(5000000).multiply(ONE_TAEL);
+    public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
+//  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
+    public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(new BigDecimal(ONE_TAEL)).toBigInteger(); // 2.5 TAELS
+    public static final double INITIAL_R_YEAR = 0.00; 
     public static final double INTEREST_DIVISOR = 365.0;
     public static final double R_MAX = 0.2;
     public static final double R_MIN = -0.1;
     public static final double R_DEFAULT = 0.05;
     public static final long H = 1000000; 
     public static final int PRECISION = 10; //dec places
+    public static final BigInteger MIN_FEE_TAELS = BigInteger.ONE;
+    public static final BigInteger MIN_FEE_HAEDS = taelsToHaeds(MIN_FEE_TAELS);
     
     public static final int EFF_BAL_HEIGHT = 1440;
-    public static final int BLOCK_TIME = 10; // should be 60. reducing it for testing purposes. 
-    public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME)).multiply(MAX_BALANCE_TAELS); //153722867;
+    public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME).multiply(MAX_BALANCE_TAELS)); //153722867;
     public static final BigInteger MAX_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));
     public static final BigInteger MIN_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9)).divide(BigInteger.valueOf(10));
     public static final int MIN_BLOCKTIME_LIMIT = BLOCK_TIME - 7;
@@ -57,13 +66,7 @@ public final class Constants {
     public static final int GUARANTEED_BALANCE_CONFIRMATIONS = isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", 1440) : 1440;
     public static final int LEASING_DELAY = isTestnet ? Nxt.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
     public static final BigInteger MIN_FORGING_BALANCE_HAEDS = BigInteger.ONE; //One Haed
-    public static final int DAILY_BLOCKS = 5; //blocks. Ie. one day's worth of blocks.
-    public static final int MA_WINDOW = 10; //days. 
-    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
-    public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
-//  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
-    public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(BigDecimal.valueOf(ONE_TAEL.longValue())).toBigInteger(); // 2.5 TAELS
-    public static final double INITIAL_R_YEAR = 0.00; 
+    
 
 
     public static final int MAX_TIMEDRIFT = 15; // allow up to 15 s clock difference

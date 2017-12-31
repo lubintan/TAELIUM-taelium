@@ -281,8 +281,12 @@ final class TransactionImpl implements Transaction {
         this.ecBlockId = builder.ecBlockId;
 
         List<Appendix.AbstractAppendix> list = new ArrayList<>();
+        
+//        Logger.logDebugMessage("size list: " + list.size());
+        
         if ((this.attachment = builder.attachment) != null) {
-            list.add(this.attachment);
+//            list.add(this.attachment);
+        	
         }
         if ((this.message  = builder.message) != null) {
             list.add(this.message);
@@ -306,6 +310,9 @@ final class TransactionImpl implements Transaction {
             list.add(this.prunableEncryptedMessage);
         }
         this.appendages = Collections.unmodifiableList(list);
+        
+//        Logger.logDebugMessage("size list: " + list.size());
+        
         int appendagesSize = 0;
         for (Appendix appendage : appendages) {
             if (secretPhrase != null && appendage instanceof Appendix.Encryptable) {
@@ -335,6 +342,8 @@ final class TransactionImpl implements Transaction {
             bytes = null;
         } else {
             signature = null;
+            
+
         }
 
     }
@@ -700,6 +709,13 @@ final class TransactionImpl implements Transaction {
       
         
 //        BigInteger bigA = new BigInteger(result);
+        //Swap Order
+        byte [] copy = new byte[10];
+        for (int i = 0; i<10; i++) {
+        		copy[i] = result[9-i];
+        }
+        result = copy;
+        
         return result;
      }
     		
@@ -726,13 +742,26 @@ final class TransactionImpl implements Transaction {
                     buffer.put(new byte[32]);
                 }
                 buffer.put(signature != null ? signature : new byte[64]);
+                
+//                Logger.logDebugMessage("SIGNATURE??: " + (signature != null));
+//                if (signature!=null) {Logger.logDebugMessage("SIGNATURE CANON: " + Crypto.canon(signature));}
+                
+                
                 buffer.putInt(getFlags());
                 buffer.putInt(ecBlockHeight);
                 buffer.putLong(ecBlockId);
+                
+                Logger.logDebugMessage("buffer before put size: " + buffer.array().length);
+                
                 for (Appendix appendage : appendages) {
+                	
+                		Logger.logDebugMessage("APPENDAGE: " + appendage.toString());
                     appendage.putBytes(buffer);
                 }
                 bytes = buffer.array();
+                
+                Logger.logDebugMessage(" --- Buffer Put SIZE: " + bytes.length);
+                
             } catch (RuntimeException e) {
                 if (signature != null) {
                     Logger.logDebugMessage("Failed to get transaction bytes for transaction: " + getJSONObject().toJSONString());
@@ -747,43 +776,52 @@ final class TransactionImpl implements Transaction {
     static TransactionImpl.BuilderImpl newTransactionBuilder(byte[] bytes) throws NxtException.NotValidException {
         try {
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
+            
+            Logger.logDebugMessage("--- Buffer get SIZE: " + buffer.limit());
+            
             buffer.order(ByteOrder.LITTLE_ENDIAN);
-            byte type = buffer.get();
-            byte subtype = buffer.get();
+            byte type = buffer.get();            
+            byte subtype = buffer.get();			
             byte version = (byte) ((subtype & 0xF0) >> 4);
             subtype = (byte) (subtype & 0x0F);
-            int timestamp = buffer.getInt();
-            short deadline = buffer.getShort();
+            int timestamp = buffer.getInt();	    
+            short deadline = buffer.getShort();	
             byte[] senderPublicKey = new byte[32];
-            buffer.get(senderPublicKey);
-            long recipientId = buffer.getLong();
+            buffer.get(senderPublicKey);	   
+            long recipientId = buffer.getLong();	
             
             byte[] amountNQTBytes = new byte[10];
             for (int i=0; i<10; i++) {
-            		amountNQTBytes[i] = buffer.get();
+            		amountNQTBytes[9-i] = buffer.get();	     
             }
             BigInteger amountNQT = new BigInteger(amountNQTBytes);
             
             byte[] feeNQTBytes = new byte[10];
             for (int i=0; i<10; i++) {
-            		feeNQTBytes[i] = buffer.get();
+            		feeNQTBytes[9-i] = buffer.get();	     
             }
             BigInteger feeNQT = new BigInteger(feeNQTBytes);
             
             byte[] referencedTransactionFullHash = new byte[32];
-            buffer.get(referencedTransactionFullHash);
+            buffer.get(referencedTransactionFullHash);	   
             referencedTransactionFullHash = Convert.emptyToNull(referencedTransactionFullHash);
             byte[] signature = new byte[64];
-            buffer.get(signature);
+            buffer.get(signature);	
             signature = Convert.emptyToNull(signature);
+           
             int flags = 0;
             int ecBlockHeight = 0;
             long ecBlockId = 0;
             if (version > 0) {
-                flags = buffer.getInt();
-                ecBlockHeight = buffer.getInt();
-                ecBlockId = buffer.getLong();
+                flags = buffer.getInt();	     
+                ecBlockHeight = buffer.getInt();	    
+                ecBlockId = buffer.getLong();	    
             }
+            
+            Logger.logDebugMessage(" $$$  AMOUNT: " + amountNQT.toString());
+            Logger.logDebugMessage("$$$   FEE: " + feeNQT.toString());
+            
+            
             TransactionType transactionType = TransactionType.findTransactionType(type, subtype);
             TransactionImpl.BuilderImpl builder = new BuilderImpl(version, senderPublicKey, amountNQT, feeNQT,
                     deadline, transactionType.parseAttachment(buffer))
@@ -795,6 +833,7 @@ final class TransactionImpl implements Transaction {
             if (transactionType.canHaveRecipient()) {
                 builder.recipientId(recipientId);
             }
+            
             int position = 1;
             if ((flags & position) != 0 || (version == 0 && transactionType == TransactionType.Messaging.ARBITRARY_MESSAGE)) {
                 builder.appendix(new Appendix.Message(buffer));
@@ -937,6 +976,8 @@ final class TransactionImpl implements Transaction {
             
             String referencedTransactionFullHash = (String) transactionData.get("referencedTransactionFullHash");
             byte[] signature = Convert.parseHexString((String) transactionData.get("signature"));
+            
+         
             Long versionValue = (Long) transactionData.get("version");
             byte version = versionValue == null ? 0 : versionValue.byteValue();
             JSONObject attachmentData = (JSONObject) transactionData.get("attachment");
@@ -1001,6 +1042,7 @@ final class TransactionImpl implements Transaction {
     }
 
     public boolean verifySignature() {
+//    		Logger.logDebugMessage("Check signature: " + checkSignature());
         return checkSignature() && Account.setOrVerify(getSenderId(), getSenderPublicKey());
     }
 
@@ -1010,13 +1052,17 @@ final class TransactionImpl implements Transaction {
         if (!hasValidSignature) {
             hasValidSignature = signature != null && Crypto.verify(signature, zeroSignature(getBytes()), getSenderPublicKey());
         }
+        
+//        Logger.logDebugMessage("Crypto verify: " + Crypto.verify(signature, zeroSignature(getBytes()), getSenderPublicKey()));
+//        Logger.logDebugMessage("SINGATURE from checkSignature(): " + signature);
+//        
         return hasValidSignature;
     }
 
     private int getSize() {
 //        return signatureOffset() + 64  + 4 + 4 + 8 + appendagesSize;
         // adding 2*2 bytes because extending the longs amountNQT and feeNQT (long 8 bytes), to 10 bytes each.
-        return signatureOffset() + 64  + 4 + 4 + 8 + appendagesSize + 2 + 2;
+        return signatureOffset() + 64  + 4 + 4 + 8 + appendagesSize;
     }
 
     @Override
@@ -1029,7 +1075,7 @@ final class TransactionImpl implements Transaction {
     }
 
     private int signatureOffset() {
-        return 1 + 1 + 4 + 2 + 32 + 8 + 8 + 8 + 32;
+        return 1 + 1 + 4 + 2 + 32 + 8 + 8 + 8 + 32 + 2 + 2;
     }
 
     private byte[] zeroSignature(byte[] data) {
@@ -1124,7 +1170,7 @@ final class TransactionImpl implements Transaction {
         int blockchainHeight = Nxt.getBlockchain().getHeight();
         if (!validatingAtFinish) {
             BigInteger minimumFeeNQT = getMinimumFeeNQT(blockchainHeight);
-            if (feeNQT.compareTo(minimumFeeNQT) < 0) {
+            if (feeNQT.compareTo(Constants.MIN_FEE_HAEDS) < 0) {
                 throw new NxtException.NotCurrentlyValidException(String.format("Transaction fee %s %s less than minimum fee %s %s at height %d",
                         Constants.haedsToTaels(feeNQT).toPlainString(), Constants.COIN_SYMBOL, Constants.haedsToTaels(minimumFeeNQT).toPlainString(), Constants.COIN_SYMBOL, blockchainHeight));
             }

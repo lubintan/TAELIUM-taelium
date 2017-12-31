@@ -66,17 +66,17 @@ class NxtDbVersion extends DbVersion {
             case 10:
                 apply("CREATE INDEX IF NOT EXISTS transaction_block_timestamp_idx ON transaction (block_timestamp DESC)");
             case 11:
-                apply("CREATE TABLE IF NOT EXISTS alias (db_id IDENTITY, id BIGINT NOT NULL, "
-                        + "account_id BIGINT NOT NULL, alias_name VARCHAR NOT NULL, "
-                        + "alias_name_lower VARCHAR AS LOWER (alias_name) NOT NULL, "
-                        + "alias_uri VARCHAR NOT NULL, timestamp INT NOT NULL, "
-                        + "height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE)");
+                apply("CREATE TABLE IF NOT EXISTS daily_data (db_id IDENTITY, block_id BIGINT NOT NULL, height BIGINT NOT NULL," 
+                			+"day BIGINT NOT NULL, average_holdings DECIMAL NOT NULL, "
+                        + "deltaT DECIMAL NOT NULL, ma_delta_avg_holdings DECIMAL NOT NULL, "
+                        + "x FLOAT NOT NULL, f_deltaT FLOAT NOT NULL, "
+                        + "rYear FLOAT NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
             case 12:
-                apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON alias (id, height DESC)");
+//                apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON day_data (id, height DESC)");
             case 13:
-                apply("CREATE INDEX IF NOT EXISTS alias_account_id_idx ON alias (account_id, height DESC)");
+//                apply("CREATE INDEX IF NOT EXISTS alias_account_id_idx ON alias (account_id, height DESC)");
             case 14:
-                apply("CREATE INDEX IF NOT EXISTS alias_name_lower_idx ON alias (alias_name_lower)");
+//                apply("CREATE INDEX IF NOT EXISTS alias_name_lower_idx ON alias (alias_name_lower)");
             case 15:
                 apply("CREATE TABLE IF NOT EXISTS alias_offer (db_id IDENTITY, id BIGINT NOT NULL, "
                         + "price BIGINT NOT NULL, buyer_id BIGINT, "
@@ -480,7 +480,7 @@ class NxtDbVersion extends DbVersion {
             case 167:
                 apply("CREATE INDEX IF NOT EXISTS account_currency_height_id_idx ON account_currency (height, account_id, currency_id)");
             case 168:
-                apply("CREATE INDEX IF NOT EXISTS alias_height_id_idx ON alias (height, id)");
+//                apply("CREATE INDEX IF NOT EXISTS alias_height_id_idx ON alias (height, id)");
             case 169:
                 apply("CREATE INDEX IF NOT EXISTS alias_offer_height_id_idx ON alias_offer (height, id)");
             case 170:

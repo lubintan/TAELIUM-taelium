@@ -23,32 +23,37 @@ import java.util.List;
  *
  */
 public class CalculateReward {
-	
+	private static BigInteger blockReward = Constants.INITIAL_REWARD;
 	private CalculateReward() {};
 	
-	public static BigInteger reward() {
+	public static void calculateReward(BigInteger todaysVolume) {
 		int currentHeight = Nxt.getBlockchain().getHeight();
 		
-		if (currentHeight < Constants.DAILY_BLOCKS) { return Constants.INITIAL_REWARD;}
-		
-		int yesterdaysLastBlock = currentHeight - (currentHeight % Constants.DAILY_BLOCKS);
-
-		BigInteger yesterdaysVolume = CalculateInterestAndG
-			.getTotalPastTxVolumeFromDb(yesterdaysLastBlock + 1 - Constants.DAILY_BLOCKS, yesterdaysLastBlock);
-			
-		BigDecimal x = new BigDecimal(yesterdaysVolume);
-		x = x.divide(BigDecimal.valueOf(Constants.H), Constants.PRECISION, RoundingMode.HALF_UP);
-		x = x.divide(BigDecimal.ONE.add(x.abs()), Constants.PRECISION, RoundingMode.HALF_UP);
-		
-		BigDecimal decimalSupplyCurrent = new BigDecimal( CalculateInterestAndG.supplyCurrent);
-		decimalSupplyCurrent = decimalSupplyCurrent.multiply(BigDecimal.valueOf(Constants.K));
-		
-//		return x.multiply(decimalSupplyCurrent).multiply(BigDecimal.valueOf(Constants.ONE_NXT)).longValue();
-		
-		//long to BigInt question mark 5 - need to convert to haeds? Supply current is already in heads.
-		
-		return x.multiply(decimalSupplyCurrent).toBigInteger();
+		if (currentHeight < Constants.DAILY_BLOCKS) { blockReward = Constants.INITIAL_REWARD;}
+		else {
 	
+			BigInteger yesterdaysVolume = CalculateInterestAndG
+				.getTotalPastTxVolumeFromDb(currentHeight + 2 - Constants.DAILY_BLOCKS  , currentHeight);
+			
+			yesterdaysVolume = yesterdaysVolume.add(todaysVolume);
+				
+			BigDecimal x = new BigDecimal(yesterdaysVolume);
+			x = x.divide(BigDecimal.valueOf(Constants.H), Constants.PRECISION, RoundingMode.HALF_UP);
+			x = x.divide(BigDecimal.ONE.add(x.abs()), Constants.PRECISION, RoundingMode.HALF_UP);
+			
+			BigDecimal decimalSupplyCurrent = new BigDecimal( CalculateInterestAndG.supplyCurrent);
+			decimalSupplyCurrent = decimalSupplyCurrent.multiply(BigDecimal.valueOf(Constants.K));
+			
+	//		return x.multiply(decimalSupplyCurrent).multiply(BigDecimal.valueOf(Constants.ONE_NXT)).longValue();
+			
+			//long to BigInt question mark 5 - need to convert to haeds? Supply current is already in heads.
+			
+			blockReward =  x.multiply(decimalSupplyCurrent).toBigInteger();
+		}
+	}
+	
+	public static BigInteger getBlockReward() {
+		return blockReward;
 	}
 	
 //    x = yesterdaysVolume/H

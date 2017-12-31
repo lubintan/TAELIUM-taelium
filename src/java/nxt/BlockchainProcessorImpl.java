@@ -1320,7 +1320,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 List<TransactionImpl> invalidPhasedTransactions = new ArrayList<>();
 //                validatePhasedTransactions(previousLastBlock.getHeight(), validPhasedTransactions, invalidPhasedTransactions, duplicates);
                 validateTransactions(block, previousLastBlock, curTime, duplicates, previousLastBlock.getHeight() >= Constants.LAST_CHECKSUM_BLOCK);
-                
+                block.setPrevious(previousLastBlock);
                 //validate/add sum of forging balances of each forger.  
                 block.calculateTotalForgingHoldings();
                 
@@ -1331,7 +1331,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                   CalculateInterestAndG.getVault(); //Do not call this again within same block!
                   CalculateInterestAndG.getSupplyCurrent(); //Do not call this again within same block!
                   CalculateInterestAndG.getLatestRYear(); ////Do not call this again within same block!
-                  block.setBlockReward(CalculateReward.reward());
+            
                   CalculateInterestAndG.updateSupplyCurrent(block.getBlockReward());
              
 //                  Logger.logDebugMessage("%%%%%%%%%	END REWARD 	%%%%%%%%");
@@ -1351,8 +1351,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                   		//perform these once per day.
                   		Logger.logDebugMessage("!!!!!!!  DAILY UPDATE  !!!!!!");
                   	
-                  		CalculateInterestAndG.dailyUpdate(block.getId(), block.getTotalAmountNQT(), block.getTotalForgingHoldings());
                   		
+                  		CalculateInterestAndG.dailyUpdate(block.getId(), block.getHeight(), block.getTotalAmountNQT(), block.getTotalForgingHoldings());
+                  		CalculateReward.calculateReward(block.getTotalAmountNQT());
                   		
                   		
 //                  		Logger.logDebugMessage("!!!!!!!  END DAILY UPDATE  !!!!!!");
@@ -1365,6 +1366,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 block.setInterestRateYearly(CalculateInterestAndG.rYear); 
             		block.setSupplyCurrent(CalculateInterestAndG.supplyCurrent);
             		block.setVault(CalculateInterestAndG.vault);
+            		block.setBlockReward(CalculateReward.getBlockReward());
             		
             		Logger.logDebugMessage("R YEAR: " + block.getLatestRYear());
           		Logger.logDebugMessage("supplyCurrent: " + block.getSupplyCurrent());
@@ -1372,7 +1374,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
               		
                 //***************** END BLOCK UPDATES *******************//  
                 
-                block.setPrevious(previousLastBlock);
+                
                 blockListeners.notify(block, Event.BEFORE_BLOCK_ACCEPT);
                 TransactionProcessorImpl.getInstance().requeueAllUnconfirmedTransactions();
                 
@@ -1457,10 +1459,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         if (block.getId() == 0L || BlockDb.hasBlock(block.getId(), previousLastBlock.getHeight())) {
             throw new BlockNotAcceptedException("Duplicate block or invalid id", block);
         }
-        Logger.logDebugMessage("");
-        Logger.logDebugMessage("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        Logger.logDebugMessage("should be false :" + String.valueOf(!Generator.allowsFakeForging(block.getGeneratorPublicKey())));
-        Logger.logDebugMessage("should be false :" + String.valueOf(!block.verifyGenerationSignature()));
+//        Logger.logDebugMessage("");
+//        Logger.logDebugMessage("!!!!!!!!!!!!!!!!!!!!!!!!!!");
+//        Logger.logDebugMessage("should be false :" + String.valueOf(!Generator.allowsFakeForging(block.getGeneratorPublicKey())));
+//        Logger.logDebugMessage("should be false :" + String.valueOf(!block.verifyGenerationSignature()));
        
         
         if (!block.verifyGenerationSignature() && !Generator.allowsFakeForging(block.getGeneratorPublicKey())) {
@@ -1536,7 +1538,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             payloadLength += transaction.getFullSize();
             digest.update(transaction.bytes());
         }
-        if (calculatedTotalAmount != block.getTotalAmountNQT() || calculatedTotalFee != block.getTotalFeeNQT()) {
+        if (calculatedTotalAmount.compareTo(block.getTotalAmountNQT())!=0 || calculatedTotalFee.compareTo(block.getTotalFeeNQT())!=0 ) {
             throw new BlockNotAcceptedException("Total amount or fee don't match transaction totals", block);
         }
         if (!Arrays.equals(digest.digest(), block.getPayloadHash())) {

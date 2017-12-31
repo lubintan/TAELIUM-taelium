@@ -116,6 +116,7 @@ public final class Generator implements Comparable<Generator> {
                         }
                         for (Generator generator : sortedForgers) {
                             if (generator.getHitTime() > generationLimit || generator.forge(lastBlock, generationLimit)) {
+//                            		Logger.logDebugMessage("Generator ID: " + Crypto.rsEncode(generator.accountId));
                                 return;
                             }
                         }
@@ -235,7 +236,7 @@ public final class Generator implements Comparable<Generator> {
         
         for (Generator eachForger : sortedForgers) {
         		Account account = Account.getAccount(eachForger.accountId);
-        		BigInteger balance = Constants.haedsToTaels(account.getBalanceNQT()).toBigInteger();
+//        		BigInteger balance = Constants.haedsToTaels(account.getBalanceNQT()).toBigInteger();
         		forgerBalanceMap.put(eachForger.accountId, account.getBalanceNQT() );
 //        		System.out.println();
 //        		System.out.println(Crypto.rsEncode(eachForger.accountId));
@@ -273,6 +274,16 @@ public final class Generator implements Comparable<Generator> {
         BigInteger effectiveBaseTarget = previousBlock.getBaseTarget().multiply(effectiveBalance);
         BigInteger prevTarget = effectiveBaseTarget.multiply(BigInteger.valueOf(elapsedTime - 1));
         BigInteger target = prevTarget.add(effectiveBaseTarget);
+//        
+//        Logger.logDebugMessage("--------------------------------");
+//        Logger.logDebugMessage("prev block base target: " + previousBlock.getBaseTarget().toString());
+//        Logger.logDebugMessage("effBaseTarget: " + effectiveBaseTarget.toString());
+//        Logger.logDebugMessage("prevTarget: " + prevTarget.toString());
+//        Logger.logDebugMessage("target: " + target.toString());
+//        Logger.logDebugMessage("hit: " + hit.toString());
+//        
+//        Logger.logDebugMessage("--------------------------------");
+        
         return hit.compareTo(target) < 0
                 && (hit.compareTo(prevTarget) >= 0  
                 || (Constants.isTestnet ? elapsedTime > 300 : elapsedTime > 3600)
@@ -504,6 +515,8 @@ public final class Generator implements Comparable<Generator> {
                 hitTime = Long.MAX_VALUE;
                 return;
             }
+            
+            Logger.logDebugMessage("effBalNXT: " + effectiveBalanceNXT.toString());
 //            BigInteger effectiveBalance = BigInteger.valueOf(effectiveBalanceNXT);
             BigInteger hit = Generator.getHit(publicKey, lastBlock);
             hitTime = Generator.getHitTime(effectiveBalanceNXT, hit, lastBlock);

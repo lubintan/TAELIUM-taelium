@@ -378,6 +378,12 @@ final class BlockImpl implements Block {
   
     
 //    BigInteger bigA = new BigInteger(result);
+  //Swap Order
+    byte [] copy = new byte[10];
+    for (int i = 0; i<10; i++) {
+    		copy[i] = result[9-i];
+    }
+    result = copy;
     return result;
  }
     
@@ -387,17 +393,17 @@ final class BlockImpl implements Block {
             ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2);
             // +2 +2 at the end for 10-byte BigInt. (instead of 8-byte long).
             buffer.order(ByteOrder.LITTLE_ENDIAN);
-            buffer.putInt(version);
-            buffer.putInt(timestamp);
-            buffer.putLong(previousBlockId);
-            buffer.putInt(getTransactions().size());
-            buffer.put(bigIntToByte(totalAmountNQT));
-            buffer.put(bigIntToByte(totalFeeNQT));
-            buffer.putInt(payloadLength);
-            buffer.put(payloadHash);
-            buffer.put(getGeneratorPublicKey());
-            buffer.put(generationSignature);
-            buffer.put(previousBlockHash);
+            buffer.putInt(version); //4
+            buffer.putInt(timestamp);//4
+            buffer.putLong(previousBlockId);//8
+            buffer.putInt(getTransactions().size());//4
+            buffer.put(bigIntToByte(totalAmountNQT));//10
+            buffer.put(bigIntToByte(totalFeeNQT));//10
+            buffer.putInt(payloadLength);//4
+            buffer.put(payloadHash);//32
+            buffer.put(getGeneratorPublicKey());//32
+            buffer.put(generationSignature);//32
+            buffer.put(previousBlockHash);//32
             if (blockSignature != null) {
                 buffer.put(blockSignature);
             }
@@ -452,7 +458,6 @@ final class BlockImpl implements Block {
 //            Logger.logDebugMessage("REACHED HERE!");
 //            
 //            Logger.logDebugMessage(String.valueOf(Generator.verifyHit(hit, BigInteger.valueOf(effectiveBalance), previousBlock, timestamp)));
-            
             return Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp);
 
         } catch (RuntimeException e) {
@@ -549,16 +554,19 @@ final class BlockImpl implements Block {
             								)
             						)
             				);
-            
             }
             if (baseTarget.compareTo(BigInteger.ZERO) < 0 || baseTarget.compareTo(Constants.MAX_BASE_TARGET) > 0) {
                 baseTarget = Constants.MAX_BASE_TARGET;
+//                Logger.logDebugMessage("***HIT BASE TARGET CEILING***");
+                
             }
             if (baseTarget.compareTo(Constants.MIN_BASE_TARGET) < 0) {
                 baseTarget = Constants.MIN_BASE_TARGET;
+//                Logger.logDebugMessage("***HIT BASE TARGET FLOOR***");
             }
         } else {
             baseTarget = prevBaseTarget;
+//            Logger.logDebugMessage("***BASE TARGET DOES NOT CHANGE***");
         }
         cumulativeDifficulty = previousBlock.cumulativeDifficulty.add(Convert.two64.divide(baseTarget)); 
         //two64 = 2**64.
