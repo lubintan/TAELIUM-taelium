@@ -30,26 +30,39 @@ import nxt.util.Logger;
 import nxt.util.ThreadPool;
 import nxt.util.Time;
 import nxt.DebugScanner;
+import nxt.NtpTime;
 import org.json.simple.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.math.BigInteger;
+import java.net.Socket;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.AccessControlException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
+import java.util.Date;
+
 
 public final class Nxt { //only public class in a Java file must also have the main method
 
@@ -321,6 +334,50 @@ public final class Nxt { //only public class in a Java file must also have the m
 
     public static void main(String[] args) {
         try {
+//        		Date date = NtpTime.getDate();
+//        		Date date2 = new Date(NtpTime.getDateMs() + 86400000);
+//        		Date date3 = new Date(NtpTime.getDateMs() + ((12/24) * 86400000));
+//        		
+//        		Logger.logDebugMessage(NtpTime.toString(date));
+//        		Logger.logDebugMessage(NtpTime.toString(date2));
+//        		Logger.logDebugMessage(NtpTime.toString(date3));
+//        		
+//        		Logger.logDebugMessage("compare: " + NtpTime.toDate(NtpTime.toString(date)).compareTo(NtpTime.toDate(NtpTime.toString(date3))));
+//        		System.exit(0);
+//        		date2 = NtpTime.getZeroTimeDate(date2);
+//        		date3 = NtpTime.getZeroTimeDate(date3);
+//        		
+//        		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+//        		
+//        		System.out.println(isoFormat.format(date));
+//        		System.out.println(isoFormat.format(date2));
+//        		System.out.println(isoFormat.format(date3));
+//        		System.out.println(date.compareTo(date2));
+//        		System.out.println(date.compareTo(date3));
+//        		System.out.println(date.compareTo(date));
+        		
+        	
+//        		ZonedDateTime date = Instant.ofEpochMilli(NtpTime.getDateMs())
+//    	            .atZone(ZoneId.of("Z")); // Z: UTC Time
+//        		ZonedDateTime date2 = Instant.ofEpochMilli(NtpTime.getDateMs() + 86400000)
+//        	            .atZone(ZoneId.of("Z")); // Z: UTC Time
+//        		ZonedDateTime date3 = Instant.ofEpochMilli(NtpTime.getDateMs() + (86400000/6))
+//        	            .atZone(ZoneId.of("Z")); // Z: UTC Time
+//        		
+//        		System.out.println(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hhmm")));
+//        		System.out.println(date2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hhmm")));
+//        		System.out.println(date3.format(DateTimeFormatter.ofPattern("dd/MM/yyyy hhmm")));
+//        		System.out.println(date.compareTo(date2));
+//        		System.out.println(date.compareTo(date3));
+//        		System.out.println(date.compareTo(date));
+        		
+        		
+//            System.out.println( machine + " says it is " + timestamp );
+//            System.exit(0);
+             // System.out.println(instant1);
+        	
+        	
             // Lambda: parameter -> expression body. 
         		// Eg. public class Java8Tester {
 
@@ -440,8 +497,12 @@ public final class Nxt { //only public class in a Java file must also have the m
                 Generator.init();
                 AddOns.init();
                 API.init();
+                CalculateInterestAndG.init();
                 DebugTrace.init();
                 DebugScanner.init();
+                DebugDayTimer.init();
+                NtpTime.init();
+                
                 
                 int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Nxt.getIntProperty("nxt.timeMultiplier"), 1) : 1;
                 ThreadPool.start(timeMultiplier);

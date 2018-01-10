@@ -29,12 +29,11 @@ class NxtDbVersion extends DbVersion {
                         + "total_fee DECIMAL NOT NULL, payload_length INT NOT NULL, "
                         + "previous_block_hash BINARY(32), cumulative_difficulty DECIMAL NOT NULL, base_target DECIMAL NOT NULL, "
                         + "next_block_id BIGINT, "
-                        + "height INT NOT NULL, generation_signature BINARY(64) NOT NULL, "
+                        + "height INT NOT NULL, date CHAR NOT NULL, generation_signature BINARY(64) NOT NULL, "
                         + "block_signature BINARY(64) NOT NULL, payload_hash BINARY(32) NOT NULL, generator_id BIGINT NOT NULL,"
                         + "total_forging_holdings DECIMAL NOT NULL,"
                         + "latest_annual_interest_rate FLOAT NOT NULL,"
                         + "supply_current DECIMAL NOT NULL,"
-                        + "vault DECIMAL NOT NULL,"
                         + "block_reward DECIMAL NOT NULL)");
             case 2:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS block_id_idx ON block (id)");
@@ -67,10 +66,10 @@ class NxtDbVersion extends DbVersion {
                 apply("CREATE INDEX IF NOT EXISTS transaction_block_timestamp_idx ON transaction (block_timestamp DESC)");
             case 11:
                 apply("CREATE TABLE IF NOT EXISTS daily_data (db_id IDENTITY, block_id BIGINT NOT NULL, height BIGINT NOT NULL," 
-                			+"day BIGINT NOT NULL, average_holdings DECIMAL NOT NULL, "
+                			+"day BIGINT NOT NULL, date CHAR NOT NULL, total_txed DECIMAL NOT NULL, average_holdings DECIMAL NOT NULL, "
                         + "deltaT DECIMAL NOT NULL, ma_delta_avg_holdings DECIMAL NOT NULL, "
                         + "x FLOAT NOT NULL, f_deltaT FLOAT NOT NULL, "
-                        + "rYear FLOAT NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
+                        + "rYear FLOAT NOT NULL, supply_current_after_payout DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
             case 12:
 //                apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON day_data (id, height DESC)");
             case 13:

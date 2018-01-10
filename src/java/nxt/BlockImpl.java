@@ -24,6 +24,7 @@ import nxt.GetAllForgersBalances;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,6 +32,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 final class BlockImpl implements Block {
@@ -59,30 +61,35 @@ final class BlockImpl implements Block {
     private BigInteger totalForgingHoldings = BigInteger.ZERO;
     private double latestRYear = 0;
     private BigInteger supplyCurrent = BigInteger.ZERO;
-    private BigInteger vault = BigInteger.ZERO;
     private BigInteger blockReward = BigInteger.ZERO;
+    private Date date = NtpTime.getCurrentDate();
     
     
 
     //this is used for genesis block only!
     BlockImpl(byte[] generatorPublicKey, byte[] generationSignature) { 
         this(-1, 0, 0, BigInteger.ZERO, BigInteger.ZERO, 0, new byte[32], generatorPublicKey, generationSignature, new byte[64],
-                new byte[32], Collections.emptyList());
+                new byte[32], Collections.emptyList(), new Date(Genesis.EPOCH_BEGINNING), BigInteger.ZERO, 
+                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, Constants.INITIAL_REWARD);
         this.height = 0;
     }
     
     // used in generateblock.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength, byte[] payloadHash,
-              byte[] generatorPublicKey, byte[] generationSignature, byte[] previousBlockHash, List<TransactionImpl> transactions, String secretPhrase) {
+              byte[] generatorPublicKey, byte[] generationSignature, byte[] previousBlockHash, List<TransactionImpl> transactions, 
+              String secretPhrase, Date date, BigInteger totalForgingHoldings) {
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
-                generatorPublicKey, generationSignature, null, previousBlockHash, transactions);
+                generatorPublicKey, generationSignature, null, previousBlockHash, transactions, date, totalForgingHoldings,
+                0, BigInteger.ZERO, BigInteger.ZERO);
         blockSignature = Crypto.sign(bytes(), secretPhrase);
         bytes = null;
     }
     
     //used in the other BlockImpls and in parseBlock/ All in this file.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength, byte[] payloadHash,
-              byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature, byte[] previousBlockHash, List<TransactionImpl> transactions) {
+              byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature, 
+              byte[] previousBlockHash, List<TransactionImpl> transactions, Date date, BigInteger totalForgingHoldings,
+              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward) {
         this.version = version;
         this.timestamp = timestamp;
         this.previousBlockId = previousBlockId;
@@ -97,16 +104,22 @@ final class BlockImpl implements Block {
         if (transactions != null) {
             this.blockTransactions = Collections.unmodifiableList(transactions);
         }
+        this.date = date;
+        this.totalForgingHoldings = totalForgingHoldings;
+        this.latestRYear = latestRYear;
+        this.supplyCurrent = supplyCurrent;
+        this.blockReward = blockReward;
     }
     // used in loadBlock.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength,
               byte[] payloadHash, long generatorId, byte[] generationSignature, byte[] blockSignature,
               byte[] previousBlockHash, BigInteger cumulativeDifficulty, BigInteger baseTarget, long nextBlockId, int height, long id,
               List<TransactionImpl> blockTransactions, BigInteger totalForgingHoldings, 
-              double latestRYear, BigInteger supplyCurrent, BigInteger vault, BigInteger blockReward) {
+              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward, Date date) {
     	
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
-                null, generationSignature, blockSignature, previousBlockHash, null);
+                null, generationSignature, blockSignature, previousBlockHash, null, date, totalForgingHoldings,
+                latestRYear, supplyCurrent, blockReward);
         this.cumulativeDifficulty = cumulativeDifficulty;
         this.baseTarget = baseTarget;
         this.nextBlockId = nextBlockId;
@@ -114,11 +127,10 @@ final class BlockImpl implements Block {
         this.id = id;
         this.generatorId = generatorId;
         this.blockTransactions = blockTransactions;
-        this.totalForgingHoldings = totalForgingHoldings;
-        this.latestRYear = latestRYear;
-        this.supplyCurrent = supplyCurrent;
-        this.vault = vault;
-        this.blockReward = blockReward;
+//        this.latestRYear = latestRYear;
+//        this.supplyCurrent = supplyCurrent;
+//        this.vault = vault;
+//        this.blockReward = blockReward;
     }
 
     @Override
@@ -216,16 +228,18 @@ final class BlockImpl implements Block {
         return supplyCurrent;
     }
     
-    @Override
-	public BigInteger getVault() {
-    		return vault;
-    }
+
     
     @Override
     public BigInteger getBlockReward() {
         return blockReward;
     }
 
+    @Override
+	public Date getDate() {
+    		return date;
+    }
+    
     @Override
     public long getNextBlockId() {
         return nextBlockId;
@@ -303,6 +317,25 @@ final class BlockImpl implements Block {
         JSONArray transactionsData = new JSONArray();
         getTransactions().forEach(transaction -> transactionsData.add(transaction.getJSONObject()));
         json.put("transactions", transactionsData);
+        json.put("date", NtpTime.toString(date));
+        json.put("totalForgingHoldings", totalForgingHoldings.toString());
+        json.put("latestRYear", BigDecimal.valueOf(latestRYear).toString());
+        json.put("supplyCurrent", supplyCurrent.toString());
+        json.put("blockReward", blockReward.toString());
+       
+        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+        Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
+        Logger.logDebugMessage("Timestamp: " + timestamp);
+        Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+        Logger.logDebugMessage("Date2: " + date.toString());
+        Logger.logDebugMessage("Date3: " + date.getTime());
+        Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+        Logger.logDebugMessage("Latest R Year: " + latestRYear);
+        Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
+        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+        
+        
+        
         return json;
     }
 
@@ -323,8 +356,27 @@ final class BlockImpl implements Block {
             for (Object transactionData : (JSONArray) blockData.get("transactions")) {
                 blockTransactions.add(TransactionImpl.parseTransaction((JSONObject) transactionData));
             }
+            Date date = NtpTime.toDate((String)blockData.get("date"));
+            BigInteger totalForgingHoldings = new BigInteger((String)blockData.get("totalForgingHoldings"));
+            BigInteger blockReward = new BigInteger((String)blockData.get("blockReward"));
+            BigInteger supplyCurrent = new BigInteger((String)blockData.get("supplyCurrent"));
+            BigDecimal latestRYearDec = new BigDecimal((String)blockData.get("latestRYear"));
+            double latestRYear = latestRYearDec.doubleValue();
+            
+            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+            Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
+            Logger.logDebugMessage("Timestamp: " + timestamp);
+            Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+            Logger.logDebugMessage("Date2: " + date.toString());
+            Logger.logDebugMessage("Date3: " + date.getTime());
+            Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
+            Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+            Logger.logDebugMessage("Latest R Year: " + latestRYear);
+            Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
+            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             BlockImpl block = new BlockImpl(version, timestamp, previousBlock, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash, generatorPublicKey,
-                    generationSignature, blockSignature, previousBlockHash, blockTransactions);
+                    generationSignature, blockSignature, previousBlockHash, blockTransactions, date, totalForgingHoldings,
+                    latestRYear, supplyCurrent, blockReward);
             if (!block.checkSignature()) {
                 throw new NxtException.NotValidException("Invalid block signature");
             }
@@ -438,7 +490,7 @@ final class BlockImpl implements Block {
             Account account = Account.getAccount(getGeneratorId());
             BigInteger effectiveBalance = account == null ? BigInteger.ZERO : account.getEffectiveBalanceNXT();
             
-            Logger.logDebugMessage("balance: " + effectiveBalance);
+//            Logger.logDebugMessage("balance: " + effectiveBalance);
             
             if (effectiveBalance.compareTo(BigInteger.ZERO) <= 0) {
                 return false;
@@ -585,13 +637,13 @@ final class BlockImpl implements Block {
     		supplyCurrent = supplyCurrentValue;
     }
     
-    void setVault (BigInteger vaultValue) {
-    		vault = vaultValue;
-    }
-    
+
     void setBlockReward(BigInteger reward) {
 		blockReward = reward;
 }
+    void setDate(Date retrievedDate) {
+    		date = retrievedDate;
+    }
 
 
 }

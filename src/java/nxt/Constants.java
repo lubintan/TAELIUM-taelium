@@ -33,8 +33,10 @@ public final class Constants {
     public static final int MIN_TRANSACTION_SIZE = 176;
     public static final int MAX_PAYLOAD_LENGTH = MAX_NUMBER_OF_TRANSACTIONS * MIN_TRANSACTION_SIZE;
     
-    public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
-    public static final int DAILY_BLOCKS = 3; //blocks. Ie. one day's worth of blocks.
+    public static final String dateFormat = "dd-MMM-yyyy";
+    
+    public static final int BLOCK_TIME = 40; // should be 60. reducing it for testing purposes. 
+    public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(21).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
     public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
@@ -45,13 +47,13 @@ public final class Constants {
     public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
 //  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
     public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(new BigDecimal(ONE_TAEL)).toBigInteger(); // 2.5 TAELS
-    public static final double INITIAL_R_YEAR = 0.00; 
+    public static final double INITIAL_R_YEAR = 0.05; 
     public static final double INTEREST_DIVISOR = 365.0;
     public static final double R_MAX = 0.2;
     public static final double R_MIN = -0.1;
-    public static final double R_DEFAULT = 0.05;
+//    public static final double R_DEFAULT = 0.05;
     public static final long H = 1000000; 
-    public static final int PRECISION = 10; //dec places
+    public static final int PRECISION = 8; //dec places
     public static final BigInteger MIN_FEE_TAELS = BigInteger.ONE;
     public static final BigInteger MIN_FEE_HAEDS = taelsToHaeds(MIN_FEE_TAELS);
     

@@ -45,9 +45,12 @@ public final class Genesis {
             CREATOR_PUBLIC_KEY = Convert.parseHexString((String)genesisParameters.get("genesisPublicKey"));
             CREATOR_ID = Account.getId(CREATOR_PUBLIC_KEY);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+//            EPOCH_BEGINNING = NtpTime.getDateMs();
             EPOCH_BEGINNING = dateFormat.parse((String) genesisParameters.get("epochBeginning")).getTime();
         } catch (IOException|ParseException|java.text.ParseException e) {
-            throw new RuntimeException("Failed to load genesis parameters", e);
+//        } catch (IOException|ParseException e) {
+
+        		throw new RuntimeException("Failed to load genesis parameters", e);
         }
     }
 

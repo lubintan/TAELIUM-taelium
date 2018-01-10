@@ -26,6 +26,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -244,7 +246,6 @@ final class BlockDb {
 //            BigInteger blockReward = new BigInteger(rs.getString("block_reward"));
 //            BigInteger baseTarget = new BigInteger(rs.getString("base_target"));
             BigInteger supplyCurrent = rs.getBigDecimal("supply_current").toBigInteger();
-            BigInteger vault = rs.getBigDecimal("vault").toBigInteger();
             BigInteger blockReward = rs.getBigDecimal("block_reward").toBigInteger();
             BigInteger baseTarget = rs.getBigDecimal("base_target").toBigInteger();
             long nextBlockId = rs.getLong("next_block_id");
@@ -252,6 +253,8 @@ final class BlockDb {
                 throw new IllegalStateException("Attempting to load invalid block");
             }
             int height = rs.getInt("height");
+            String dateString = rs.getString("date");
+            Date date = NtpTime.toDate(dateString);
             byte[] generationSignature = rs.getBytes("generation_signature");
             byte[] blockSignature = rs.getBytes("block_signature");
             byte[] payloadHash = rs.getBytes("payload_hash");
@@ -260,18 +263,19 @@ final class BlockDb {
                     generatorId, generationSignature, blockSignature, previousBlockHash,
                     cumulativeDifficulty, baseTarget, nextBlockId, height, id, 
                     loadTransactions ? TransactionDb.findBlockTransactions(con, id) : null, totalForgingHoldings,
-                    		latestRYear, supplyCurrent, vault, blockReward);
+                    		latestRYear, supplyCurrent, blockReward, date);
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
-        }
+        } 
+		
     }
 
     static void saveBlock(Connection con, BlockImpl block) {
         try {
             try (PreparedStatement pstmt = con.prepareStatement("INSERT INTO block (id, version, timestamp, previous_block_id, "
                     + "total_amount, total_fee, payload_length, previous_block_hash, next_block_id, cumulative_difficulty, "
-                    + "base_target, height, generation_signature, block_signature, payload_hash, generator_id, total_forging_holdings,"
-                    + "latest_annual_interest_rate, supply_current, vault, block_reward) "
+                    + "base_target, height, date, generation_signature, block_signature, payload_hash, generator_id, total_forging_holdings,"
+                    + "latest_annual_interest_rate, supply_current, block_reward) "
                     + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                 int i = 0;
                 pstmt.setLong(++i, block.getId());
@@ -292,6 +296,7 @@ final class BlockDb {
                 pstmt.setBigDecimal(++i, new BigDecimal(block.getBaseTarget()));
                 
                 pstmt.setInt(++i, block.getHeight());
+                pstmt.setString(++i, NtpTime.toString(block.getDate()));
                 pstmt.setBytes(++i, block.getGenerationSignature());
                 pstmt.setBytes(++i, block.getBlockSignature());
                 pstmt.setBytes(++i, block.getPayloadHash());
@@ -304,7 +309,6 @@ final class BlockDb {
 //                pstmt.setString(++i,  block.getVault().toString());
 //                pstmt.setString(++i, block.getBlockReward().toString());
                 pstmt.setBigDecimal(++i, new BigDecimal(block.getSupplyCurrent()));
-                pstmt.setBigDecimal(++i, new BigDecimal(block.getVault()));
                 pstmt.setBigDecimal(++i, new BigDecimal(block.getBlockReward()));
 
                 

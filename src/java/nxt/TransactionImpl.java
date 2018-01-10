@@ -751,7 +751,7 @@ final class TransactionImpl implements Transaction {
                 buffer.putInt(ecBlockHeight);
                 buffer.putLong(ecBlockId);
                 
-                Logger.logDebugMessage("buffer before put size: " + buffer.array().length);
+//                Logger.logDebugMessage("buffer before put size: " + buffer.array().length);
                 
                 for (Appendix appendage : appendages) {
                 	
@@ -760,7 +760,7 @@ final class TransactionImpl implements Transaction {
                 }
                 bytes = buffer.array();
                 
-                Logger.logDebugMessage(" --- Buffer Put SIZE: " + bytes.length);
+//                Logger.logDebugMessage(" --- Buffer Put SIZE: " + bytes.length);
                 
             } catch (RuntimeException e) {
                 if (signature != null) {
@@ -777,7 +777,7 @@ final class TransactionImpl implements Transaction {
         try {
             ByteBuffer buffer = ByteBuffer.wrap(bytes);
             
-            Logger.logDebugMessage("--- Buffer get SIZE: " + buffer.limit());
+//            Logger.logDebugMessage("--- Buffer get SIZE: " + buffer.limit());
             
             buffer.order(ByteOrder.LITTLE_ENDIAN);
             byte type = buffer.get();            
@@ -1190,7 +1190,7 @@ final class TransactionImpl implements Transaction {
     }
 
     // returns false iff double spending
-    boolean applyUnconfirmed() {
+    boolean applyUnconfirmed() { //addToUnconfirmedBalanceNQT here
         Account senderAccount = Account.getAccount(getSenderId());
         return senderAccount != null && type.applyUnconfirmed(this, senderAccount);
     }

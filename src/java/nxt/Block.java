@@ -19,6 +19,7 @@ package nxt;
 import org.json.simple.JSONObject;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 public interface Block {
@@ -66,14 +67,16 @@ public interface Block {
     double getLatestRYear();
     
     BigInteger getSupplyCurrent();
-    
-    BigInteger getVault();
-    
+        
     BigInteger getBlockReward();
 
     byte[] getBytes();
 
     JSONObject getJSONObject();
+
+	Date getDate();
+
+//	Date getDate();
 
 	
 

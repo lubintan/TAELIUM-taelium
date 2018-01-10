@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 /**
  * @author Lubin
@@ -26,17 +27,13 @@ public class CalculateReward {
 	private static BigInteger blockReward = Constants.INITIAL_REWARD;
 	private CalculateReward() {};
 	
-	public static void calculateReward(BigInteger todaysVolume) {
-		int currentHeight = Nxt.getBlockchain().getHeight();
-		
-		if (currentHeight < Constants.DAILY_BLOCKS) { blockReward = Constants.INITIAL_REWARD;}
+	public static void calculateReward(Date date) {		
+		if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
 		else {
 	
 			BigInteger yesterdaysVolume = CalculateInterestAndG
-				.getTotalPastTxVolumeFromDb(currentHeight + 2 - Constants.DAILY_BLOCKS  , currentHeight);
-			
-			yesterdaysVolume = yesterdaysVolume.add(todaysVolume);
-				
+				.getTotalPastTxVolumeFromDb(date);
+							
 			BigDecimal x = new BigDecimal(yesterdaysVolume);
 			x = x.divide(BigDecimal.valueOf(Constants.H), Constants.PRECISION, RoundingMode.HALF_UP);
 			x = x.divide(BigDecimal.ONE.add(x.abs()), Constants.PRECISION, RoundingMode.HALF_UP);
