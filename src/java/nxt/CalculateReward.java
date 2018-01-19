@@ -25,6 +25,7 @@ import java.util.List;
  */
 public class CalculateReward {
 	private static BigInteger blockReward = Constants.INITIAL_REWARD;
+	private static int blockRewardCalculated = 1;
 	private CalculateReward() {};
 	
 	public static void calculateReward(Date date) {		
@@ -32,7 +33,7 @@ public class CalculateReward {
 		else {
 	
 			BigInteger yesterdaysVolume = CalculateInterestAndG
-				.getTotalPastTxVolumeFromDb(date);
+				.getTotalPastTxVolumeFromDb(date, blockRewardCalculated);
 							
 			BigDecimal x = new BigDecimal(yesterdaysVolume);
 			x = x.divide(BigDecimal.valueOf(Constants.H), Constants.PRECISION, RoundingMode.HALF_UP);

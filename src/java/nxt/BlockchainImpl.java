@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 final class BlockchainImpl implements Blockchain {
-
+	private static Boolean tempHeightSetting = false;
     private static final BlockchainImpl instance = new BlockchainImpl();
 
     static BlockchainImpl getInstance() {
@@ -82,7 +82,14 @@ final class BlockchainImpl implements Blockchain {
     @Override
     public int getHeight() {
         BlockImpl last = lastBlock.get();
-        return last == null ? 0 : last.getHeight();
+        int current = last == null ? 0 : last.getHeight();
+        
+        return tempHeightSetting? (current + 1): current;
+    }
+    
+    @Override
+    public void setTempHeight(Boolean useTempHeight) {
+    		tempHeightSetting = useTempHeight;
     }
 
     @Override

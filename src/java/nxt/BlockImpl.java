@@ -63,6 +63,7 @@ final class BlockImpl implements Block {
     private BigInteger supplyCurrent = BigInteger.ZERO;
     private BigInteger blockReward = BigInteger.ZERO;
     private Date date = NtpTime.getCurrentDate();
+    private Boolean firstBlockOfDay = false;
     
     
 
@@ -70,7 +71,7 @@ final class BlockImpl implements Block {
     BlockImpl(byte[] generatorPublicKey, byte[] generationSignature) { 
         this(-1, 0, 0, BigInteger.ZERO, BigInteger.ZERO, 0, new byte[32], generatorPublicKey, generationSignature, new byte[64],
                 new byte[32], Collections.emptyList(), new Date(Genesis.EPOCH_BEGINNING), BigInteger.ZERO, 
-                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, Constants.INITIAL_REWARD);
+                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, Constants.INITIAL_REWARD, true);
         this.height = 0;
     }
     
@@ -80,7 +81,7 @@ final class BlockImpl implements Block {
               String secretPhrase, Date date, BigInteger totalForgingHoldings) {
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                 generatorPublicKey, generationSignature, null, previousBlockHash, transactions, date, totalForgingHoldings,
-                0, BigInteger.ZERO, BigInteger.ZERO);
+                0, BigInteger.ZERO, BigInteger.ZERO, false);
         blockSignature = Crypto.sign(bytes(), secretPhrase);
         bytes = null;
     }
@@ -89,7 +90,7 @@ final class BlockImpl implements Block {
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength, byte[] payloadHash,
               byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature, 
               byte[] previousBlockHash, List<TransactionImpl> transactions, Date date, BigInteger totalForgingHoldings,
-              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward) {
+              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward, Boolean firstBlockOfDay) {
         this.version = version;
         this.timestamp = timestamp;
         this.previousBlockId = previousBlockId;
@@ -109,17 +110,18 @@ final class BlockImpl implements Block {
         this.latestRYear = latestRYear;
         this.supplyCurrent = supplyCurrent;
         this.blockReward = blockReward;
+        this.firstBlockOfDay = firstBlockOfDay;
     }
     // used in loadBlock.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength,
               byte[] payloadHash, long generatorId, byte[] generationSignature, byte[] blockSignature,
               byte[] previousBlockHash, BigInteger cumulativeDifficulty, BigInteger baseTarget, long nextBlockId, int height, long id,
               List<TransactionImpl> blockTransactions, BigInteger totalForgingHoldings, 
-              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward, Date date) {
+              double latestRYear, BigInteger supplyCurrent, BigInteger blockReward, Date date, Boolean firstBlockOfDay) {
     	
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                 null, generationSignature, blockSignature, previousBlockHash, null, date, totalForgingHoldings,
-                latestRYear, supplyCurrent, blockReward);
+                latestRYear, supplyCurrent, blockReward, firstBlockOfDay);
         this.cumulativeDifficulty = cumulativeDifficulty;
         this.baseTarget = baseTarget;
         this.nextBlockId = nextBlockId;
@@ -234,7 +236,13 @@ final class BlockImpl implements Block {
     public BigInteger getBlockReward() {
         return blockReward;
     }
-
+    
+    @Override
+	public boolean getFirstBlockOfDay() {
+		// TODO Auto-generated method stub
+		return firstBlockOfDay;
+	}
+    
     @Override
 	public Date getDate() {
     		return date;
@@ -322,6 +330,7 @@ final class BlockImpl implements Block {
         json.put("latestRYear", BigDecimal.valueOf(latestRYear).toString());
         json.put("supplyCurrent", supplyCurrent.toString());
         json.put("blockReward", blockReward.toString());
+        json.put("firstBlockOfDay", firstBlockOfDay.toString());
        
         Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
         Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
@@ -331,6 +340,7 @@ final class BlockImpl implements Block {
         Logger.logDebugMessage("Date3: " + date.getTime());
         Logger.logDebugMessage("Supply Current: " + supplyCurrent);
         Logger.logDebugMessage("Latest R Year: " + latestRYear);
+        Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
         Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
         Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
         
@@ -362,6 +372,7 @@ final class BlockImpl implements Block {
             BigInteger supplyCurrent = new BigInteger((String)blockData.get("supplyCurrent"));
             BigDecimal latestRYearDec = new BigDecimal((String)blockData.get("latestRYear"));
             double latestRYear = latestRYearDec.doubleValue();
+            Boolean firstBlockOfDay = Boolean.valueOf(((String)blockData.get("firstBlockOfDay")));
             
             Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
@@ -372,11 +383,12 @@ final class BlockImpl implements Block {
             Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
             Logger.logDebugMessage("Supply Current: " + supplyCurrent);
             Logger.logDebugMessage("Latest R Year: " + latestRYear);
+            Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
             Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
             Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             BlockImpl block = new BlockImpl(version, timestamp, previousBlock, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash, generatorPublicKey,
                     generationSignature, blockSignature, previousBlockHash, blockTransactions, date, totalForgingHoldings,
-                    latestRYear, supplyCurrent, blockReward);
+                    latestRYear, supplyCurrent, blockReward, firstBlockOfDay);
             if (!block.checkSignature()) {
                 throw new NxtException.NotValidException("Invalid block signature");
             }
@@ -644,6 +656,12 @@ final class BlockImpl implements Block {
     void setDate(Date retrievedDate) {
     		date = retrievedDate;
     }
+    
+    void setFirstBlockOfDay() {
+    		firstBlockOfDay = true;
+    }
+
+
 
 
 }

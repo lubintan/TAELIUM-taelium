@@ -76,6 +76,8 @@ public interface Block {
 
 	Date getDate();
 
+	boolean getFirstBlockOfDay();
+
 //	Date getDate();
 
 	

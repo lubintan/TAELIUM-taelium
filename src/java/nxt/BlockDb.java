@@ -259,11 +259,12 @@ final class BlockDb {
             byte[] blockSignature = rs.getBytes("block_signature");
             byte[] payloadHash = rs.getBytes("payload_hash");
             long id = rs.getLong("id");
+            boolean firstBlockOfDay = rs.getBoolean("first_block_of_day");
             return new BlockImpl(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                     generatorId, generationSignature, blockSignature, previousBlockHash,
                     cumulativeDifficulty, baseTarget, nextBlockId, height, id, 
                     loadTransactions ? TransactionDb.findBlockTransactions(con, id) : null, totalForgingHoldings,
-                    		latestRYear, supplyCurrent, blockReward, date);
+                    		latestRYear, supplyCurrent, blockReward, date, firstBlockOfDay);
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
         } 
@@ -275,8 +276,8 @@ final class BlockDb {
             try (PreparedStatement pstmt = con.prepareStatement("INSERT INTO block (id, version, timestamp, previous_block_id, "
                     + "total_amount, total_fee, payload_length, previous_block_hash, next_block_id, cumulative_difficulty, "
                     + "base_target, height, date, generation_signature, block_signature, payload_hash, generator_id, total_forging_holdings,"
-                    + "latest_annual_interest_rate, supply_current, block_reward) "
-                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    + "latest_annual_interest_rate, supply_current, block_reward, first_block_of_day) "
+                    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)")) {
                 int i = 0;
                 pstmt.setLong(++i, block.getId());
                 pstmt.setInt(++i, block.getVersion());
@@ -310,7 +311,7 @@ final class BlockDb {
 //                pstmt.setString(++i, block.getBlockReward().toString());
                 pstmt.setBigDecimal(++i, new BigDecimal(block.getSupplyCurrent()));
                 pstmt.setBigDecimal(++i, new BigDecimal(block.getBlockReward()));
-
+                pstmt.setBoolean(++i, block.getFirstBlockOfDay());
                 
                 pstmt.executeUpdate();
                 TransactionDb.saveTransactions(con, block.getTransactions());

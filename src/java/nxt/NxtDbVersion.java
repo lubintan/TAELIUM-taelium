@@ -34,7 +34,8 @@ class NxtDbVersion extends DbVersion {
                         + "total_forging_holdings DECIMAL NOT NULL,"
                         + "latest_annual_interest_rate FLOAT NOT NULL,"
                         + "supply_current DECIMAL NOT NULL,"
-                        + "block_reward DECIMAL NOT NULL)");
+                        + "block_reward DECIMAL NOT NULL,"
+                        + "first_block_of_day BOOLEAN NOT NULL DEFAULT FALSE)");
             case 2:
                 apply("CREATE UNIQUE INDEX IF NOT EXISTS block_id_idx ON block (id)");
             case 3:
@@ -69,7 +70,7 @@ class NxtDbVersion extends DbVersion {
                 			+"day BIGINT NOT NULL, date CHAR NOT NULL, total_txed DECIMAL NOT NULL, average_holdings DECIMAL NOT NULL, "
                         + "deltaT DECIMAL NOT NULL, ma_delta_avg_holdings DECIMAL NOT NULL, "
                         + "x FLOAT NOT NULL, f_deltaT FLOAT NOT NULL, "
-                        + "rYear FLOAT NOT NULL, supply_current_after_payout DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
+                        + "rYear FLOAT NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
             case 12:
 //                apply("CREATE UNIQUE INDEX IF NOT EXISTS alias_id_height_idx ON day_data (id, height DESC)");
             case 13:

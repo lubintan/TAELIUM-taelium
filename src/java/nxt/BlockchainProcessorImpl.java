@@ -1297,6 +1297,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     }
 
     private void pushBlock(final BlockImpl block) throws BlockNotAcceptedException {
+    		pushBlock(block, false);
+    }
+    
+    private void pushBlock(final BlockImpl block, boolean givenInterest) throws BlockNotAcceptedException {
     		// adds the block to the db.
         int curTime = Nxt.getEpochTime();
 
@@ -1319,6 +1323,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     Generator.setDelay(-Constants.FORGING_SPEEDUP);
                     throw new BlockOutOfOrderException(msg, block);
                 }
+                
+                if (!givenInterest) {
+                		popOffTo(previousLastBlock);	
+                }
 
 
                 Map<TransactionType, Map<String, Integer>> duplicates = new HashMap<>();
@@ -1330,13 +1338,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 
               //******************************************************//
                 //****************		REWARD		*******************//
-                  Logger.logDebugMessage("Height: " + Nxt.getBlockchain().getHeight() + "    "+ Nxt.getBlockchain().getLastBlock().getHeight());
+//                  Logger.logDebugMessage("Height: " + Nxt.getBlockchain().getHeight() + "    "+ Nxt.getBlockchain().getLastBlock().getHeight());
 //                  Logger.logDebugMessage("%%%%%%%%%	REWARD 	%%%%%%%%");
 
             
              
 //                  Logger.logDebugMessage("%%%%%%%%%	END REWARD 	%%%%%%%%");
-                  Logger.logDebugMessage("");
+//                  Logger.logDebugMessage("");
                 //******************************************************//
                 //**************** END REWARD	*******************//
                 
@@ -1349,43 +1357,45 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                   // compute g and vault.
                   // update supplyCurrent, r and vault.
 //                  if (((Nxt.getBlockchain().getHeight() + 1) % Constants.DAILY_BLOCKS) == 0) {
-                  if ((Nxt.getBlockchain().getHeight()!=0) && !CalculateInterestAndG.checkIfDateInDailyData(block.getDate()) &&
-                		  block.getDate().after(previousLastBlock.getDate())) {
+                  Boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight() > -1) && !CalculateInterestAndG.checkIfDateInDailyData(block.getDate()) &&
+                		  block.getDate().after(previousLastBlock.getDate());
+                  
+                  Logger.logDebugMessage("");
+                  Logger.logDebugMessage("");
+                  Logger.logDebugMessage("Height: " + block.getHeight());
+                  Logger.logDebugMessage("block is later date than previous: " + block.getDate().after(previousLastBlock.getDate()));
+                  Logger.logDebugMessage("isfirstblock: " + isFirstBlockOfNewDay);
+                  Logger.logDebugMessage("");
+                  Logger.logDebugMessage("");
+                  if (isFirstBlockOfNewDay) {
                   		//perform these once per day.
-                  		Logger.logDebugMessage("!!!!!!!!!!!!!  DAILY UPDATE  !!!!!!!!!!!!");
-                  		int height = Nxt.getBlockchain().getHeight();
+                  		Logger.logDebugMessage("!!!!!!!!!!!!!  DAILY Calculations  !!!!!!!!!!!!");
+                  		int height = block.getHeight();
               			Logger.logDebugMessage("height: " + height); //note this is previous height
               			Logger.logDebugMessage("block date: " + block.getDate().toString());
               			Logger.logDebugMessage("prev block date: " + 
               					previousLastBlock.getDate().toString());
                   		
-                  		CalculateInterestAndG.dailyUpdate(block.getId(), Nxt.getBlockchain().getHeight(), block.getDate());
-                  		//supplyCurrent and rYear updated above.
-                  		
-                  		CalculateReward.calculateReward(block.getDate());
-                  		
-                  		// need to set these again after the daily update.
-                  		block.setInterestRateYearly(CalculateInterestAndG.rYear); 
-                  		block.setBlockReward(CalculateReward.getBlockReward());
-		        	    		block.setSupplyCurrent(CalculateInterestAndG.supplyCurrent.add(block.getBlockReward()));
                   		
                   		Logger.logDebugMessage("!!!!!!!  END DAILY UPDATE  !!!!!!");
                   		Logger.logDebugMessage("");
+                  } else if (previousLastBlock.getFirstBlockOfDay() && previousLastBlock.getDate().equals(block.getDate())) {
+                	  		
+                	  		if (!givenInterest) {
+                	  			Logger.logDebugMessage("push block give interest");
+                	  			Nxt.getBlockchain().setTempHeight(true);
+                	  			CalculateInterestAndG.giveInterest(block.getDate());
+                	  			Nxt.getBlockchain().setTempHeight(false);
+                	  			}
+                	  		CalculateInterestAndG.calculateGUpdateVault(block.getDate());
+                	  		Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
+//    		        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
                   }
                   
                   //******************************************************//
                   //**************** END DAILY UPDATES	*******************//  
                   
-                Logger.logDebugMessage("****** BLOCK SUMMARY *******");
-                Logger.logDebugMessage("id: " + block.getId());
-                Logger.logDebugMessage("height: " + Nxt.getBlockchain().getHeight());
-                Logger.logDebugMessage("date: " + NtpTime.toString(block.getDate()));
-                Logger.logDebugMessage("total forging: " + block.getTotalForgingHoldings().toString());
-                Logger.logDebugMessage("supply current: " + block.getSupplyCurrent().toString());
-                Logger.logDebugMessage("r year: " + block.getLatestRYear());
-                Logger.logDebugMessage("reward: " + block.getBlockReward().toString());
-                Logger.logDebugMessage("****** END BLOCK SUMMARY *******");
-                Logger.logDebugMessage("");
+            
 
             		
             		
@@ -1404,16 +1414,46 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 blockListeners.notify(block, Event.BEFORE_BLOCK_ACCEPT);
                 TransactionProcessorImpl.getInstance().requeueAllUnconfirmedTransactions();
                 
+                
+                
                 addBlock(block); //block saved to db here.
+                
+//                Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
+                
                 accept(block, validPhasedTransactions, invalidPhasedTransactions, duplicates); //apply called here. block reward added to generator here.
+                
+//                Logger.logDebugMessage("supply current 5: " + CalculateInterestAndG.getSupplyCurrent().toString());
+                
+                if (previousLastBlock.getFirstBlockOfDay() && !isFirstBlockOfNewDay && previousLastBlock.getDate().equals(block.getDate())) {
+                	
+                		Logger.logDebugMessage("|||||   SAVING DAILY DATA   |||||");
+                		Logger.logDebugMessage("Height: " + block.getHeight());
+        	  			CalculateInterestAndG.saveDailyData(block.getId(), block.getHeight(), block.getDate());
+                	}
+                
                 //generator stuff found in accept -> apply.
 //                Logger.logDebugMessage("=====  PUSH BLOCK SECTION =====");
 //                Logger.logDebugMessage("reward: " + block.getBlockReward());
 //                Logger.logDebugMessage("supplyCurrent: " + block.getSupplyCurrent());
-                
+//                CalculateInterestAndG.saveDailyData(block.getId(), block.getHeight(), block.getDate());
                 
                 BlockDb.commit(block);
                 Db.db.commitTransaction();
+                
+                Logger.logDebugMessage("****** BLOCK SUMMARY *******");
+                Logger.logDebugMessage("id: " + block.getId());
+                Logger.logDebugMessage("height: " + block.getHeight());
+                Logger.logDebugMessage("date: " + NtpTime.toString(block.getDate()));
+                Logger.logDebugMessage("total forging: " + block.getTotalForgingHoldings().toString());
+                Logger.logDebugMessage("supply current from block: " + block.getSupplyCurrent().toString());
+                Logger.logDebugMessage("supply current from accounts: " + CalculateInterestAndG.getSupplyCurrent().toString());
+                Logger.logDebugMessage("r year: " + block.getLatestRYear());
+                Logger.logDebugMessage("reward: " + block.getBlockReward().toString());
+                Logger.logDebugMessage("FirstBlockOfDay? " + block.getFirstBlockOfDay());
+                Logger.logDebugMessage("****** END BLOCK SUMMARY *******");
+                Logger.logDebugMessage("");
+                
+                
             } catch (Exception e) {
                 Db.db.rollbackTransaction();
                 popOffTo(previousLastBlock);
@@ -1462,7 +1502,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     private void validate(BlockImpl block, BlockImpl previousLastBlock, int curTime) throws BlockNotAcceptedException {
         if (block.getDate().before(previousLastBlock.getDate())) {
         		String errorMsg = "Previous block date " + previousLastBlock.getDate().toString() +
-        				"is later than current block date " + block.getDate().toString();
+        				" is later than current block date " + block.getDate().toString();
         		throw new BlockOutOfOrderException(errorMsg, block);
         }
     	
@@ -1682,9 +1722,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	                  BigInteger unconfirmedBalance = rs.getBigDecimal("UNCONFIRMED_BALANCE").toBigInteger();
 	                  int height = rs.getInt("HEIGHT");
 	                  boolean latest = rs.getBoolean("LATEST");
-	                  Logger.logDebugMessage(Crypto.rsEncode(ID) + s + balance.toString() + s + unconfirmedBalance.toString()
-            		  						+ s + height + s + latest);  
-	                   
+	                  if (latest==true) { 
+	                	  	Logger.logDebugMessage(Crypto.rsEncode(ID) + s + balance.toString() + s + unconfirmedBalance.toString()
+            		  			+ s + height + s + latest);  
+	                  }
 	            }
             }
 	        catch (SQLException e) {
@@ -1710,7 +1751,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	            try(ResultSet rs = pstmt.executeQuery()){
 	            	while (rs.next()) {
 	                  long ID = rs.getLong("BLOCK_ID");
-	                  BigInteger sc = rs.getBigDecimal("SUPPLY_CURRENT_AFTER_PAYOUT").toBigInteger();
+	                  BigInteger sc = rs.getBigDecimal("SUPPLY_CURRENT").toBigInteger();
 	                  BigInteger vault = rs.getBigDecimal("VAULT").toBigInteger();
 	                  int height = rs.getInt("HEIGHT");
 //	                  boolean latest = rs.getBoolean("LATEST");
@@ -1772,21 +1813,22 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 for (DerivedDbTable table : derivedTables) {
 //                		Logger.logDebugMessage("Table Name: " + table.toString());
                 		if (table.toString() == "daily_data") {
-//                			printAccountTable(" before ");
                 			printDDTable("BEFORE"); 
+                		}
+                		
+                		if (table.toString() == "account") {
+                			printAccountTable(" before ");
                 		}
                 		
                 		
                 		table.rollback(commonBlock.getHeight());
                 		
                 		if (table.toString() == "daily_data") {
-//                			printAccountTable(" after ");
                 			printDDTable("AFTER");
                 		}
                 		
                 		if (table.toString() == "account") {
                 			printAccountTable(" after ");
-//                			printDDTable("AFTER");
                 		}
                 		
                 		
@@ -1934,14 +1976,70 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 //        }
 
         BlockImpl previousBlock = blockchain.getLastBlock();
-        boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight()!=0) && 
+        
+        Boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight() > -1) && 
         		(!CalculateInterestAndG.checkIfDateInDailyData(today)) &&
 	      		  today.after(previousBlock.getDate());
         
-        //if it's time to do daily computation, reject all pending transactions.
-        if (isFirstBlockOfNewDay) {
-        		TransactionProcessorImpl.getInstance().clearUnconfirmedTransactions();
+        
+//        Boolean givenInterest = false;
+        if (previousBlock.getFirstBlockOfDay() && !isFirstBlockOfNewDay && previousBlock.getDate().equals(today)) {
+        		Logger.logDebugMessage("Current NXT BlockChain Height: " + Nxt.getBlockchain().getHeight());
+        		Nxt.getBlockchain().setTempHeight(true);
+        		Logger.logDebugMessage("Current NXT BlockChain TEMP Height: " + Nxt.getBlockchain().getHeight());
+        		
+        	
+        		blockchain.writeLock();
+            Db.db.beginTransaction();
+            Logger.logDebugMessage("Generator give interest");
+        		CalculateInterestAndG.giveInterest(today);
+        		Db.db.commitTransaction();
+        		Db.db.endTransaction();
+        
+        		
+        		
+        		blockchain.writeUnlock();  
+        		Nxt.getBlockchain().setTempHeight(false);
+//        		givenInterest = true;
         }
+        
+        //remove transactions that will bring balance below zero after giving out interest.
+        Iterator<UnconfirmedTransaction> unconfirmedTxIterator = 
+        		TransactionProcessorImpl.getInstance().getAllUnconfirmedTransactions().iterator();
+        
+//        UnconfirmedTransaction[] waitingTxes = TransactionProcessorImpl.getInstance().getAllWaitingTransactions();
+//        for (UnconfirmedTransaction unconfirmedTx: waitingTxes) {
+        while(unconfirmedTxIterator.hasNext()) {
+        		UnconfirmedTransaction unconfirmedTx = unconfirmedTxIterator.next();
+        		TransactionImpl transaction = unconfirmedTx.getTransaction();
+        		
+        		long accountId = transaction.getSenderId();
+            Account sender = Account.getAccount(accountId);
+            BigInteger totalTxAmount = transaction.getAmountNQT().add(transaction.getFeeNQT());
+            if (sender.getBalanceNQT().subtract(totalTxAmount).compareTo(BigInteger.ZERO) < 0){
+            		Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than balance! Rejecting Tx: " + transaction.getId());
+            		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
+            		Logger.logDebugMessage("Balance: " + sender.getBalanceNQT().toString());
+            		Logger.logDebugMessage("Sending amount + tx fee: " + totalTxAmount.toString());
+            		
+            		TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
+            		
+            } else if (sender.getUnconfirmedBalanceNQT().subtract(totalTxAmount).compareTo(BigInteger.ZERO) < 0) {
+                	Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than unconfirmed balance! Rejecting Tx: " + transaction.getId());
+            		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
+            		Logger.logDebugMessage("Unconfirmed Balance: " + sender.getUnconfirmedBalanceNQT().toString());
+            		Logger.logDebugMessage("Sending amount + tx fee: " + totalTxAmount.toString());
+            		
+            		TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
+            
+            }
+        } // end for loop
+        
+        
+        
+        
+        
+        
         TransactionProcessorImpl.getInstance().processWaitingTransactions();
         SortedSet<UnconfirmedTransaction> sortedTransactions = selectUnconfirmedTransactions(duplicates, previousBlock, blockTimestamp);
         List<TransactionImpl> blockTransactions = new ArrayList<>();
@@ -1981,10 +2079,27 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             
             if (!isFirstBlockOfNewDay) {
 	            block.setBlockReward(CalculateReward.getBlockReward());
-	    			block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
-	            block.setInterestRateYearly(CalculateInterestAndG.getLatestRYear()); 
+	            block.setInterestRateYearly(CalculateInterestAndG.getLatestRYear());
+	            
+	            if (!previousBlock.getFirstBlockOfDay()) {
+//	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+	            } else if (previousBlock.getDate().equals(block.getDate())) {
+//	            		CalculateInterestAndG.giveInterest(block.getDate());
+//	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+	            }
+            } else {
+            		block.setFirstBlockOfDay();
+            		CalculateInterestAndG.calculateRYear(block.getDate());
+            		CalculateReward.calculateReward(block.getDate());
+            		block.setInterestRateYearly(CalculateInterestAndG.rYear); 
+          		block.setBlockReward(CalculateReward.getBlockReward());
+//        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+	        	    		
+            		
             }
-            pushBlock(block);
+
+            block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+            pushBlock(block, true);
             blockListeners.notify(block, Event.BLOCK_GENERATED);
 //            Logger.logDebugMessage("Account " + Long.toUnsignedString(block.getGeneratorId()) + " generated block " + block.getStringId()
 //                    + " at height " + block.getHeight() + " timestamp " + block.getTimestamp() + " fee " + ((float)block.getTotalFeeNQT())/Constants.ONE_NXT);

@@ -43,7 +43,7 @@ public final class Constants {
     public static BigInteger MAX_BALANCE_HAEDS = MAX_BALANCE_TAELS.multiply(ONE_TAEL); // make this non-final
     public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
     public static final int MA_WINDOW = 10; //days. 
-    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(5000000).multiply(ONE_TAEL);
+    public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(0).multiply(ONE_TAEL);
     public static final double K = 0.125/(365.0*(double)DAILY_BLOCKS);
 //  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
     public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(new BigDecimal(ONE_TAEL)).toBigInteger(); // 2.5 TAELS

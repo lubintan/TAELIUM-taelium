@@ -94,4 +94,6 @@ public interface Blockchain {
 
     DbIterator<? extends Transaction> getReferencingTransactions(long transactionId, int from, int to);
 
+	void setTempHeight(Boolean useTempHeight);
+
 }

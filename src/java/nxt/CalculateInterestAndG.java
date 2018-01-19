@@ -43,11 +43,16 @@ public class CalculateInterestAndG {
 	static BigInteger averageHoldings = BigInteger.ZERO;
 	static BigInteger deltaT = BigInteger.ZERO;
 	static BigInteger maDeltaAvgHoldings = BigInteger.ZERO;
-	static BigInteger totalTxed = BigInteger.ZERO;
+//	static BigInteger totalTxed = BigInteger.ZERO;
 	static double x = 0;
 	static double f_deltaT = 0;
 	static double rYear = Constants.INITIAL_R_YEAR;
 	static long dayCounter = 1; //starts from 1, 0 means null.
+	
+	private static int blockGCalculated = 2;
+	private static int blockDdSaved = 2;
+	private static int blockAvgHoldingsSaved = 2;
+	private static int blockAvgHoldingsCalculated = 1;
 	
 	
 	static void updateDayCounter() {
@@ -79,13 +84,13 @@ public class CalculateInterestAndG {
  		
  		Logger.logDebugMessage("Calculating MA of Delta of holdings......");
  		
- 		int currentHeight = Nxt.getBlockchain().getHeight();
+// 		int currentHeight = Nxt.getBlockchain().getHeight();
 		List<BigInteger> deltaTList = new ArrayList<>();;
 
 		updateDayCounter();
 		
 		if (dayCounter == 1) {
-			averageHoldings = getTotalPastHoldingsFromDb(date);
+			averageHoldings = getTotalPastHoldingsFromDb(date, blockAvgHoldingsCalculated);
 			deltaT = averageHoldings;
 			deltaTList.add(deltaT);
 		}else {
@@ -142,7 +147,7 @@ public class CalculateInterestAndG {
 	
 	private static BigInteger calculateTodaysDeltaOfHoldings(Date date) {
 		
-		averageHoldings = getTotalPastHoldingsFromDb(date);
+		averageHoldings = getTotalPastHoldingsFromDb(date, blockAvgHoldingsCalculated);
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
@@ -154,13 +159,13 @@ public class CalculateInterestAndG {
 		return averageHoldings.subtract(yesterdaysAverageHoldings);
 	}
 	
-	private static BigInteger getTotalPastHoldingsFromDb(Date date) {
+	private static BigInteger getTotalPastHoldingsFromDb(Date date, int offset) {
 		//avg holdings from the day before input date.
 		BigInteger totalForgingHoldings = BigInteger.ZERO;
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
-		int nextHeight = Nxt.getBlockchain().getHeight();
+		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
 		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 		int numBlocks = 0;
 		
@@ -222,14 +227,14 @@ public class CalculateInterestAndG {
 	                    if (balance.compareTo(BigInteger.ZERO) > 0) {
 	                    	totalSupplyCurrent = totalSupplyCurrent.add(balance);
 	                    	
-	                    	Logger.logDebugMessage(Crypto.rsEncode(accountId) + " " + balance.equals(thisAcct.getBalanceNQT()));
-	                    	Logger.logDebugMessage("");
+//	                    	Logger.logDebugMessage(Crypto.rsEncode(accountId) + " " + balance.equals(thisAcct.getBalanceNQT()));
+//	                    	Logger.logDebugMessage("");
 	                    	
 	                    }
 	                    
                     }
 	            	
-	            			Logger.logDebugMessage("supplyCurrent From Account Table:" + supplyCurrent);
+	            			Logger.logDebugMessage("supplyCurrent From Account Table:" + totalSupplyCurrent);
 	                }
 	            }
 	            
@@ -289,19 +294,23 @@ public class CalculateInterestAndG {
 		return rYear;
 	}
 	
-	private static BigInteger giveInterest(double rYear, long id) {
+	public static BigInteger giveInterest(Date date) {
 		//To be called only when 1440th block is to be generated!
-		
-		BlockchainProcessorImpl.getInstance().printAccountTable("interesting giving");
+		rYear = getLatestRYear();
+//		BlockchainProcessorImpl.getInstance().printAccountTable("interesting giving");
 		
 		Logger.logDebugMessage("");
 		Logger.logDebugMessage("**************** *************** *****************");
 		Logger.logDebugMessage("**************** GIVING INTEREST *****************");
+		Logger.logDebugMessage("**************** DATE: " + NtpTime.toString(date) + "**************");
 		int height = Nxt.getBlockchain().getHeight();
 		Logger.logDebugMessage("HEIGHT" + height);
 		BigInteger totalPayout = BigInteger.ZERO;
 		rDay = rYear / Constants.INTEREST_DIVISOR;
 			
+		
+		BlockchainProcessorImpl.getInstance().printAccountTable("  before----------");
+		
 //		select ID,BALANCE from account where latest=true	
 		
 		
@@ -310,7 +319,7 @@ public class CalculateInterestAndG {
 		             PreparedStatement pstmt = con.prepareStatement("select * from account where latest=true	")) {
 		            try(ResultSet rs = pstmt.executeQuery()){
 		            
-		            	Logger.logDebugMessage("rYear: " + rYear + "rDay: " + rDay);
+		            	Logger.logDebugMessage("rYear: " + rYear + "    rDay: " + rDay);
 		            	Logger.logDebugMessage("");
 		            	
 		            	while (rs.next()) {
@@ -332,14 +341,14 @@ public class CalculateInterestAndG {
 		                    //if interest > 0 do nothing, if interest < 0 pay -1 haed.
 		                    
 		                    if (thisAcct.getBalanceNQT().compareTo(BigInteger.ZERO) > 0) {
-			                    	Logger.logDebugMessage(Crypto.rsEncode(accountId));
-			                    	Logger.logDebugMessage("DBBALANCE == GETBAL: " + dbBalance.equals(thisAcct.getBalanceNQT()));
-//			                    	Logger.logDebugMessage("dbBalance: " +dbBalance);
-	                    			Logger.logDebugMessage("Before balance: " + thisAcct.getBalanceNQT().toString());
-	                    			Logger.logDebugMessage("payment:" + payment);
-	                    			Logger.logDebugMessage("After balance: " + thisAcct.getBalanceNQT().add(payment).toString());	             
-		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, id, payment);
-		                    		Logger.logDebugMessage("");
+//			                    	Logger.logDebugMessage(Crypto.rsEncode(accountId));
+//			                    	Logger.logDebugMessage("DBBALANCE == GETBAL: " + dbBalance.equals(thisAcct.getBalanceNQT()));
+////			                    	Logger.logDebugMessage("dbBalance: " +dbBalance);
+//	                    			Logger.logDebugMessage("Before balance: " + thisAcct.getBalanceNQT().toString());
+//	                    			Logger.logDebugMessage("payment:" + payment);
+//	                    			Logger.logDebugMessage("After balance: " + thisAcct.getBalanceNQT().add(payment).toString());	             
+		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, date.getTime(), payment);
+//		                    		Logger.logDebugMessage("");
 //		                    		BigInteger beforeAcct = thisAcct.getBalanceNQT();
 //		                    		if (thisAcct.getUnconfirmedBalanceNQT().compareTo(BigInteger.ZERO) < 0) {
 //		                    			Logger.logDebugMessage("======= Negative Balance Error!! =======");
@@ -358,6 +367,8 @@ public class CalculateInterestAndG {
 		            	
 		            			Logger.logDebugMessage("totalPayout: " + totalPayout);
 //		            			Logger.logDebugMessage("supplyCurrent:" + supplyCurrent);
+		            			
+		            			BlockchainProcessorImpl.getInstance().printAccountTable("  after----------");
 		                }
 		            }
 		            
@@ -372,16 +383,19 @@ public class CalculateInterestAndG {
 		
 //		Logger.logDebugMessage("**************** *************** *****************");
 		Logger.logDebugMessage("");
+		
+		updateSupplyCurrent();
+		
 		return totalPayout;
 		
 	}
-		
+	
 	private static void calculateG(Date date) {
 		BigDecimal decimalSupplyCurrent = new BigDecimal(supplyCurrent);
 		
-		BigInteger todaysVolume =  getTotalPastTxVolumeFromDb(date);
+		BigInteger todaysVolume =  getTotalPastTxVolumeFromDb(date, blockGCalculated);
 		
-		totalTxed = todaysVolume;
+//		totalTxed = todaysVolume;
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
@@ -402,16 +416,27 @@ public class CalculateInterestAndG {
 
 	
 	
-	public static BigInteger getTotalPastTxVolumeFromDb(Date date) {
+	public static BigInteger getTotalPastTxVolumeFromDb(Date date, int offset) {
 		//start < end.
+		
+		Logger.logDebugMessage("Get TOTAL PAST TX VOLUME FROM DB");
+		Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+		
+		
 		BigInteger totalTxVolume = BigInteger.ZERO;
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
-		int nextHeight = Nxt.getBlockchain().getHeight();
+		Logger.logDebugMessage("YESTERDATE: " + NtpTime.toString(yesterday));
+		Logger.logDebugMessage("Nxt.Blockchain Height: " + Nxt.getBlockchain().getHeight());
+		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
 		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 		
+		Logger.logDebugMessage("next height:" + nextHeight);
+		
 		while (nextBlock.getDate().equals(yesterday) && (nextHeight > 0)) {
+			Logger.logDebugMessage("NEXT HEIGHT:" + nextHeight);
+			
 			BigInteger thisBlocksTxVolume = nextBlock.getTotalAmountNQT();
 			totalTxVolume = totalTxVolume.add(thisBlocksTxVolume);
 			
@@ -419,60 +444,40 @@ public class CalculateInterestAndG {
 			nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 			
 		}
-		
+		Logger.logDebugMessage("Total Tx Volume:" + totalTxVolume.toString());
 		return totalTxVolume;
 	}
 	
-	
-	public static void dailyUpdate(long id, long height, Date date) {
+	public static void calculateRYear(Date date) {
 		//calculate r.
 
-		BigDecimal decimalSupplyCurrent = new BigDecimal(getSupplyCurrent());
-		maDeltaAvgHoldings = calculateMaDeltaOfHoldings(date);//averageHoldings, deltaT, maDeltaAvgHoldings set here.
+				BigDecimal decimalSupplyCurrent = new BigDecimal(getSupplyCurrent());
+				maDeltaAvgHoldings = calculateMaDeltaOfHoldings(date);//averageHoldings, deltaT, maDeltaAvgHoldings set here.
 
-		BigDecimal decimalMaOfDeltaT = new BigDecimal(maDeltaAvgHoldings);
-		x = decimalMaOfDeltaT.divide(decimalSupplyCurrent, Constants.PRECISION, RoundingMode.HALF_UP).doubleValue();
-		
-		f_deltaT = 0.15 * x / (1 + Math.abs(x));
-		
-		//for first day, r = default value.
-		if (dayCounter < 3) {
-			rYear = Constants.INITIAL_R_YEAR;
-		}else {
-			rYear = loadLatestRYear() - f_deltaT;
-			
-			rYear = (rYear > Constants.R_MAX) ? Constants.R_MAX: 
-				(rYear < Constants.R_MIN) ? Constants.R_MIN :
-					rYear;
-			//maDeltaAvgHoldings = sum(listDeltaAvgHoldings) / float(len(listDeltaAvgHoldings))
-			//x = maDeltaAvgHoldings/supplyCurrent
-			//f_deltaT = 0.15 * (x)/(1+abs(x))
-	        //rYear = rYearYest - f_deltaT
-		}
-		
-		//compute g.
-		calculateG(date);
-		updateVault(g);
-		
-		//perform interest payments.
-		BigInteger totalPayout = giveInterest(rYear, id);
-		
-		//update supplyCurrent.
-		getSupplyCurrent();
-		
-		
-		
-		//save daily info to db.
-		
-//		Logger.logDebugMessage("avgHoldings: "+ averageHoldings);
-//		Logger.logDebugMessage("deltaT: "+deltaT);
-//		Logger.logDebugMessage("x: "+x);
-//		Logger.logDebugMessage("total txed: "+ totalTxed);
-//		Logger.logDebugMessage("Date: " + NtpTime.toString(date));
-//		Logger.logDebugMessage("totalPayout: " + totalPayout);
-		
-		
-		saveDailyData(id, height, date);
+				BigDecimal decimalMaOfDeltaT = new BigDecimal(maDeltaAvgHoldings);
+				x = decimalMaOfDeltaT.divide(decimalSupplyCurrent, Constants.PRECISION, RoundingMode.HALF_UP).doubleValue();
+				
+				f_deltaT = 0.15 * x / (1 + Math.abs(x));
+				
+				//for first day, r = default value.
+				if (dayCounter < 3) {
+					rYear = Constants.INITIAL_R_YEAR;
+				}else {
+					rYear = loadLatestRYear() - f_deltaT;
+					
+					rYear = (rYear > Constants.R_MAX) ? Constants.R_MAX: 
+						(rYear < Constants.R_MIN) ? Constants.R_MIN :
+							rYear;
+					//maDeltaAvgHoldings = sum(listDeltaAvgHoldings) / float(len(listDeltaAvgHoldings))
+					//x = maDeltaAvgHoldings/supplyCurrent
+					//f_deltaT = 0.15 * (x)/(1+abs(x))
+			        //rYear = rYearYest - f_deltaT
+				}
+	}
+	
+	public static void calculateGUpdateVault(Date date) {
+				calculateG(date);
+				updateVault(g);
 	}
 	
 	public static void init() {
@@ -522,7 +527,7 @@ public class CalculateInterestAndG {
 	
 	public static BigInteger loadLatestVault() {
 		
-		BlockchainProcessorImpl.getInstance().printDDTable(" Load Latest Vault ");
+//		BlockchainProcessorImpl.getInstance().printDDTable(" Load Latest Vault ");
 		
 		long dayFromDb = 0;
 		
@@ -694,7 +699,15 @@ static BigInteger loadTotalTxedByDate(Date date) {
 }
 	
 	static void saveDailyData(long id, long height, Date date) {
-        try {
+		
+		Logger.logDebugMessage("^^^    SAVING DD    ^^^");
+		averageHoldings = getTotalPastHoldingsFromDb(date, blockAvgHoldingsSaved + 1);
+		updateDayCounter();
+		getSupplyCurrent();
+		
+		BigInteger totalTxed = getTotalPastTxVolumeFromDb(date, blockDdSaved + 1);
+		
+		try {
         		Connection con = Db.db.getConnection();
 //                apply("CREATE TABLE IF NOT EXISTS daily_data (db_id IDENTITY, block_id BIGINT NOT NULL, height BIGINT NOT NULL," 
 //            			+"day BIGINT NOT NULL, averageHoldings DECIMAL NOT NULL, "
@@ -702,8 +715,14 @@ static BigInteger loadTotalTxedByDate(Date date) {
 //                    + "x DECIMAL NOT NULL, f_deltaT DECIMAL NOT NULL, "
 //                    + "rYear DECIMAL NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
             try (PreparedStatement pstmt = con.prepareStatement("INSERT INTO daily_data (block_id, height, day, date, total_txed, average_holdings," 
-            			+ "deltaT, ma_delta_avg_holdings, x, "
-                    + "f_deltaT, rYear, supply_current_after_payout, vault, g) "
+            			+ "deltaT," 
+            			+ "ma_delta_avg_holdings," 
+            			+ "x,"
+                    + "f_deltaT,"
+                    + "rYear,"
+                    + "supply_current,"
+                    + "vault,"
+                    + "g) "
                     + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
                 int i = 0;
                 pstmt.setLong(++i, id);
@@ -732,7 +751,7 @@ static BigInteger loadTotalTxedByDate(Date date) {
                 Logger.logDebugMessage("maDeltaAvgHoldings: " + new BigDecimal(maDeltaAvgHoldings).toString());
                 Logger.logDebugMessage("x: " + x);
                 Logger.logDebugMessage("f_deltaT: " + f_deltaT);
-                Logger.logDebugMessage("rYear: " + f_deltaT);
+                Logger.logDebugMessage("rYear: " + rYear);
                 Logger.logDebugMessage("supplyCurrent: " + new BigDecimal(supplyCurrent).toString());
                 Logger.logDebugMessage("vault: " + new BigDecimal(vault).toString());
                 Logger.logDebugMessage("g: " + new BigDecimal(g).toString());
