@@ -285,7 +285,7 @@ final class TransactionImpl implements Transaction {
 //        Logger.logDebugMessage("size list: " + list.size());
         
         if ((this.attachment = builder.attachment) != null) {
-//            list.add(this.attachment);
+            list.add(this.attachment);
         	
         }
         if ((this.message  = builder.message) != null) {
