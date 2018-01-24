@@ -166,6 +166,8 @@ public class CalculateInterestAndG {
 		Date yesterday = subtractOneDayFromDate(date);
 		
 		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
+		if (nextHeight < 0) { return totalForgingHoldings;}
+		
 		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 		int numBlocks = 0;
 		
@@ -430,6 +432,9 @@ public class CalculateInterestAndG {
 		Logger.logDebugMessage("YESTERDATE: " + NtpTime.toString(yesterday));
 		Logger.logDebugMessage("Nxt.Blockchain Height: " + Nxt.getBlockchain().getHeight());
 		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
+		
+		if (nextHeight < 0) {return totalTxVolume;}
+		
 		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 		
 		Logger.logDebugMessage("next height:" + nextHeight);

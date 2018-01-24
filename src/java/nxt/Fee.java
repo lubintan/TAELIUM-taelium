@@ -23,7 +23,7 @@ public interface Fee {
 
     BigInteger getFee(TransactionImpl transaction, Appendix appendage);
 
-    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.ONE_TAEL);
+    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.STD_FEE);
 
     Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
 

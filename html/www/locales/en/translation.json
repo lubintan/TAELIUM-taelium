@@ -1,4 +1,6 @@
 {
+  "tx_fee": "Fee: 0.0001 Taels",
+  "fee": "Fee: 0.0001 Taels",
   "Account": "Account",
   "Asset Distribution": "Asset Distribution",
   "Connected": "Connected",
@@ -41,7 +43,7 @@
   "add_as_contact": "Add as Contact",
   "add_asset": "Add Asset",
   "add_contact": "Add Contact",
-  "add_message_q": "Add a Message?",
+  "add_message_q": "Add 33 Message?",
   "add_note_to_self": "Add Note to Self?",
   "add_peer": "Add Peer",
   "add_poll": "Add Poll",
@@ -493,7 +495,6 @@
   "extend_tagged_data": "Extend Data Lifetime",
   "failed": "Failed",
   "failed_connect_peer": "Failed to connect peer!",
-  "fee": "Fee",
   "feedback": "Feedback",
   "feedback_given": "Feedback Given",
   "file": "File",
