@@ -1,6 +1,6 @@
 {
     "tx_fee": "Fee: 0.0001 Taels",
-  	"fee": "Fee: 0.0001 Taels",
+  	"fee": "Fee",
   	"deadline": "Deadline",
     "recipient": "Recipient",
     "subtype": "Subtype",
@@ -652,7 +652,7 @@
     "show_console_log_button": "Show Console Log Button",
     "delete_my_item": "Delete My Item",
     "stop_forging_confirmation_passphrase": "If you are sure you want to stop forging, type your passphrase to confirm.",
-    "add_message_q": "Add 10 Message?",
+    "add_message_q": "Add a Message?",
     "nrs_state": "NRS State",
     "transaction_bytes": "Transaction Bytes",
     "submit": "Submit",
