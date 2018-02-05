@@ -20,7 +20,7 @@ public class DebugDayTimer {
 		Date today;
 		long maxDay = checkDb();
 		if (maxDay == 0) {
-			today = NtpTime.toDate("05-Jan-2018");
+			today = NtpTime.toDate("05-Feb-2018");
 		}else {
 			today = loadDate(maxDay);
 		}
@@ -94,7 +94,7 @@ public class DebugDayTimer {
         }};
 
     static void init() {
-		ThreadPool.scheduleThread("DebugDayThread", DebugDayTimer.debugDayThread, 180);
+		ThreadPool.scheduleThread("DebugDayThread", DebugDayTimer.debugDayThread, 600);
     }
         
 }

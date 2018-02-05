@@ -35,7 +35,7 @@ public final class Constants {
     
     public static final String dateFormat = "dd-MMM-yyyy";
     
-    public static final int BLOCK_TIME = 40; // should be 60. reducing it for testing purposes. 
+    public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
     public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(21).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);

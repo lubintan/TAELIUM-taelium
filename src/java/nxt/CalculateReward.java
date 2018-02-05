@@ -28,7 +28,8 @@ public class CalculateReward {
 	private static int blockRewardCalculated = 1;
 	private CalculateReward() {};
 	
-	public static void calculateReward(Date date) {		
+	public static BigInteger calculateReward(Date date) {		
+		CalculateInterestAndG.updateDayCounter();
 		if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
 		else {
 	
@@ -47,10 +48,17 @@ public class CalculateReward {
 			//long to BigInt question mark 5 - need to convert to haeds? Supply current is already in heads.
 			
 			blockReward =  x.multiply(decimalSupplyCurrent).toBigInteger();
+			
 		}
+		return blockReward;
+
 	}
 	
 	public static BigInteger getBlockReward() {
+		CalculateInterestAndG.updateDayCounter();
+		if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
+		else {blockReward = Nxt.getBlockchain().getLastBlock().getBlockReward();}
+		
 		return blockReward;
 	}
 	

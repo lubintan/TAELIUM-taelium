@@ -2090,9 +2090,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             } else {
             		block.setFirstBlockOfDay();
             		CalculateInterestAndG.calculateRYear(block.getDate());
-            		CalculateReward.calculateReward(block.getDate());
+            		block.setBlockReward(CalculateReward.calculateReward(block.getDate()));
             		block.setInterestRateYearly(CalculateInterestAndG.rYear); 
-          		block.setBlockReward(CalculateReward.getBlockReward());
+//          		block.setBlockReward(CalculateReward.getBlockReward());
 //        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
 	        	    		
             		
