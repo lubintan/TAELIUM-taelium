@@ -30,7 +30,8 @@ public class CalculateReward {
 	
 	public static BigInteger calculateReward(Date date) {		
 		CalculateInterestAndG.updateDayCounter();
-		if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
+		if (Nxt.getBlockchain().getHeight() < 0) {blockReward = BigInteger.ZERO;}
+		else if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
 		else {
 	
 			BigInteger yesterdaysVolume = CalculateInterestAndG

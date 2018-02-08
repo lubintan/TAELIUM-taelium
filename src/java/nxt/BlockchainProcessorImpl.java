@@ -2067,9 +2067,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         byte[] generationSignature = digest.digest(publicKey);
         byte[] previousBlockHash = Crypto.sha256().digest(previousBlock.bytes());
 
-        BlockImpl block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
-                payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
-                secretPhrase, today, GetAllForgersBalances.getSumAllForgersBalances());
+        BlockImpl block;
 
         try {
 //        	
@@ -2078,27 +2076,46 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 //            block.calculateTotalForgingHoldings(); 
             
             if (!isFirstBlockOfNewDay) {
-	            block.setBlockReward(CalculateReward.getBlockReward());
-	            block.setInterestRateYearly(CalculateInterestAndG.getLatestRYear());
+//	            block.setBlockReward(CalculateReward.getBlockReward());
+//	            block.setInterestRateYearly(CalculateInterestAndG.getLatestRYear());
 	            
-	            if (!previousBlock.getFirstBlockOfDay()) {
-//	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
-	            } else if (previousBlock.getDate().equals(block.getDate())) {
-//	            		CalculateInterestAndG.giveInterest(block.getDate());
-//	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
-	            }
+	            block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
+                        payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
+                        secretPhrase, today, GetAllForgersBalances.getSumAllForgersBalances(),
+                        CalculateInterestAndG.getLatestRYear(), CalculateInterestAndG.getSupplyCurrent(), CalculateReward.getBlockReward(), false);
+    		
+	            
+	            
+//	            if (!previousBlock.getFirstBlockOfDay()) {
+////	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+//	            } else if (previousBlock.getDate().equals(block.getDate())) {
+////	            		CalculateInterestAndG.giveInterest(block.getDate());
+////	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+//	            }
             } else {
-            		block.setFirstBlockOfDay();
-            		CalculateInterestAndG.calculateRYear(block.getDate());
-            		block.setBlockReward(CalculateReward.calculateReward(block.getDate()));
-            		block.setInterestRateYearly(CalculateInterestAndG.rYear); 
-//          		block.setBlockReward(CalculateReward.getBlockReward());
-//        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+//            		block.setFirstBlockOfDay();
+//            		CalculateInterestAndG.calculateRYear(block.getDate());
+//            		block.setBlockReward(CalculateReward.calculateReward(block.getDate()));
+//            		block.setInterestRateYearly(CalculateInterestAndG.rYear); 
+////          		block.setBlockReward(CalculateReward.getBlockReward());
+////        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
 	        	    		
+            			CalculateInterestAndG.calculateRYear(today);
+            			
+            			block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
+                                payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
+                                secretPhrase, today, GetAllForgersBalances.getSumAllForgersBalances(),
+                                CalculateInterestAndG.rYear, CalculateInterestAndG.getSupplyCurrent(), CalculateReward.calculateReward(today), true);
             		
             }
 
-            block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
+//            block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent());
+            
+            
+            
+            
+            
+//            block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
             pushBlock(block, true);
             blockListeners.notify(block, Event.BLOCK_GENERATED);
 //            Logger.logDebugMessage("Account " + Long.toUnsignedString(block.getGeneratorId()) + " generated block " + block.getStringId()

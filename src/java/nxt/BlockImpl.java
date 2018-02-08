@@ -71,22 +71,25 @@ final class BlockImpl implements Block {
     BlockImpl(byte[] generatorPublicKey, byte[] generationSignature) { 
         this(-1, 0, 0, BigInteger.ZERO, BigInteger.ZERO, 0, new byte[32], generatorPublicKey, generationSignature, new byte[64],
                 new byte[32], Collections.emptyList(), new Date(Genesis.EPOCH_BEGINNING), BigInteger.ZERO, 
-                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, Constants.INITIAL_REWARD, true);
+                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, BigInteger.ZERO, false);
         this.height = 0;
     }
     
-    // used in generateblock.
+    // used in generateblock. used before blockSignature is generated.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength, byte[] payloadHash,
               byte[] generatorPublicKey, byte[] generationSignature, byte[] previousBlockHash, List<TransactionImpl> transactions, 
-              String secretPhrase, Date date, BigInteger totalForgingHoldings) {
+              String secretPhrase, Date date, BigInteger totalForgingHoldings, double rYear, BigInteger supplyCurrent, 
+              BigInteger blockReward, Boolean firstBlockOfDay) {
         this(version, timestamp, previousBlockId, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash,
                 generatorPublicKey, generationSignature, null, previousBlockHash, transactions, date, totalForgingHoldings,
-                0, BigInteger.ZERO, BigInteger.ZERO, false);
+                rYear, supplyCurrent, blockReward, firstBlockOfDay);
+        
+        
         blockSignature = Crypto.sign(bytes(), secretPhrase);
         bytes = null;
     }
     
-    //used in the other BlockImpls and in parseBlock/ All in this file.
+    //used in the other BlockImpls and in parseBlock/ All in this file. used after blockSignature is generated.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength, byte[] payloadHash,
               byte[] generatorPublicKey, byte[] generationSignature, byte[] blockSignature, 
               byte[] previousBlockHash, List<TransactionImpl> transactions, Date date, BigInteger totalForgingHoldings,
@@ -111,6 +114,9 @@ final class BlockImpl implements Block {
         this.supplyCurrent = supplyCurrent;
         this.blockReward = blockReward;
         this.firstBlockOfDay = firstBlockOfDay;
+        
+        Logger.logDebugMessage("***** supplyCurrent: " + this.supplyCurrent);
+        
     }
     // used in loadBlock.
     BlockImpl(int version, int timestamp, long previousBlockId, BigInteger totalAmountNQT, BigInteger totalFeeNQT, int payloadLength,
@@ -452,10 +458,14 @@ final class BlockImpl implements Block {
  }
     
     
+    
+    
     byte[] bytes() {
+    		
         if (bytes == null) {
-            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2);
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2 + 8 + 10 + 10 + 10);
             // +2 +2 at the end for 10-byte BigInt. (instead of 8-byte long).
+            // +10 +10 +8 +10
             buffer.order(ByteOrder.LITTLE_ENDIAN);
             buffer.putInt(version); //4
             buffer.putInt(timestamp);//4
@@ -463,14 +473,27 @@ final class BlockImpl implements Block {
             buffer.putInt(getTransactions().size());//4
             buffer.put(bigIntToByte(totalAmountNQT));//10
             buffer.put(bigIntToByte(totalFeeNQT));//10
+            
+          buffer.put(bigIntToByte(totalForgingHoldings)); //10
+          buffer.put(bigIntToByte(supplyCurrent)); //10
+          buffer.put(bigIntToByte(blockReward)); //10
+          buffer.putDouble(latestRYear); //8
+            
             buffer.putInt(payloadLength);//4
             buffer.put(payloadHash);//32
             buffer.put(getGeneratorPublicKey());//32
             buffer.put(generationSignature);//32
             buffer.put(previousBlockHash);//32
+            
+
+            
             if (blockSignature != null) {
                 buffer.put(blockSignature);
             }
+            
+            
+            
+            
             bytes = buffer.array();
         }
         return bytes;
@@ -485,6 +508,11 @@ final class BlockImpl implements Block {
     private boolean checkSignature() {
         if (! hasValidSignature) {
             byte[] data = Arrays.copyOf(bytes(), bytes.length - 64);
+            
+            Logger.logDebugMessage("");
+            Logger.logDebugMessage("BLOCK SIG!=NULL: " + (blockSignature != null));
+            Logger.logDebugMessage("CRYPTO VERIFY: " + Crypto.verify(blockSignature, data, getGeneratorPublicKey()));
+            
             hasValidSignature = blockSignature != null && Crypto.verify(blockSignature, data, getGeneratorPublicKey());
         }
         return hasValidSignature;
