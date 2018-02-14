@@ -115,7 +115,7 @@ final class BlockImpl implements Block {
         this.blockReward = blockReward;
         this.firstBlockOfDay = firstBlockOfDay;
         
-        Logger.logDebugMessage("***** supplyCurrent: " + this.supplyCurrent);
+//        Logger.logDebugMessage("***** supplyCurrent: " + this.supplyCurrent);
         
     }
     // used in loadBlock.

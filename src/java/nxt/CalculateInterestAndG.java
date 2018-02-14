@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 /**
@@ -146,7 +147,11 @@ public class CalculateInterestAndG {
 // 	}
 	
 	private static BigInteger calculateTodaysDeltaOfHoldings(Date date) {
-		
+		//note that the avg holdings for each day in the daily data table, since it's computed at the start of the day, is actually the avg holdings from
+		//the previous day.
+		//Eg. date = 23 Feb 2018
+		//getTotalPastHoldingsFromDb: gives avg holdings computed from 22 Feb 2018.
+		//loadAvgHoldingsByDate(yesterday = 22 Feb 2018): gives avg holdings computed from 21 Feb 2018. 
 		averageHoldings = getTotalPastHoldingsFromDb(date, blockAvgHoldingsCalculated);
 		
 		Date yesterday = subtractOneDayFromDate(date);
@@ -296,7 +301,7 @@ public class CalculateInterestAndG {
 		return rYear;
 	}
 	
-	public static BigInteger giveInterest(Date date) {
+	public static BigInteger giveInterest(Date date, Boolean isGenerator, List<TransactionImpl> blockTxes) {
 		//To be called only when 1440th block is to be generated!
 		rYear = getLatestRYear();
 //		BlockchainProcessorImpl.getInstance().printAccountTable("interesting giving");
@@ -324,15 +329,17 @@ public class CalculateInterestAndG {
 		            	Logger.logDebugMessage("rYear: " + rYear + "    rDay: " + rDay);
 		            	Logger.logDebugMessage("");
 		            	
+//		            	//remove transactions that will bring balance below zero after giving out interest.
+//		                Iterator<UnconfirmedTransaction> unconfirmedTxIterator = 
+//		                		TransactionProcessorImpl.getInstance().getAllUnconfirmedTransactions().iterator();
+//		                
 		            	while (rs.next()) {
 		                    long accountId = rs.getLong("ID");
 		                    Account thisAcct = Account.getAccount(accountId);
 		                    
 		                    BigDecimal decBalHaeds = new BigDecimal(thisAcct.getBalanceNQT());
 		                    BigDecimal decPayment = decBalHaeds.multiply(BigDecimal.valueOf(rDay));
-		                    BigInteger payment = decPayment.toBigInteger(); 
-		                    BigInteger dbBalance = rs.getBigDecimal("balance").toBigInteger();
-		                    BigInteger dbUnBalance = rs.getBigDecimal("unconfirmed_balance").toBigInteger();
+		                    BigInteger payment = decPayment.toBigInteger(); //will floor to 0 if less than 1.
 		                    
 		                    
 		                    if (rDay < 0) {
@@ -346,9 +353,55 @@ public class CalculateInterestAndG {
 //			                    	Logger.logDebugMessage(Crypto.rsEncode(accountId));
 //			                    	Logger.logDebugMessage("DBBALANCE == GETBAL: " + dbBalance.equals(thisAcct.getBalanceNQT()));
 ////			                    	Logger.logDebugMessage("dbBalance: " +dbBalance);
-//	                    			Logger.logDebugMessage("Before balance: " + thisAcct.getBalanceNQT().toString());
-//	                    			Logger.logDebugMessage("payment:" + payment);
+//	                    			Logger.logDebugMessage("Acct: " + Crypto.rsEncode(thisAcct.getId()) +" Unconfirmed Bal: " + thisAcct.getUnconfirmedBalanceNQT().toString());
+//	                    			Logger.logDebugMessage("payment:" + payment.toString());
 //	                    			Logger.logDebugMessage("After balance: " + thisAcct.getBalanceNQT().add(payment).toString());	             
+		                    		
+//		                    		if (thisAcct.getUnconfirmedBalanceNQT().add(payment).compareTo(BigInteger.ZERO) < 0) {
+//		                    			if (isGenerator) {
+//		                    				Logger.logDebugMessage("In isGenerator, Acct ID: " + Crypto.rsEncode(thisAcct.getId()));
+//		                    				
+//		                    				//reject all unconfirmed txes from this sender.
+//		                    				 while(unconfirmedTxIterator.hasNext()) {
+//		         		                		UnconfirmedTransaction unconfirmedTx = unconfirmedTxIterator.next();
+//		         		                		TransactionImpl transaction = unconfirmedTx.getTransaction();
+//		         		                		
+//		         		                		if (transaction.getSenderId() == thisAcct.getId()) {
+//		         		                			TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
+//		         		                			Logger.logDebugMessage("````GENERATOR INTEREST REJECT TX```");
+//			         		                		Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than UNCONFIRMED balance! Rejecting Tx: " + transaction.getId());
+//			        		                    		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
+//			        		                    		Logger.logDebugMessage("Unconfirmed Balance: " + thisAcct.getUnconfirmedBalanceNQT().toString());
+//			        		                    		Logger.logDebugMessage("Sending amount + tx fee: " + transaction.getAmountNQT().add(Constants.STD_FEE));
+//			        		                    		Logger.logDebugMessage("```````");
+//		         		                			
+//		         		                		}
+//		                    				 }
+//		                    			}
+//		                    			
+//		                    			else { // if not generator, ie. receiving block from peers, 
+//		                    				//reject unconfirmed tx only if it's local, not from the block.
+//		                    				while(unconfirmedTxIterator.hasNext()) {
+//		         		                		UnconfirmedTransaction unconfirmedTx = unconfirmedTxIterator.next();
+//		         		                		TransactionImpl transaction = unconfirmedTx.getTransaction();
+//		         		                		
+//		         		                		if (transaction.getSenderId() == thisAcct.getId()) {
+//		         		                			if (!blockTxes.contains(transaction)) {
+//		         		                				TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
+//		         		                				Logger.logDebugMessage("```PEER DOWNLOAD REJECT TX````");
+//				         		                		Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than UNCONFIRMED balance! Rejecting Tx: " + transaction.getId());
+//				        		                    		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
+//				        		                    		Logger.logDebugMessage("Unconfirmed Balance: " + thisAcct.getUnconfirmedBalanceNQT().toString());
+//				        		                    		Logger.logDebugMessage("Sending amount + tx fee: " + transaction.getAmountNQT().add(Constants.STD_FEE));
+//				        		                    		Logger.logDebugMessage("```````");
+//		         		                			}
+//		         		                		}
+//		                    				 }
+//		                    			}
+//		                    		}
+		                    	
+		                    	
+		                    	
 		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, date.getTime(), payment);
 //		                    		Logger.logDebugMessage("");
 //		                    		BigInteger beforeAcct = thisAcct.getBalanceNQT();
@@ -363,7 +416,7 @@ public class CalculateInterestAndG {
 		                    		
 		                    		totalPayout = totalPayout.add(payment);
 		                   
-		                    }
+		                    		}
 		                    
 		                    }
 		            	

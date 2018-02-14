@@ -162,7 +162,11 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         }
 
         private void downloadPeer() throws InterruptedException {
-            try {
+            Logger.logDebugMessage("");
+            Logger.logDebugMessage("<<<<<<<< DOWNLOAD PEER SECTION >>>>>>>");
+        	
+        	
+        		try {
                 long startTime = System.currentTimeMillis();
                 int numberOfForkConfirmations = blockchain.getHeight() > Constants.LAST_CHECKSUM_BLOCK - 720 ?
                         defaultNumberOfForkConfirmations : Math.min(1, defaultNumberOfForkConfirmations);
@@ -182,21 +186,29 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 BigInteger curCumulativeDifficulty = blockchain.getLastBlock().getCumulativeDifficulty();
                 String peerCumulativeDifficulty = (String) response.get("cumulativeDifficulty");
                 if (peerCumulativeDifficulty == null) {
-                    return;
+                    Logger.logDebugMessage("COULD NOT GET PEER's DIFFICULTY--------------");
+                    Logger.logDebugMessage("");
+                	
+                		return;
                 }
                 BigInteger betterCumulativeDifficulty = new BigInteger(peerCumulativeDifficulty);
                 //signum > val.signum ? 1 : -1;
                 //so if betterCumulativeDifficulty < curCumulativeDifficulty, will return.
                 //ie. if peer's cumulativeDifficulty smaller, stop downloadPeer()
                 if (betterCumulativeDifficulty.compareTo(curCumulativeDifficulty) < 0) { 
-                    return;
+                		Logger.logDebugMessage("PEER's CD LOWER------------------------------");
+                    Logger.logDebugMessage("");
+                	
+                		return;
                 }
                 if (response.get("blockchainHeight") != null) {
                     lastBlockchainFeeder = peer;
                     lastBlockchainFeederHeight = ((Long) response.get("blockchainHeight")).intValue();
                 }
                 if (betterCumulativeDifficulty.equals(curCumulativeDifficulty)) {// peer and node same difficulty
-                    return;
+                		Logger.logDebugMessage("PEER's CD SAME------------------------------");
+                    Logger.logDebugMessage("");
+                		return;
                 }
 
                 long commonMilestoneBlockId = genesisBlockId;
@@ -205,7 +217,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     commonMilestoneBlockId = getCommonMilestoneBlockId(peer);
                 }
                 if (commonMilestoneBlockId == 0 || !peerHasMore) {
-                    return;
+                		Logger.logDebugMessage("PEER DOES NOT HAVE MORE BLOCKS!------------------------------");
+                		Logger.logDebugMessage("commonMileStoneBlockId: " + commonMilestoneBlockId);
+                    Logger.logDebugMessage("");
+                		return;
                 }
 
                 chainBlockIds = getBlockIdsAfterCommon(peer, commonMilestoneBlockId, false);
@@ -222,6 +237,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 if (commonBlock == null || blockchain.getHeight() - commonBlock.getHeight() >= 720) {
                     if (commonBlock != null) {
                         Logger.logDebugMessage(peer + " advertised chain with better difficulty, but the last common block is at height " + commonBlock.getHeight());
+                        Logger.logDebugMessage("^^^^^^    FORKED     ^^^^^^");
+                        Logger.logDebugMessage("");
                     }// peer has better difficulty because already done the checks above. 
                     // So now peer has better difficulty, but common chain shorter than this node's chain by more than 720 blocks.
                     return;
@@ -240,7 +257,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 blockchain.updateLock();
                 try {
                     if (betterCumulativeDifficulty.compareTo(blockchain.getLastBlock().getCumulativeDifficulty()) <= 0) {
-                        return; //end if peer's cumulative difficulty less than or equals this node's cumulative difficulty.
+                        Logger.logDebugMessage(" ~~~~~~ Peer's CD <= Local Prev Block CD ~~~~~~~~~");
+                        Logger.logDebugMessage("");
+                    	
+                    		return; //end if peer's cumulative difficulty less than or equals this node's cumulative difficulty.
                     }
                     long lastBlockId = blockchain.getLastBlock().getId();
                     
@@ -287,6 +307,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                             continue; //if other peer's cumulative difficulty less than host's, skip to next iteration.
                         }
                         Logger.logDebugMessage("Found a peer with better difficulty");
+                        Logger.logDebugMessage("DOWNLOADING FROM: " + otherPeer.getAnnouncedAddress());
                         
                       //****** download happens here *********//
                         downloadBlockchain(otherPeer, otherPeerCommonBlock, commonBlock.getHeight());
@@ -315,6 +336,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             } catch (Exception e) {
                 Logger.logMessage("Error in blockchain download thread", e);
             }
+        		
+        		Logger.logDebugMessage("<<<<<<<< END DOWNLOAD PEER SECTION >>>>>>>");
+        		Logger.logDebugMessage("");
+        		
         } //end downloadPeer method.
 
         private long getCommonMilestoneBlockId(Peer peer) {
@@ -1380,13 +1405,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                   		Logger.logDebugMessage("!!!!!!!  END DAILY UPDATE  !!!!!!");
                   		Logger.logDebugMessage("");
                   } else if (previousLastBlock.getFirstBlockOfDay() && previousLastBlock.getDate().equals(block.getDate())) {
-                	  		
-                	  		if (!givenInterest) {
-                	  			Logger.logDebugMessage("push block give interest");
-                	  			Nxt.getBlockchain().setTempHeight(true);
-                	  			CalculateInterestAndG.giveInterest(block.getDate());
-                	  			Nxt.getBlockchain().setTempHeight(false);
-                	  			}
+//                	  		
+//                	  		if (!givenInterest) {
+////                	  			Logger.logDebugMessage("push block give interest");
+////                	  			Nxt.getBlockchain().setTempHeight(true);
+////                	  			CalculateInterestAndG.giveInterest(block.getDate(),false,block.getTransactions());
+////                	  			Nxt.getBlockchain().setTempHeight(false);
+//                	  			}
                 	  		CalculateInterestAndG.calculateGUpdateVault(block.getDate());
                 	  		Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
 //    		        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
@@ -1413,14 +1438,37 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
           		
                 blockListeners.notify(block, Event.BEFORE_BLOCK_ACCEPT);
                 TransactionProcessorImpl.getInstance().requeueAllUnconfirmedTransactions();
+                //basically rejects all the unconfirmed txes on the local machine, in preparation for taking all the official 
+                //block.transactions.
+                //if unconfirmed tx from local machine went through, would be in block.transactions already.
+                //block.transactions applied in accept() function.
+                
+                //need to remove the txes that will overspend after giving interest in the generator portion,
+                //so it will not be included in the block transactions.
+                //but otherwise, can give interest here actually?
                 
                 
+                
+                printAccountTable("  AFTER REQUUEUE unconfirmed TXes");
+                
+                if (previousLastBlock.getFirstBlockOfDay() && previousLastBlock.getDate().equals(block.getDate())) {
+                		CalculateInterestAndG.giveInterest(block.getDate(), null, null);
+                		
+                }
+                
+                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockSupCurrent == localSupCurrent?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
+                Logger.logDebugMessage("block: " + block.getSupplyCurrent() + " | local: " + CalculateInterestAndG.getSupplyCurrent());
+                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockForging == localForging?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
+                Logger.logDebugMessage("block: " + block.getTotalForgingHoldings() + 
+                		" | local: " + GetAllForgersBalances.getSumAllForgersBalances());
+                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
                 
                 addBlock(block); //block saved to db here.
                 
 //                Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
                 
                 accept(block, validPhasedTransactions, invalidPhasedTransactions, duplicates); //apply called here. block reward added to generator here.
+                
                 
 //                Logger.logDebugMessage("supply current 5: " + CalculateInterestAndG.getSupplyCurrent().toString());
                 
@@ -1557,6 +1605,11 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         BigInteger calculatedTotalFee = BigInteger.ZERO;
         MessageDigest digest = Crypto.sha256();
         boolean hasPrunedTransactions = false;
+        
+        
+        Logger.logDebugMessage("");
+        Logger.logDebugMessage("=== LIST OF TXes from peer ===");
+        
         for (TransactionImpl transaction : block.getTransactions()) {
             if (transaction.getTimestamp() > curTime + Constants.MAX_TIMEDRIFT) {
                 throw new BlockOutOfOrderException("Invalid transaction timestamp: " + transaction.getTimestamp()
@@ -1587,6 +1640,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 }
                 try {
                     transaction.validate();
+                    Logger.logDebugMessage("Amount: " + transaction.getAmountNQT().toString());
+                    Logger.logDebugMessage("Sender: " + Crypto.rsEncode(transaction.getSenderId()) +
+                    		"to Recipient: " + Crypto.rsEncode(transaction.getRecipientId()));
+                    
                 } catch (NxtException.ValidationException e) {
                     throw new TransactionNotAcceptedException(e.getMessage(), transaction);
                 }
@@ -1722,7 +1779,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	                  BigInteger unconfirmedBalance = rs.getBigDecimal("UNCONFIRMED_BALANCE").toBigInteger();
 	                  int height = rs.getInt("HEIGHT");
 	                  boolean latest = rs.getBoolean("LATEST");
-	                  if (latest==true) { 
+	                  if ((latest==true) | (latest !=true)) { 
 	                	  	Logger.logDebugMessage(Crypto.rsEncode(ID) + s + balance.toString() + s + unconfirmedBalance.toString()
             		  			+ s + height + s + latest);  
 	                  }
@@ -1738,6 +1795,38 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     	Logger.logDebugMessage("");
     	Logger.logDebugMessage("");
     }
+    
+    public HashMap<Long, BigInteger> getCurrentAccountBalances() {
+    	
+    	HashMap<Long, BigInteger> currentAccountBalances = new HashMap<Long, BigInteger>();
+    	
+    	try (Connection con = Db.db.getConnection();
+	             PreparedStatement pstmt = con.prepareStatement("select * from account")) {
+	            try(ResultSet rs = pstmt.executeQuery()){
+	            	while (rs.next()) {
+	                  long ID = rs.getLong("ID");
+	                  BigInteger balance = rs.getBigDecimal("BALANCE").toBigInteger();
+//	                  BigInteger unconfirmedBalance = rs.getBigDecimal("UNCONFIRMED_BALANCE").toBigInteger();
+	                  int height = rs.getInt("HEIGHT");
+	                  boolean latest = rs.getBoolean("LATEST");
+	                  
+	                  if (latest) {
+	                	  	currentAccountBalances.put(ID, balance);
+	                  }
+
+	            }
+            }
+	        catch (SQLException e) {
+	            throw new RuntimeException(e.toString(), e);
+	        }
+    		} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	
+    		return currentAccountBalances;
+    }
+    
     
     public void printDDTable(String befOrAft) {
     	Logger.logDebugMessage("");
@@ -1981,76 +2070,74 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         		(!CalculateInterestAndG.checkIfDateInDailyData(today)) &&
 	      		  today.after(previousBlock.getDate());
         
-        
+        HashMap<Long, BigInteger> currentAccountBalances = new HashMap<Long, BigInteger>();
 //        Boolean givenInterest = false;
         if (previousBlock.getFirstBlockOfDay() && !isFirstBlockOfNewDay && previousBlock.getDate().equals(today)) {
-        		Logger.logDebugMessage("Current NXT BlockChain Height: " + Nxt.getBlockchain().getHeight());
-        		Nxt.getBlockchain().setTempHeight(true);
-        		Logger.logDebugMessage("Current NXT BlockChain TEMP Height: " + Nxt.getBlockchain().getHeight());
+	        	double tempRYear = CalculateInterestAndG.getLatestRYear();
+	    		double tempRDay = tempRYear / Constants.INTEREST_DIVISOR;
+        		currentAccountBalances = getCurrentAccountBalances();
         		
-        	
-        		blockchain.writeLock();
-            Db.db.beginTransaction();
-            Logger.logDebugMessage("Generator give interest");
-        		CalculateInterestAndG.giveInterest(today);
-        		Db.db.commitTransaction();
-        		Db.db.endTransaction();
-        
-        		
-        		
-        		blockchain.writeUnlock();  
-        		Nxt.getBlockchain().setTempHeight(false);
-//        		givenInterest = true;
-        }
-        
-        //remove transactions that will bring balance below zero after giving out interest.
-        Iterator<UnconfirmedTransaction> unconfirmedTxIterator = 
-        		TransactionProcessorImpl.getInstance().getAllUnconfirmedTransactions().iterator();
-        
-//        UnconfirmedTransaction[] waitingTxes = TransactionProcessorImpl.getInstance().getAllWaitingTransactions();
-//        for (UnconfirmedTransaction unconfirmedTx: waitingTxes) {
-        while(unconfirmedTxIterator.hasNext()) {
-        		UnconfirmedTransaction unconfirmedTx = unconfirmedTxIterator.next();
-        		TransactionImpl transaction = unconfirmedTx.getTransaction();
-        		
-        		long accountId = transaction.getSenderId();
-            Account sender = Account.getAccount(accountId);
-            BigInteger totalTxAmount = transaction.getAmountNQT().add(transaction.getFeeNQT());
-            if (sender.getBalanceNQT().subtract(totalTxAmount).compareTo(BigInteger.ZERO) < 0){
-            		Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than balance! Rejecting Tx: " + transaction.getId());
-            		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
-            		Logger.logDebugMessage("Balance: " + sender.getBalanceNQT().toString());
-            		Logger.logDebugMessage("Sending amount + tx fee: " + totalTxAmount.toString());
-            		
-            		TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
-            		
-            } else if (sender.getUnconfirmedBalanceNQT().subtract(totalTxAmount).compareTo(BigInteger.ZERO) < 0) {
-                	Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than unconfirmed balance! Rejecting Tx: " + transaction.getId());
-            		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(accountId) );
-            		Logger.logDebugMessage("Unconfirmed Balance: " + sender.getUnconfirmedBalanceNQT().toString());
-            		Logger.logDebugMessage("Sending amount + tx fee: " + totalTxAmount.toString());
-            		
-            		TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction);
-            
-            }
-        } // end for loop
+        		if(tempRDay != 0) {
+        			
+        			for (long accountID: currentAccountBalances.keySet()) {
+        				BigInteger currentBalance = currentAccountBalances.get(accountID);
+        				BigDecimal decBalHaeds = new BigDecimal(currentBalance);
+        				BigDecimal decPayment = decBalHaeds.multiply(BigDecimal.valueOf(tempRDay));
+        				BigInteger payment = decPayment.toBigInteger(); //will floor to 0 if less than 1.
+        				
+        				if (tempRDay < 0) {
+        					if (payment.compareTo(BigInteger.ZERO) == 0) {
+                    			payment = BigInteger.ONE.negate();
+                    		}
+                    } //if account's balance is too low such that interest is less than smallest denomination (1 haed),
+                    //if interest > 0 do nothing, if interest < 0 pay -1 haed.
+                    
+        				if (currentBalance.compareTo(BigInteger.ZERO) > 0) {
+        					currentAccountBalances.replace(accountID, currentBalance, currentBalance.add(payment));
+        				}
+        				
+        			}//end of for (long accountID...
+        		}//end of rDay!=0	
+        }// end of if (previousBlock... 
+ 
         
         
+        printAccountTable("  before processWaiting Transactions");
         
-        
-        
-        
-        TransactionProcessorImpl.getInstance().processWaitingTransactions();
+        TransactionProcessorImpl.getInstance().processWaitingTransactions();// processes from list waiting 
         SortedSet<UnconfirmedTransaction> sortedTransactions = selectUnconfirmedTransactions(duplicates, previousBlock, blockTimestamp);
         List<TransactionImpl> blockTransactions = new ArrayList<>();
         MessageDigest digest = Crypto.sha256();
         BigInteger totalAmountNQT = BigInteger.ZERO;
         BigInteger totalFeeNQT = BigInteger.ZERO;
+        BigInteger returnPot = BigInteger.ZERO;
         int payloadLength = 0;
         Logger.logDebugMessage("");
-        Logger.logDebugMessage("--- LIST OF TXes ---");
+        Logger.logDebugMessage("--- LIST OF TXes going into the block ---");
         for (UnconfirmedTransaction unconfirmedTransaction : sortedTransactions) {
             TransactionImpl transaction = unconfirmedTransaction.getTransaction();
+            
+            if (previousBlock.getFirstBlockOfDay() && !isFirstBlockOfNewDay && previousBlock.getDate().equals(today)) {
+            		long senderID = transaction.getSenderId();
+            		BigInteger txAmount = transaction.getAmountNQT().add(transaction.getFeeNQT());
+            		BigInteger senderBalance = currentAccountBalances.get(senderID);
+            		
+            		if (senderBalance.subtract(txAmount).compareTo(BigInteger.ZERO) < 0) {
+                         	Logger.logDebugMessage("ERROR! Sending amount and tx fee greater than UNCONFIRMED balance! Rejecting Tx: " + transaction.getId());
+                     		Logger.logDebugMessage("Offending Account: " + Crypto.rsEncode(senderID) );
+                     		Logger.logDebugMessage("Unconfirmed Balance: " + senderBalance.toString());
+                     		Logger.logDebugMessage("Sending amount + tx fee: " + txAmount.toString());
+                     		
+                     		TransactionProcessorImpl.getInstance().removeUnconfirmedTransaction(transaction); 
+                     		continue;
+            		}
+            		else {
+            			currentAccountBalances.replace(senderID, senderBalance, senderBalance.subtract(txAmount));
+            			returnPot = returnPot.add(txAmount);            			
+            		}
+            		
+            }
+            
             blockTransactions.add(transaction);
             Logger.logDebugMessage("Amount: " + transaction.getAmountNQT().toString());
             Logger.logDebugMessage("Sender: " + Crypto.rsEncode(transaction.getSenderId()) +
@@ -2061,6 +2148,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             totalFeeNQT = totalFeeNQT.add(transaction.getFeeNQT());
             payloadLength += transaction.getFullSize();
         }
+        
+        printAccountTable("  AFTER processWaiting Transactions");
+        
         byte[] payloadHash = digest.digest();
         digest.update(previousBlock.getGenerationSignature());
         final byte[] publicKey = Crypto.getPublicKey(secretPhrase);
@@ -2068,14 +2158,47 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         byte[] previousBlockHash = Crypto.sha256().digest(previousBlock.bytes());
 
         BlockImpl block;
+        
+        
 
         try {
 //        	
 //            block.setDate(NtpTime.getCurrentDate());
 //          //validate/add sum of forging balances of each forger.  
 //            block.calculateTotalForgingHoldings(); 
-            
-            if (!isFirstBlockOfNewDay) {
+	        if (previousBlock.getFirstBlockOfDay() && !isFirstBlockOfNewDay && previousBlock.getDate().equals(today)) {
+		        
+	        		GetAllForgersBalances.getAllForgerIds();
+	        		BigInteger currentSupplyCurrent = BigInteger.ZERO;
+	            BigInteger currentForgingBalance = BigInteger.ZERO;
+//	            GetAllForgersBalances.
+	            Logger.logDebugMessage("");
+	            for (long thisAcctId: currentAccountBalances.keySet()) {
+	            		BigInteger thisGuysBalance = currentAccountBalances.get(thisAcctId); 
+	            		currentSupplyCurrent = currentSupplyCurrent.add(thisGuysBalance);
+	            	
+	            		Logger.logDebugMessage("accountId: " + thisAcctId + " balance: " + thisGuysBalance);
+	            		
+	            		if (GetAllForgersBalances.allForgerIds.contains(thisAcctId)) {
+	            			currentForgingBalance = currentForgingBalance.add(thisGuysBalance);
+	            			Logger.logDebugMessage("Currently forging: " + Crypto.rsEncode(thisAcctId));
+	            		}
+	            }
+	            
+	            currentSupplyCurrent = currentSupplyCurrent.add(returnPot);
+	            
+	            Logger.logDebugMessage("");
+	            Logger.logDebugMessage("currentSC: " + currentSupplyCurrent);
+	            Logger.logDebugMessage("currentFB: " + currentForgingBalance);
+	            Logger.logDebugMessage("");
+	        	
+	        		block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
+	                        payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
+	                        secretPhrase, today, currentForgingBalance,
+	                        CalculateInterestAndG.getLatestRYear(), currentSupplyCurrent, CalculateReward.getBlockReward(), false);
+    		
+	        }
+	        	else if (!isFirstBlockOfNewDay) {
 //	            block.setBlockReward(CalculateReward.getBlockReward());
 //	            block.setInterestRateYearly(CalculateInterestAndG.getLatestRYear());
 	            
@@ -2084,7 +2207,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                         secretPhrase, today, GetAllForgersBalances.getSumAllForgersBalances(),
                         CalculateInterestAndG.getLatestRYear(), CalculateInterestAndG.getSupplyCurrent(), CalculateReward.getBlockReward(), false);
     		
-	            
+	        }
 	            
 //	            if (!previousBlock.getFirstBlockOfDay()) {
 ////	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
@@ -2092,7 +2215,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 ////	            		CalculateInterestAndG.giveInterest(block.getDate());
 ////	            		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
 //	            }
-            } else {
+            else {
 //            		block.setFirstBlockOfDay();
 //            		CalculateInterestAndG.calculateRYear(block.getDate());
 //            		block.setBlockReward(CalculateReward.calculateReward(block.getDate()));

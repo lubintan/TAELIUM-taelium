@@ -47,14 +47,14 @@ public final class Constants {
     public static final double K = 0.01/(365.0*(double)DAILY_BLOCKS);
 //  K = (0.125/(365*NUM_OF_DAILY_BLOCKS))
     public static final BigInteger INITIAL_REWARD = BigDecimal.valueOf(2.5).multiply(new BigDecimal(ONE_TAEL)).toBigInteger(); // 2.5 TAELS
-    public static final double INITIAL_R_YEAR = 0.05; 
+    public static final double INITIAL_R_YEAR = 0.05;//0.05 
     public static final double INTEREST_DIVISOR = 365.0;
     public static final double R_MAX = 0.2;
     public static final double R_MIN = -0.1;
 //    public static final double R_DEFAULT = 0.05;
     public static final long H = 1000000; 
     public static final int PRECISION = 8; //dec places
-    public static final BigInteger MIN_FEE_TAELS = BigInteger.ONE;
+    public static final BigInteger MIN_FEE_TAELS = BigInteger.ZERO;
     public static final BigInteger MIN_FEE_HAEDS = taelsToHaeds(MIN_FEE_TAELS);
     public static final BigInteger STD_FEE = BigInteger.valueOf(10000);
     
