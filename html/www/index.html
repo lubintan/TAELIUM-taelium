@@ -29,23 +29,23 @@
         <style id="user_header_style" type="text/css"></style>
         <style id="user_sidebar_style" type="text/css"></style>
         <style id="user_boxes_style" type="text/css"></style>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+    		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic">
+    		<link rel="stylesheet" href="css/user.css">
+    		<link rel="stylesheet" href="css/header.css">
+    		<link rel="stylesheet" href="fonts/simple-line-icons.min.css">
 
-        <!-- cordova script (this will be missing unless deployed as a mobile application) -->
-        <script src="cordova.js"></script>
     </head>
     <body class="lockscreen fixed loading">
         <div id="progress-container">
-            <img src="/img/nxt-load-progress-logo-circle.png">
             <div id="progress" style="width: 0%" data-total="45" data-done="0">
-                <div id="img-wrapper"><img src="/img/nxt-load-progress-logo-full.png"></div>
             </div>
         </div>
         <div id="page" class="wrapper row-offcanvas row-offcanvas-left">
-            <aside id="sidebar" class="left-side sidebar-offcanvas">
-                <!-- Sidebar moved to html/sidebar.html -->
-            </aside>
-            <aside id="content" class="right-side">
-                <!-- Pages moved to own files in html/pages/ -->
+          <!--   <aside id="sidebar" class="left-side sidebar-offcanvas">
+                Sidebar moved to html/sidebar.html
+            </aside> -->
+           <aside id="content" class="right-side">
             </aside>
         </div>
 
@@ -93,8 +93,10 @@
         <script src="js/nrs.constants.js" type="text/javascript"></script>
         <script src="js/nrs.sitebuild.js" type="text/javascript"></script>
         <script src="js/nrs.simpleview.js" type="text/javascript"></script>
+        
 
         <script class="sitebuild" src="js/nrs.sitebuild.helper.js" type="text/javascript" data-action="loadLockscreenHTML" data-path="html/lockscreen.html"></script>
+        <script class="sitebuild" src="js/nrs.sitebuild.helper.js" type="text/javascript" data-action="passwordLoginHTML" data-path="html/pages/passwordLogin.html"></script>
         <script class="sitebuild" src="js/nrs.sitebuild.helper.js" type="text/javascript" data-action="loadHeaderHTML" data-path="html/header.html"></script>
         <script class="sitebuild" src="js/nrs.sitebuild.helper.js" type="text/javascript" data-action="loadSidebarHTML" data-path="html/sidebar.html"></script>
         <script class="sitebuild" src="js/nrs.sitebuild.helper.js" type="text/javascript" data-action="loadSidebarContextHTML" data-path="html/sidebar_context.html"></script>

@@ -20,6 +20,7 @@ import nxt.Account.ControlType;
 import nxt.AccountLedger.LedgerEvent;
 import nxt.Attachment.AbstractAttachment;
 import nxt.NxtException.ValidationException;
+import nxt.crypto.Crypto;
 import nxt.util.Convert;
 import nxt.util.Logger;
 import org.apache.tika.Tika;
@@ -176,11 +177,32 @@ public abstract class TransactionType {
         }
         BigInteger totalAmountNQT = amountNQT.add(feeNQT);
         if (senderAccount.getUnconfirmedBalanceNQT().compareTo(totalAmountNQT) < 0) {
+        		Logger.logDebugMessage("");
+        		Logger.logDebugMessage("===========================================");
+        		Logger.logDebugMessage("============= Double Spender ==============");
+        		Logger.logDebugMessage("Account: " + Crypto.rsEncode(senderAccount.getId()));
+        		Logger.logDebugMessage("Account ID: " + senderAccount.getId());
+        		Logger.logDebugMessage("Unconfirmed Balance: " + senderAccount.getUnconfirmedBalanceNQT());
+        		Logger.logDebugMessage("Confirmed Balance: " + senderAccount.getBalanceNQT());
+        		Logger.logDebugMessage("Total Amt: " + totalAmountNQT);
+        		Logger.logDebugMessage("===========================================");
+        		Logger.logDebugMessage("");
+
+
+        		
+        		
             return false;
         }
         senderAccount.addToUnconfirmedBalanceNQT(getLedgerEvent(), transaction.getId(), amountNQT.negate(), feeNQT.negate());
         if (!applyAttachmentUnconfirmed(transaction, senderAccount)) {
             senderAccount.addToUnconfirmedBalanceNQT(getLedgerEvent(), transaction.getId(), amountNQT, feeNQT);
+            
+            Logger.logDebugMessage("####################################");
+            Logger.logDebugMessage("NOT APPLY ATTACHMENT UNCONFIRMED!!!");
+            Logger.logDebugMessage("####################################");
+
+            
+            
             return false;
         }
         return true;

@@ -131,83 +131,83 @@ var NRS = (function(NRS, $) {
     };
 
 
-    function _appendToSidebar(menuHTML, id, desiredPosition) {
-        if ($('#' + id).length == 0) {
-            var inserted = false;
-            var sidebarMenu = $("#sidebar_menu");
-            $.each(sidebarMenu.find('> li'), function(key, elem) {
-                var compPos = $(elem).data("sidebarPosition");
-                if (!inserted && compPos && desiredPosition <= parseInt(compPos)) {
-                    $(menuHTML).insertBefore(elem);
-                    inserted = true;
-                }
-            });
-            if (!inserted) {
-                sidebarMenu.append(menuHTML);
-            }
-            sidebarMenu.find("[data-i18n]").i18n();
-        }
-    }
-
-    NRS.initSidebarMenu = function() {
-        $("#sidebar_menu").html("");
-    };
-
-    NRS.addSimpleSidebarMenuItem = function(options) {
-        if (!NRS.isApiEnabled(options.depends)) {
-            return;
-        }
-        var menuHTML = '<li id="' + options["id"] + '" class="sm_simple" data-sidebar-position="' + options["desiredPosition"] + '">';
-        menuHTML += '<a href="#" data-page="' + options["page"] + '">' + options["titleHTML"] + '</a></li>';
-        _appendToSidebar(menuHTML, options["id"], options["desiredPosition"]);
-
-    };
-
-    NRS.addTreeviewSidebarMenuItem = function(options) {
-        if (!NRS.isApiEnabled(options.depends)) {
-            return;
-        }
-        var menuHTML = '<li class="treeview" id="' + options["id"] + '" class="sm_treeview" data-sidebar-position="' + options["desiredPosition"] + '">';
-        menuHTML += '<a href="#" data-page="' + options["page"] + '">' + options["titleHTML"] + '<i class="fa pull-right fa-angle-right" style="padding-top:3px"></i></a>';
-        menuHTML += '<ul class="treeview-menu" style="display: none;"></ul>';
-        menuHTML += '</li>';
-        _appendToSidebar(menuHTML, options["id"], options["desiredPosition"]);
-    };
-    
-    NRS.appendMenuItemToTSMenuItem = function(itemId, options) {
-        if (!NRS.isApiEnabled(options.depends)) {
-            return;
-        }
-        var parentMenu = $('#' + itemId + ' ul.treeview-menu');
-        if (parentMenu.length == 0) {
-            return;
-        }
-        var menuHTML ='<li class="sm_treeview_submenu"><a href="#" ';
-        if (options["type"] == 'PAGE' && options["page"]) {
-            menuHTML += 'data-page="' + options["page"] + '"';
-        } else if (options["type"] == 'MODAL' && options["modalId"]) {
-            menuHTML += 'data-toggle="modal" data-target="#' + options["modalId"] + '"';
-        } else {
-            return false;
-        }
-        menuHTML += '><i class="fa fa-angle-double-right"></i> ';
-        menuHTML += options["titleHTML"] + ' <span class="badge" style="display:none;"></span></a></li>';
-        parentMenu.append(menuHTML);
-    };
-
-    NRS.appendSubHeaderToTSMenuItem = function(itemId, options) {
-        if (!NRS.isApiEnabled(options.depends)) {
-            return;
-        }
-        var parentMenu = $('#' + itemId + ' ul.treeview-menu');
-        if (parentMenu.length == 0) {
-            return;
-        }
-        var menuHTML ='<li class="sm_treeview_submenu" style="background-color:#eee;color:#777;padding-top:3px;padding-bottom:3px;">';
-        menuHTML += '<span class="sm_sub_header"><span style="display:inline-block;width:20px;">&nbsp;</span> ';
-        menuHTML += options["titleHTML"] + ' </span></li>';
-        parentMenu.append(menuHTML);
-    };
+//    function _appendToSidebar(menuHTML, id, desiredPosition) {
+//        if ($('#' + id).length == 0) {
+//            var inserted = false;
+//            var sidebarMenu = $("#sidebar_menu");
+//            $.each(sidebarMenu.find('> li'), function(key, elem) {
+//                var compPos = $(elem).data("sidebarPosition");
+//                if (!inserted && compPos && desiredPosition <= parseInt(compPos)) {
+//                    $(menuHTML).insertBefore(elem);
+//                    inserted = true;
+//                }
+//            });
+//            if (!inserted) {
+//                sidebarMenu.append(menuHTML);
+//            }
+//            sidebarMenu.find("[data-i18n]").i18n();
+//        }
+//    }
+//
+//    NRS.initSidebarMenu = function() {
+//        $("#sidebar_menu").html("");
+//    };
+//
+//    NRS.addSimpleSidebarMenuItem = function(options) {
+//        if (!NRS.isApiEnabled(options.depends)) {
+//            return;
+//        }
+//        var menuHTML = '<li id="' + options["id"] + '" class="sm_simple" data-sidebar-position="' + options["desiredPosition"] + '">';
+//        menuHTML += '<a href="#" data-page="' + options["page"] + '">' + options["titleHTML"] + '</a></li>';
+//        _appendToSidebar(menuHTML, options["id"], options["desiredPosition"]);
+//
+//    };
+//
+//    NRS.addTreeviewSidebarMenuItem = function(options) {
+//        if (!NRS.isApiEnabled(options.depends)) {
+//            return;
+//        }
+//        var menuHTML = '<li class="treeview" id="' + options["id"] + '" class="sm_treeview" data-sidebar-position="' + options["desiredPosition"] + '">';
+//        menuHTML += '<a href="#" data-page="' + options["page"] + '">' + options["titleHTML"] + '<i class="fa pull-right fa-angle-right" style="padding-top:3px"></i></a>';
+//        menuHTML += '<ul class="treeview-menu" style="display: none;"></ul>';
+//        menuHTML += '</li>';
+//        _appendToSidebar(menuHTML, options["id"], options["desiredPosition"]);
+//    };
+//    
+//    NRS.appendMenuItemToTSMenuItem = function(itemId, options) {
+//        if (!NRS.isApiEnabled(options.depends)) {
+//            return;
+//        }
+//        var parentMenu = $('#' + itemId + ' ul.treeview-menu');
+//        if (parentMenu.length == 0) {
+//            return;
+//        }
+//        var menuHTML ='<li class="sm_treeview_submenu"><a href="#" ';
+//        if (options["type"] == 'PAGE' && options["page"]) {
+//            menuHTML += 'data-page="' + options["page"] + '"';
+//        } else if (options["type"] == 'MODAL' && options["modalId"]) {
+//            menuHTML += 'data-toggle="modal" data-target="#' + options["modalId"] + '"';
+//        } else {
+//            return false;
+//        }
+//        menuHTML += '><i class="fa fa-angle-double-right"></i> ';
+//        menuHTML += options["titleHTML"] + ' <span class="badge" style="display:none;"></span></a></li>';
+//        parentMenu.append(menuHTML);
+//    };
+//
+//    NRS.appendSubHeaderToTSMenuItem = function(itemId, options) {
+//        if (!NRS.isApiEnabled(options.depends)) {
+//            return;
+//        }
+//        var parentMenu = $('#' + itemId + ' ul.treeview-menu');
+//        if (parentMenu.length == 0) {
+//            return;
+//        }
+//        var menuHTML ='<li class="sm_treeview_submenu" style="background-color:#eee;color:#777;padding-top:3px;padding-bottom:3px;">';
+//        menuHTML += '<span class="sm_sub_header"><span style="display:inline-block;width:20px;">&nbsp;</span> ';
+//        menuHTML += options["titleHTML"] + ' </span></li>';
+//        parentMenu.append(menuHTML);
+//    };
 
     NRS.getUrlParameter = function (param) {
 		var url = window.location.search.substring(1);

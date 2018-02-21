@@ -338,17 +338,17 @@ final class BlockImpl implements Block {
         json.put("blockReward", blockReward.toString());
         json.put("firstBlockOfDay", firstBlockOfDay.toString());
        
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-        Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
-        Logger.logDebugMessage("Timestamp: " + timestamp);
-        Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
-        Logger.logDebugMessage("Date2: " + date.toString());
-        Logger.logDebugMessage("Date3: " + date.getTime());
-        Logger.logDebugMessage("Supply Current: " + supplyCurrent);
-        Logger.logDebugMessage("Latest R Year: " + latestRYear);
-        Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
+//        Logger.logDebugMessage("Timestamp: " + timestamp);
+//        Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+//        Logger.logDebugMessage("Date2: " + date.toString());
+//        Logger.logDebugMessage("Date3: " + date.getTime());
+//        Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+//        Logger.logDebugMessage("Latest R Year: " + latestRYear);
+//        Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
         
         
         
@@ -380,18 +380,18 @@ final class BlockImpl implements Block {
             double latestRYear = latestRYearDec.doubleValue();
             Boolean firstBlockOfDay = Boolean.valueOf(((String)blockData.get("firstBlockOfDay")));
             
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-            Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
-            Logger.logDebugMessage("Timestamp: " + timestamp);
-            Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
-            Logger.logDebugMessage("Date2: " + date.toString());
-            Logger.logDebugMessage("Date3: " + date.getTime());
-            Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
-            Logger.logDebugMessage("Supply Current: " + supplyCurrent);
-            Logger.logDebugMessage("Latest R Year: " + latestRYear);
-            Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
+//            Logger.logDebugMessage("Timestamp: " + timestamp);
+//            Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+//            Logger.logDebugMessage("Date2: " + date.toString());
+//            Logger.logDebugMessage("Date3: " + date.getTime());
+//            Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
+//            Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+//            Logger.logDebugMessage("Latest R Year: " + latestRYear);
+//            Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             BlockImpl block = new BlockImpl(version, timestamp, previousBlock, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash, generatorPublicKey,
                     generationSignature, blockSignature, previousBlockHash, blockTransactions, date, totalForgingHoldings,
                     latestRYear, supplyCurrent, blockReward, firstBlockOfDay);
@@ -519,7 +519,7 @@ final class BlockImpl implements Block {
     }
 
     boolean verifyGenerationSignature() throws BlockchainProcessor.BlockOutOfOrderException {
-//    		Logger.logDebugMessage("in VERIFY SIGNATURE");
+    		Logger.logDebugMessage("in VERIFY SIGNATURE");
         try {
 
             BlockImpl previousBlock = BlockchainImpl.getInstance().getBlock(getPreviousBlockId());
@@ -530,26 +530,34 @@ final class BlockImpl implements Block {
             Account account = Account.getAccount(getGeneratorId());
             BigInteger effectiveBalance = account == null ? BigInteger.ZERO : account.getEffectiveBalanceNXT();
             
-//            Logger.logDebugMessage("balance: " + effectiveBalance);
             
+
             if (effectiveBalance.compareTo(BigInteger.ZERO) <= 0) {
-                return false;
+            	Logger.logDebugMessage("balance: " + effectiveBalance);
+            		return false;
             }
 
             MessageDigest digest = Crypto.sha256();
             digest.update(previousBlock.generationSignature);
             byte[] generationSignatureHash = digest.digest(getGeneratorPublicKey());
             
-//            Logger.logDebugMessage(String.valueOf(!Arrays.equals(generationSignature, generationSignatureHash)).toUpperCase());
-            
             if (!Arrays.equals(generationSignature, generationSignatureHash)) {
-                return false;
+            		Logger.logDebugMessage("");
+                Logger.logDebugMessage("generationSig: " + generationSignature);
+                Logger.logDebugMessage("generationSigHash: " + generationSignatureHash);
+                Logger.logDebugMessage("Comparing Gen Signatures: " + String.valueOf(Arrays.equals(generationSignature, generationSignatureHash)).toUpperCase());
+                
+                Logger.logDebugMessage("Gen ID: " + Crypto.rsEncode(generatorId));
+                Logger.logDebugMessage("prevBlockGensig: " + previousBlock.generationSignature);
+                Logger.logDebugMessage("Gen Pub Key: " + getGeneratorPublicKey());
+            	
+            	
+            		return false;
             }
-
+            
+            
             BigInteger hit = new BigInteger(1, new byte[]{generationSignatureHash[7], generationSignatureHash[6], generationSignatureHash[5], generationSignatureHash[4], generationSignatureHash[3], generationSignatureHash[2], generationSignatureHash[1], generationSignatureHash[0]});
-//            Logger.logDebugMessage("REACHED HERE!");
-//            
-//            Logger.logDebugMessage(String.valueOf(Generator.verifyHit(hit, BigInteger.valueOf(effectiveBalance), previousBlock, timestamp)));
+            Logger.logDebugMessage("verifyHit: " + String.valueOf(Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp)));
             return Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp);
 
         } catch (RuntimeException e) {

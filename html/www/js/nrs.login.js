@@ -20,6 +20,14 @@
 var NRS = (function(NRS, $, undefined) {
 	NRS.newlyCreatedAccount = false;
 
+	
+//	NRS.loginWithPassword = function(){
+//		$("#lockscreen").hide();
+////		$("body, html").removeClass("lockscreen");
+//		$("#login_error").html("").hide();
+//		NRS.goToPage("passwordLogin");
+//	};
+	
 	NRS.allowLoginViaEnter = function() {
 		$("#login_account_other").keypress(function(e) {
 			if (e.which == '13') {
@@ -46,23 +54,25 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.showLoginScreen = function() {
+		$("#passwordLogin").hide();
 		$("#account_phrase_custom_panel, #account_phrase_generator_panel, #welcome_panel, #custom_passphrase_link").hide();
 		$("#account_phrase_custom_panel").find(":input:not(:button):not([type=submit])").val("");
 		$("#account_phrase_generator_panel").find(":input:not(:button):not([type=submit])").val("");
         $("#login_account_other").mask(NRS.getAccountMask("*"));
-		if (NRS.isMobileApp()) {
-            $(".mobile-only").show();
-        }
-        $("#login_panel").show();
+//		if (NRS.isMobileApp()) {
+//            $(".mobile-only").show();
+//        }
+//        $("#login_panel").show();
+        $("#opening").show();
 	};
 
-	NRS.showWelcomeScreen = function() {
-		$("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
-        if (NRS.isMobileApp()) {
-            $(".mobile-only").show();
-        }
-		$("#welcome_panel").show();
-	};
+//	NRS.showWelcomeScreen = function() {
+//		$("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
+//        if (NRS.isMobileApp()) {
+//            $(".mobile-only").show();
+//        }
+//		$("#welcome_panel").show();
+//	};
 
     NRS.createPassphraseToConfirmPassphrase = function() {
         if ($("#confirm_passphrase_warning").is(":checked")) {
@@ -234,7 +244,7 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
     $("#loginButtons").find(".btn").click(function (e) {
-        e.preventDefault();
+    		e.preventDefault();
         var type = $(this).data("login-type");
         var readerId = $(this).data("reader");
         var reader = $("#" + readerId);
@@ -245,9 +255,11 @@ var NRS = (function(NRS, $, undefined) {
             NRS.listAccounts();
             $('#login_password').parent().hide();
         } else if (type == "password") {
-            $('#login_account_container').hide();
-            $('#login_account_container_other').hide();
-            $('#login_password').parent().show();
+//            $('#login_account_container').hide();
+//            $('#login_account_container_other').hide();
+        		$(opening).hide();
+//            $('#login_password').parent().show();
+        		$(passwordLogin).show()
         } else if (type == "scan" && !reader.is(':visible')) {
             NRS.scanQRCode(readerId, function(text) {
                 var nxtAddress = new NxtAddress();
@@ -441,7 +453,7 @@ var NRS = (function(NRS, $, undefined) {
 							});
 						}
 					}, isAccountSwitch);
-					NRS.initSidebarMenu();
+//					NRS.initSidebarMenu();
 					NRS.unlock();
 
 					if (NRS.isOutdated) {
@@ -476,7 +488,7 @@ var NRS = (function(NRS, $, undefined) {
 					});
 
 					$(".sidebar .treeview").tree();
-					$('#dashboard_link').find('a').addClass("ignore").click();
+//					$('#dashboard_link').find('a').addClass("ignore").click();
 
 					var accounts;
 					if (rememberMe.is(":checked") || NRS.newlyCreatedAccount) {

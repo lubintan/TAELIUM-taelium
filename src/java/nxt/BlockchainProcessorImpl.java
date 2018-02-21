@@ -162,7 +162,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         }
 
         private void downloadPeer() throws InterruptedException {
-            Logger.logDebugMessage("");
+//            Logger.logDebugMessage("");
             Logger.logDebugMessage("<<<<<<<< DOWNLOAD PEER SECTION >>>>>>>");
         	
         	
@@ -172,23 +172,25 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                         defaultNumberOfForkConfirmations : Math.min(1, defaultNumberOfForkConfirmations);
                 connectedPublicPeers = Peers.getPublicPeers(Peer.State.CONNECTED, true);
                 if (connectedPublicPeers.size() <= numberOfForkConfirmations) {
-                    return;
+                    Logger.logDebugMessage("connectedPublicPeers size: " + connectedPublicPeers.size()
+                    + "  numberOfForkConfs: " + numberOfForkConfirmations);
+                		return;
                 }
                 peerHasMore = true;
                 final Peer peer = Peers.getWeightedPeer(connectedPublicPeers);
                 if (peer == null) {
+                		Logger.logDebugMessage("Peer = null");
                     return;
                 }
                 JSONObject response = peer.send(getCumulativeDifficultyRequest);
                 if (response == null) {
+                		Logger.logDebugMessage("Response = null, Peer: "+ peer.getAnnouncedAddress());
                     return;
                 }
                 BigInteger curCumulativeDifficulty = blockchain.getLastBlock().getCumulativeDifficulty();
                 String peerCumulativeDifficulty = (String) response.get("cumulativeDifficulty");
                 if (peerCumulativeDifficulty == null) {
-                    Logger.logDebugMessage("COULD NOT GET PEER's DIFFICULTY--------------");
-                    Logger.logDebugMessage("");
-                	
+                    Logger.logDebugMessage("COULD NOT GET PEER's DIFFICULTY, Peer: " + peer.getAnnouncedAddress());                	
                 		return;
                 }
                 BigInteger betterCumulativeDifficulty = new BigInteger(peerCumulativeDifficulty);
@@ -196,9 +198,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 //so if betterCumulativeDifficulty < curCumulativeDifficulty, will return.
                 //ie. if peer's cumulativeDifficulty smaller, stop downloadPeer()
                 if (betterCumulativeDifficulty.compareTo(curCumulativeDifficulty) < 0) { 
-                		Logger.logDebugMessage("PEER's CD LOWER------------------------------");
-                    Logger.logDebugMessage("");
-                	
+                		Logger.logDebugMessage("PEER's CD LOWER, Peer: " + peer.getAnnouncedAddress());                	
                 		return;
                 }
                 if (response.get("blockchainHeight") != null) {
@@ -206,8 +206,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     lastBlockchainFeederHeight = ((Long) response.get("blockchainHeight")).intValue();
                 }
                 if (betterCumulativeDifficulty.equals(curCumulativeDifficulty)) {// peer and node same difficulty
-                		Logger.logDebugMessage("PEER's CD SAME------------------------------");
-                    Logger.logDebugMessage("");
+                		Logger.logDebugMessage("PEER's CD SAME, Peer: " + peer.getAnnouncedAddress());
                 		return;
                 }
 
@@ -217,9 +216,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     commonMilestoneBlockId = getCommonMilestoneBlockId(peer);
                 }
                 if (commonMilestoneBlockId == 0 || !peerHasMore) {
-                		Logger.logDebugMessage("PEER DOES NOT HAVE MORE BLOCKS!------------------------------");
+                		Logger.logDebugMessage("PEER DOES NOT HAVE MORE BLOCKS!, Peer: " + peer.getAnnouncedAddress());
                 		Logger.logDebugMessage("commonMileStoneBlockId: " + commonMilestoneBlockId);
-                    Logger.logDebugMessage("");
                 		return;
                 }
 
@@ -228,7 +226,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     if (commonMilestoneBlockId == genesisBlockId) {
                         Logger.logInfoMessage(String.format("Cannot load blocks after genesis block %d from peer %s, perhaps using different Genesis block",
                                 commonMilestoneBlockId, peer.getAnnouncedAddress()));
+                        Logger.logDebugMessage("Peer: " + peer.getAnnouncedAddress());
                     }
+                    Logger.logDebugMessage("chainBlockIds Size: " + chainBlockIds.size() + "peerHasMore: " + peerHasMore
+                    		+ "  Peer: " + peer.getAnnouncedAddress());
                     return;
                 }
 
@@ -236,21 +237,21 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 final Block commonBlock = blockchain.getBlock(commonBlockId);
                 if (commonBlock == null || blockchain.getHeight() - commonBlock.getHeight() >= 720) {
                     if (commonBlock != null) {
-                        Logger.logDebugMessage(peer + " advertised chain with better difficulty, but the last common block is at height " + commonBlock.getHeight());
+                        Logger.logDebugMessage(peer.getAnnouncedAddress() + " advertised chain with better difficulty, but the last common block is at height " + commonBlock.getHeight());
                         Logger.logDebugMessage("^^^^^^    FORKED     ^^^^^^");
-                        Logger.logDebugMessage("");
                     }// peer has better difficulty because already done the checks above. 
                     // So now peer has better difficulty, but common chain shorter than this node's chain by more than 720 blocks.
                     return;
                 }
                 if (simulateEndlessDownload) {
                     isDownloading = true;
+                    Logger.logDebugMessage("endless download?");
                     return;
                 }
                 
                 // lastBlockchainFeederHeight = peer's current chain height
                 if (!isDownloading && lastBlockchainFeederHeight - commonBlock.getHeight() > 10) {
-                    Logger.logMessage("Blockchain download in progress");
+                    Logger.logMessage("Blockchain download in progress| Peer: " + peer.getAnnouncedAddress());
                     isDownloading = true;
                 }
 
@@ -258,18 +259,24 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 try {
                     if (betterCumulativeDifficulty.compareTo(blockchain.getLastBlock().getCumulativeDifficulty()) <= 0) {
                         Logger.logDebugMessage(" ~~~~~~ Peer's CD <= Local Prev Block CD ~~~~~~~~~");
-                        Logger.logDebugMessage("");
+                        Logger.logDebugMessage("Peer: " + peer.getAnnouncedAddress() );
                     	
                     		return; //end if peer's cumulative difficulty less than or equals this node's cumulative difficulty.
                     }
                     long lastBlockId = blockchain.getLastBlock().getId();
                     
+                    
+                    
                     //****** download happens here *********//
+                    Logger.logDebugMessage("######## Downloading Blockchain from Peer: " + peer.getAnnouncedAddress());
                     downloadBlockchain(peer, commonBlock, commonBlock.getHeight());
                     //*************************************//               
                     
-                    if (blockchain.getHeight() - commonBlock.getHeight() <= 10) {
-                        return; 
+                    if (blockchain.getHeight() - commonBlock.getHeight() <= Constants.maxDiffBlocksBeforeDownloading) {
+                        
+                    		Logger.logDebugMessage("After download, diff in height is now <= " + Constants.maxDiffBlocksBeforeDownloading);
+                    		Logger.logDebugMessage("Peer: " + peer.getAnnouncedAddress());
+                    		return; 
                         //if this node's chain (after downloading) is less than or equal 10 of the common block with peer, end here.
                         //ie. download considered complete.
                     }
@@ -310,6 +317,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                         Logger.logDebugMessage("DOWNLOADING FROM: " + otherPeer.getAnnouncedAddress());
                         
                       //****** download happens here *********//
+                        Logger.logDebugMessage("######## Downloading Blockchain from Peer: " + otherPeer.getAnnouncedAddress());
                         downloadBlockchain(otherPeer, otherPeerCommonBlock, commonBlock.getHeight());
                       //*************************************//
                     }
@@ -337,8 +345,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 Logger.logMessage("Error in blockchain download thread", e);
             }
         		
-        		Logger.logDebugMessage("<<<<<<<< END DOWNLOAD PEER SECTION >>>>>>>");
-        		Logger.logDebugMessage("");
+//        		Logger.logDebugMessage("<<<<<<<< END DOWNLOAD PEER SECTION >>>>>>>");
+//        		Logger.logDebugMessage("");
         		
         } //end downloadPeer method.
 
@@ -1385,13 +1393,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                   Boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight() > -1) && !CalculateInterestAndG.checkIfDateInDailyData(block.getDate()) &&
                 		  block.getDate().after(previousLastBlock.getDate());
                   
-                  Logger.logDebugMessage("");
-                  Logger.logDebugMessage("");
-                  Logger.logDebugMessage("Height: " + block.getHeight());
-                  Logger.logDebugMessage("block is later date than previous: " + block.getDate().after(previousLastBlock.getDate()));
-                  Logger.logDebugMessage("isfirstblock: " + isFirstBlockOfNewDay);
-                  Logger.logDebugMessage("");
-                  Logger.logDebugMessage("");
+//                  Logger.logDebugMessage("");
+//                  Logger.logDebugMessage("");
+//                  Logger.logDebugMessage("Height: " + block.getHeight());
+//                  Logger.logDebugMessage("block is later date than previous: " + block.getDate().after(previousLastBlock.getDate()));
+//                  Logger.logDebugMessage("isfirstblock: " + isFirstBlockOfNewDay);
+//                  Logger.logDebugMessage("");
+//                  Logger.logDebugMessage("");
                   if (isFirstBlockOfNewDay) {
                   		//perform these once per day.
                   		Logger.logDebugMessage("!!!!!!!!!!!!!  DAILY Calculations  !!!!!!!!!!!!");
@@ -1413,7 +1421,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 ////                	  			Nxt.getBlockchain().setTempHeight(false);
 //                	  			}
                 	  		CalculateInterestAndG.calculateGUpdateVault(block.getDate());
-                	  		Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
+//                	  		Logger.logDebugMessage("supply current 4: " + CalculateInterestAndG.getSupplyCurrent().toString());
 //    		        	    		block.setSupplyCurrent(CalculateInterestAndG.getSupplyCurrent().add(block.getBlockReward()));
                   }
                   
@@ -1456,12 +1464,12 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 		
                 }
                 
-                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockSupCurrent == localSupCurrent?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
-                Logger.logDebugMessage("block: " + block.getSupplyCurrent() + " | local: " + CalculateInterestAndG.getSupplyCurrent());
-                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockForging == localForging?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
-                Logger.logDebugMessage("block: " + block.getTotalForgingHoldings() + 
-                		" | local: " + GetAllForgersBalances.getSumAllForgersBalances());
-                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
+//                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockSupCurrent == localSupCurrent?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
+//                Logger.logDebugMessage("block: " + block.getSupplyCurrent() + " | local: " + CalculateInterestAndG.getSupplyCurrent());
+//                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚ blockForging == localForging?˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
+//                Logger.logDebugMessage("block: " + block.getTotalForgingHoldings() + 
+//                		" | local: " + GetAllForgersBalances.getSumAllForgersBalances());
+//                Logger.logDebugMessage("˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚˚");
                 
                 addBlock(block); //block saved to db here.
                 
@@ -1764,36 +1772,36 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     }
 
     public void printAccountTable(String befOrAft) {
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("PRINT ACCT TABLE" + befOrAft);
-    	
-    	String s = " | ";
-    	
-    	try (Connection con = Db.db.getConnection();
-	             PreparedStatement pstmt = con.prepareStatement("select * from account")) {
-	            try(ResultSet rs = pstmt.executeQuery()){
-	            	while (rs.next()) {
-	                  long ID = rs.getLong("ID");
-	                  BigInteger balance = rs.getBigDecimal("BALANCE").toBigInteger();
-	                  BigInteger unconfirmedBalance = rs.getBigDecimal("UNCONFIRMED_BALANCE").toBigInteger();
-	                  int height = rs.getInt("HEIGHT");
-	                  boolean latest = rs.getBoolean("LATEST");
-	                  if ((latest==true) | (latest !=true)) { 
-	                	  	Logger.logDebugMessage(Crypto.rsEncode(ID) + s + balance.toString() + s + unconfirmedBalance.toString()
-            		  			+ s + height + s + latest);  
-	                  }
-	            }
-            }
-	        catch (SQLException e) {
-	            throw new RuntimeException(e.toString(), e);
-	        }
-    		} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("PRINT ACCT TABLE" + befOrAft);
+//    	
+//    	String s = " | ";
+//    	
+//    	try (Connection con = Db.db.getConnection();
+//	             PreparedStatement pstmt = con.prepareStatement("select * from account")) {
+//	            try(ResultSet rs = pstmt.executeQuery()){
+//	            	while (rs.next()) {
+//	                  long ID = rs.getLong("ID");
+//	                  BigInteger balance = rs.getBigDecimal("BALANCE").toBigInteger();
+//	                  BigInteger unconfirmedBalance = rs.getBigDecimal("UNCONFIRMED_BALANCE").toBigInteger();
+//	                  int height = rs.getInt("HEIGHT");
+//	                  boolean latest = rs.getBoolean("LATEST");
+//	                  if ((latest==true) | (latest !=true)) { 
+//	                	  	Logger.logDebugMessage(Crypto.rsEncode(ID) + s + balance.toString() + s + unconfirmedBalance.toString()
+//            		  			+ s + height + s + latest);  
+//	                  }
+//	            }
+//            }
+//	        catch (SQLException e) {
+//	            throw new RuntimeException(e.toString(), e);
+//	        }
+//    		} catch (SQLException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
     }
     
     public HashMap<Long, BigInteger> getCurrentAccountBalances() {
@@ -1829,35 +1837,35 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     
     
     public void printDDTable(String befOrAft) {
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("PRINT DD TABLE: " + befOrAft);
-    	
-    	String s = " | ";
-    	
-    	try (Connection con = Db.db.getConnection();
-	             PreparedStatement pstmt = con.prepareStatement("select * from daily_data")) {
-	            try(ResultSet rs = pstmt.executeQuery()){
-	            	while (rs.next()) {
-	                  long ID = rs.getLong("BLOCK_ID");
-	                  BigInteger sc = rs.getBigDecimal("SUPPLY_CURRENT").toBigInteger();
-	                  BigInteger vault = rs.getBigDecimal("VAULT").toBigInteger();
-	                  int height = rs.getInt("HEIGHT");
-//	                  boolean latest = rs.getBoolean("LATEST");
-	                  Logger.logDebugMessage(ID + s + sc.toString() + s + vault.toString()
-            		  						+ s + height + s);  
-	                   
-	            }
-            }
-	        catch (SQLException e) {
-	            throw new RuntimeException(e.toString(), e);
-	        }
-    		} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-    	Logger.logDebugMessage("");
-    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("PRINT DD TABLE: " + befOrAft);
+//    	
+//    	String s = " | ";
+//    	
+//    	try (Connection con = Db.db.getConnection();
+//	             PreparedStatement pstmt = con.prepareStatement("select * from daily_data")) {
+//	            try(ResultSet rs = pstmt.executeQuery()){
+//	            	while (rs.next()) {
+//	                  long ID = rs.getLong("BLOCK_ID");
+//	                  BigInteger sc = rs.getBigDecimal("SUPPLY_CURRENT").toBigInteger();
+//	                  BigInteger vault = rs.getBigDecimal("VAULT").toBigInteger();
+//	                  int height = rs.getInt("HEIGHT");
+////	                  boolean latest = rs.getBoolean("LATEST");
+//	                  Logger.logDebugMessage(ID + s + sc.toString() + s + vault.toString()
+//            		  						+ s + height + s);  
+//	                   
+//	            }
+//            }
+//	        catch (SQLException e) {
+//	            throw new RuntimeException(e.toString(), e);
+//	        }
+//    		} catch (SQLException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//    	Logger.logDebugMessage("");
+//    	Logger.logDebugMessage("");
     }
     
     private static final Comparator<Transaction> finishingTransactionsComparator = Comparator
@@ -1898,6 +1906,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 
                 Logger.logDebugMessage("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             		Logger.logDebugMessage("%%%%%%%%%%%%% ROLLING BACK ! %%%%%%%%%%%%%%");
+                new Exception().printStackTrace();
+
                 		
                 for (DerivedDbTable table : derivedTables) {
 //                		Logger.logDebugMessage("Table Name: " + table.toString());

@@ -94,7 +94,7 @@ public class DebugDayTimer {
         }};
 
     static void init() {
-		ThreadPool.scheduleThread("DebugDayThread", DebugDayTimer.debugDayThread, 600);
+		ThreadPool.scheduleThread("DebugDayThread", DebugDayTimer.debugDayThread, 400);
     }
         
 }

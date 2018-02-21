@@ -218,8 +218,8 @@ public class CalculateInterestAndG {
 		
 //		BlockchainProcessorImpl.getInstance().printAccountTable("update super currently");
 		
-		Logger.logDebugMessage("");
-		Logger.logDebugMessage("~~~~~~~~~~~~~ UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
+//		Logger.logDebugMessage("");
+//		Logger.logDebugMessage("~~~~~~~~~~~~~ UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
 		
 		try (Connection con = Db.db.getConnection();
 	             PreparedStatement pstmt = con.prepareStatement("select * from account where latest=true	")) {
@@ -241,7 +241,7 @@ public class CalculateInterestAndG {
 	                    
                     }
 	            	
-	            			Logger.logDebugMessage("supplyCurrent From Account Table:" + totalSupplyCurrent);
+//	            			Logger.logDebugMessage("supplyCurrent From Account Table:" + totalSupplyCurrent);
 	                }
 	            }
 	            
@@ -249,8 +249,8 @@ public class CalculateInterestAndG {
 	            throw new RuntimeException(e.toString(), e);
 	        }		
 		
-		Logger.logDebugMessage("~~~~~~~~~~~~~ END UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
-		Logger.logDebugMessage("");
+//		Logger.logDebugMessage("~~~~~~~~~~~~~ END UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
+//		Logger.logDebugMessage("");
 				
 
 		

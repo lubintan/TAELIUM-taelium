@@ -37,6 +37,7 @@
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
+	
 	NRS.client = "";
 	NRS.state = {};
 	NRS.blocks = [];
@@ -655,6 +656,7 @@ var NRS = (function(NRS, $, undefined) {
 
 	$("button.goto-page, a.goto-page").click(function(event) {
 		event.preventDefault();
+		
 		NRS.goToPage($(this).data("page"), undefined, $(this).data("subpage"));
 	});
 
@@ -664,8 +666,10 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.goToPage = function(page, callback, subpage) {
+		console.log("ARRIVED HERE====================");
 		var $link = $("ul.sidebar-menu a[data-page=" + page + "]");
-
+//		console.log(page);
+//		console.log($link);
 		if ($link.length > 1) {
 			if ($link.last().is(":visible")) {
 				$link = $link.last();

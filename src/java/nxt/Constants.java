@@ -57,6 +57,7 @@ public final class Constants {
     public static final BigInteger MIN_FEE_TAELS = BigInteger.ZERO;
     public static final BigInteger MIN_FEE_HAEDS = taelsToHaeds(MIN_FEE_TAELS);
     public static final BigInteger STD_FEE = BigInteger.valueOf(10000);
+    public static final int maxDiffBlocksBeforeDownloading = 0;
     
     public static final int EFF_BAL_HEIGHT = 1440;
     public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME).multiply(MAX_BALANCE_TAELS)); //153722867;
