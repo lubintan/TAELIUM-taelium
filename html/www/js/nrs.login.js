@@ -220,7 +220,7 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.accountInfo = {};
 
 		// Reset other functional state
-		$("#account_balance, #account_balance_sidebar, #account_nr_assets, #account_assets_balance, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
+		$("#account_balance, #account_balance_sidebar, #account_confirmed_balance_sidebar, #account_nr_assets, #account_assets_balance, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
 		$("#id_search").find("input[name=q]").val("");
 		NRS.resetAssetExchangeState();
 		NRS.resetPollsState();
@@ -237,10 +237,12 @@ var NRS = (function(NRS, $, undefined) {
 		});
 
 		// Return to the dashboard and notify the user
+		
 		NRS.goToPage("dashboard");
         NRS.login(false, account, function() {
             $.growl($.t("switched_to_account", { account: account }))
         }, true);
+        
 	};
 
     $("#loginButtons").find(".btn").click(function (e) {
@@ -454,6 +456,8 @@ var NRS = (function(NRS, $, undefined) {
 						}
 					}, isAccountSwitch);
 //					NRS.initSidebarMenu();
+					
+//					NRS.loadWoGoingToPage("ledger");
 					NRS.unlock();
 
 					if (NRS.isOutdated) {
@@ -523,7 +527,7 @@ var NRS = (function(NRS, $, undefined) {
 				});
 			});
 		});
-	};
+	};//end NRS.login()
 
 	$("#logout_button_container").on("show.bs.dropdown", function() {
 		if (NRS.forgingStatus != NRS.constants.FORGING) {

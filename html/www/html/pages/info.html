@@ -1,0 +1,90 @@
+<div id="peers_page" class="page">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taelium Info</title>
+</head>
+
+<body>
+            <div class="row">
+                <div class="col-md-12" style="height:195px;"><span class="label label-default" style="margin:auto;display:block;font-size:99px;margin-top:2%;">Taelium Info</span></div>
+            </div>
+            
+	        	<div class="row">
+				<div class="col-md-12" style="margin:auto;display:block;height:80px">Current Blockchain Height: 
+				<span class="badge-active" style="padding:3px;" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height"></span>
+				</div>
+	    		</div>
+	    		
+	    		<div class="row">
+				<div class="col-md-12" style="margin:auto;display:block;height:80px">
+                    <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" style="display:none;font-size:13px;" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status"><i class="fa fa-circle" style="font-size:12px;"></i> <span data-18n="connected">Connected</span></a>
+                    <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom" style="display:none;font-size:13px;">
+                        <i class="fa fa-circle" style="font-size:12px;"></i> <span data-18n="forging">Forging</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row">  
+            		<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Yearly Interest Rate:&nbsp;</span></div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+	            		<span class="label label-default" id="rYear" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
+            		</div>
+            		<div class="col-md-3" style="margin:auto;display:block;height:80px;">
+            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">%</span>
+            		</div>
+    			</div>
+    			
+			<div class="row">  
+				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Average Block Time:&nbsp;</span></div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+	            		<span class="label label-default" id="avgBlockTime" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
+	            		</div>
+            		<div class="col-md-3" style="margin:auto;display:block;height:80px;">
+            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">s</span>
+            		</div>
+    			</div>
+    			
+    			<div class="row">  
+    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Today's Reward Per Block:&nbsp;</span></div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;"> 
+	            		<span class="label label-default" id="blockReward" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
+	            </div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
+            		</div>
+    			</div>
+    			
+    			<div class="row">  
+    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Current Supply:&nbsp;</span></div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+	            		<span class="label label-default" id="supplyCurrent" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Taels</span>
+	            </div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
+            		</div>
+    			</div>
+    			
+    			<div class="row">  
+    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Current Taels Being Staked:&nbsp;</span></div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+	            		<span class="label label-default" id="totalForgingHoldings" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Taels</span>
+	            </div>
+	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
+            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
+            		</div>
+    			</div>
+    
+    
+    
+    
+	<div class="container">
+	    <div class="row">
+	        <div class="col-md-12" style="height:17px;"></div>
+	    </div>
+	</div>
+ 
+</body>
+
+</div>
