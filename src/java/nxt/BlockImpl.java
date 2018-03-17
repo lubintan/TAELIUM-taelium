@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 final class BlockImpl implements Block {
@@ -338,17 +339,22 @@ final class BlockImpl implements Block {
         json.put("blockReward", blockReward.toString());
         json.put("firstBlockOfDay", firstBlockOfDay.toString());
        
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-        Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
-        Logger.logDebugMessage("Timestamp: " + timestamp);
-        Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
-        Logger.logDebugMessage("Date2: " + date.toString());
-        Logger.logDebugMessage("Date3: " + date.getTime());
-        Logger.logDebugMessage("Supply Current: " + supplyCurrent);
-        Logger.logDebugMessage("Latest R Year: " + latestRYear);
-        Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
-        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\     PUTTING BLOCK     \\/\\/\\/\\/\\");
+//        Logger.logDebugMessage("Effective Balances at Height: " + height);
+//        Logger.logDebugMessage("Block ID: " + id);
+//        
+//        Logger.logDebugMessage("Timestamp: " + timestamp);
+//        Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+//        Logger.logDebugMessage("Date2: " + date.toString());
+//        Logger.logDebugMessage("Date3: " + date.getTime());
+//        Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+//        Logger.logDebugMessage("Latest R Year: " + latestRYear);
+//        Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
+        
+
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PUTTING BLOCK   /\\/\\/\\/\\/");
+//        Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
         
         
         
@@ -380,18 +386,18 @@ final class BlockImpl implements Block {
             double latestRYear = latestRYearDec.doubleValue();
             Boolean firstBlockOfDay = Boolean.valueOf(((String)blockData.get("firstBlockOfDay")));
             
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
-            Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
-            Logger.logDebugMessage("Timestamp: " + timestamp);
-            Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
-            Logger.logDebugMessage("Date2: " + date.toString());
-            Logger.logDebugMessage("Date3: " + date.getTime());
-            Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
-            Logger.logDebugMessage("Supply Current: " + supplyCurrent);
-            Logger.logDebugMessage("Latest R Year: " + latestRYear);
-            Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
-            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\     PARSING BLOCK     \\/\\/\\/\\/\\");
+//            Logger.logDebugMessage("Timestamp: " + timestamp);
+//            Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+//            Logger.logDebugMessage("Date2: " + date.toString());
+//            Logger.logDebugMessage("Date3: " + date.getTime());
+//            Logger.logDebugMessage("Date original string: " + (String)blockData.get("date"));
+//            Logger.logDebugMessage("Supply Current: " + supplyCurrent);
+//            Logger.logDebugMessage("Latest R Year: " + latestRYear);
+//            Logger.logDebugMessage("firstBlockOfDay: " + firstBlockOfDay);
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\   END PARSE BLOCK   /\\/\\/\\/\\/");
+//            Logger.logDebugMessage("/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/");
             BlockImpl block = new BlockImpl(version, timestamp, previousBlock, totalAmountNQT, totalFeeNQT, payloadLength, payloadHash, generatorPublicKey,
                     generationSignature, blockSignature, previousBlockHash, blockTransactions, date, totalForgingHoldings,
                     latestRYear, supplyCurrent, blockReward, firstBlockOfDay);
@@ -463,9 +469,10 @@ final class BlockImpl implements Block {
     byte[] bytes() {
     		
         if (bytes == null) {
-            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2 + 8 + 10 + 10 + 10);
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2 + 8 + 10 + 10 + 10 + 8);
             // +2 +2 at the end for 10-byte BigInt. (instead of 8-byte long).
             // +10 +10 +8 +10
+            // +8 (for date)
             buffer.order(ByteOrder.LITTLE_ENDIAN);
             buffer.putInt(version); //4
             buffer.putInt(timestamp);//4
@@ -478,6 +485,8 @@ final class BlockImpl implements Block {
           buffer.put(bigIntToByte(supplyCurrent)); //10
           buffer.put(bigIntToByte(blockReward)); //10
           buffer.putDouble(latestRYear); //8
+          
+          buffer.putLong(date.getTime()); //8
             
             buffer.putInt(payloadLength);//4
             buffer.put(payloadHash);//32
@@ -519,7 +528,8 @@ final class BlockImpl implements Block {
     }
 
     boolean verifyGenerationSignature() throws BlockchainProcessor.BlockOutOfOrderException {
-//    		Logger.logDebugMessage("in VERIFY SIGNATURE");
+    		Logger.logDebugMessage("");
+    		Logger.logDebugMessage("in VERIFY SIGNATURE");
         try {
 
             BlockImpl previousBlock = BlockchainImpl.getInstance().getBlock(getPreviousBlockId());
@@ -530,7 +540,7 @@ final class BlockImpl implements Block {
             Account account = Account.getAccount(getGeneratorId());
             BigInteger effectiveBalance = account == null ? BigInteger.ZERO : account.getEffectiveBalanceNXT();
             
-//            Logger.logDebugMessage("balance: " + effectiveBalance);
+            Logger.logDebugMessage("effective balance: " + effectiveBalance);
             
             if (effectiveBalance.compareTo(BigInteger.ZERO) <= 0) {
                 return false;
@@ -540,16 +550,16 @@ final class BlockImpl implements Block {
             digest.update(previousBlock.generationSignature);
             byte[] generationSignatureHash = digest.digest(getGeneratorPublicKey());
             
-//            Logger.logDebugMessage(String.valueOf(!Arrays.equals(generationSignature, generationSignatureHash)).toUpperCase());
+            Logger.logDebugMessage(String.valueOf(!Arrays.equals(generationSignature, generationSignatureHash)).toUpperCase());
             
             if (!Arrays.equals(generationSignature, generationSignatureHash)) {
                 return false;
             }
 
             BigInteger hit = new BigInteger(1, new byte[]{generationSignatureHash[7], generationSignatureHash[6], generationSignatureHash[5], generationSignatureHash[4], generationSignatureHash[3], generationSignatureHash[2], generationSignatureHash[1], generationSignatureHash[0]});
-//            Logger.logDebugMessage("REACHED HERE!");
-//            
-//            Logger.logDebugMessage(String.valueOf(Generator.verifyHit(hit, BigInteger.valueOf(effectiveBalance), previousBlock, timestamp)));
+            Logger.logDebugMessage("REACHED HERE!");
+            
+            Logger.logDebugMessage(String.valueOf(Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp)));
             return Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp);
 
         } catch (RuntimeException e) {

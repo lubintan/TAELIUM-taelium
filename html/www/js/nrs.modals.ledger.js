@@ -40,6 +40,11 @@ var NRS = (function(NRS, $) {
             NRS.modalStack.pop(); // The forward modal
             NRS.modalStack.pop(); // The current modal
         }
+        
+        console.log("$$$$$$$$$ ACCOUNT LEDGER $$$$$$$$");
+        console.log(change);
+        console.log(balance);
+        
         NRS.sendRequest("getAccountLedgerEntry+", { ledgerId: ledgerId }, function(response) {
 			NRS.showLedgerEntryModal(response, change, balance);
 		});

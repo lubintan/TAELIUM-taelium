@@ -15,6 +15,7 @@
  */
 
 package nxt;
+import nxt.crypto.Crypto;
 //seen.
 import nxt.db.DbUtils;
 import nxt.db.DerivedDbTable;
@@ -23,6 +24,7 @@ import nxt.util.Listener;
 import nxt.util.Listeners;
 import nxt.util.Logger;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -195,6 +197,8 @@ public class AccountLedger {
         // confirmed changes only occur while processing block, and unconfirmed changes are
         // only logged while processing block
         if (!blockchainProcessor.isProcessingBlock()) {
+        	
+        		Logger.logDebugMessage("This Guy....");
             return false;
         }
         //
@@ -262,6 +266,15 @@ public class AccountLedger {
         int count = 0;
         for (LedgerEntry ledgerEntry : pendingEntries) {
             accountLedgerTable.insert(ledgerEntry);
+            Logger.logDebugMessage("");
+            Logger.logDebugMessage("Inserting to Acct Ledger Table...");
+            Logger.logDebugMessage("Height: " + ledgerEntry.getHeight());
+            Logger.logDebugMessage("Account: " + Crypto.rsEncode(ledgerEntry.getAccountId()));
+            Logger.logDebugMessage("Change: " + ledgerEntry.getChange());
+            Logger.logDebugMessage("Event Type: " + ledgerEntry.getEvent());
+            Logger.logDebugMessage("Balance: " + ledgerEntry.getBalance());
+            
+            
             listeners.notify(ledgerEntry, Event.ADD_ENTRY);
         }
         pendingEntries.clear();
@@ -350,28 +363,54 @@ public class AccountLedger {
         //
         // Get the ledger entries
         //
+        
+        
+        Logger.logDebugMessage("sb: " + sb.toString());
+        
+        Logger.logDebugMessage("accountID: " + accountId);
+        Logger.logDebugMessage("event: " + event);
+        Logger.logDebugMessage("eventId: " + eventId);
+        Logger.logDebugMessage("holding: " + holding);
+        Logger.logDebugMessage("holdingId: " + holdingId);
+        Logger.logDebugMessage("first: " + firstIndex);
+        Logger.logDebugMessage("last: " + lastIndex);
+        
+        
         blockchain.readLock();
         try (Connection con = Db.db.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sb.toString())) {
             int i = 0;
             if (accountId != 0) {
                 pstmt.setLong(++i, accountId);
+                Logger.logDebugMessage("1");
             }
+            
+            
             if (event != null) {
+            	
+            		
                 pstmt.setByte(++i, (byte)event.getCode());
+                Logger.logDebugMessage("2");
                 if (eventId != 0) {
                     pstmt.setLong(++i, eventId);
+                    Logger.logDebugMessage("3");
                 }
             }
             if (holding != null) {
                 pstmt.setByte(++i, (byte)holding.getCode());
+                Logger.logDebugMessage("4");
                 if (holdingId != 0) {
                     pstmt.setLong(++i, holdingId);
+                    Logger.logDebugMessage("5");
                 }
             }
             DbUtils.setLimits(++i, pstmt, firstIndex, lastIndex);
+            Logger.logDebugMessage("6");
+            
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
+                		
+                		
                     entryList.add(new LedgerEntry(rs));
                 }
             }
@@ -393,7 +432,7 @@ public class AccountLedger {
     public enum LedgerEvent {
         // Block and Transaction
             BLOCK_GENERATED(1, false),
-            INTEREST_PAYMENT(70, true),
+            INTEREST_PAYMENT(70, false),
             REJECT_PHASED_TRANSACTION(2, true),
             TRANSACTION_FEE(50, true),
         // TYPE_REWARD
@@ -659,6 +698,21 @@ public class AccountLedger {
             this.height = block.getHeight();
             this.timestamp = block.getTimestamp();
         }
+        
+        public LedgerEntry(LedgerEvent event, long eventId, long accountId, LedgerHolding holding, Long holdingId,
+                BigInteger change, BigInteger balance, Block block) {
+			this.event = event;
+			this.eventId = eventId;
+			this.accountId = accountId;
+			this.holding = holding;
+			this.holdingId = holdingId;
+			this.change = change;
+			this.balance = balance;
+//			Block block = blockchain.getLastBlock();
+			this.blockId = block.getId();
+			this.height = block.getHeight();
+			this.timestamp = block.getTimestamp();
+			}
 
         /**
          * Create a ledger entry
@@ -696,8 +750,8 @@ public class AccountLedger {
             } else {
                 holdingId = id;
             }
-            change = new BigInteger(rs.getBytes("change"));
-            balance = new BigInteger(rs.getBytes("balance"));
+            change = rs.getBigDecimal("change").toBigInteger();;
+            balance = rs.getBigDecimal("balance").toBigInteger();
             blockId = rs.getLong("block_id");
             height = rs.getInt("height");
             timestamp = rs.getInt("timestamp");
@@ -866,8 +920,10 @@ public class AccountLedger {
                     stmt.setByte(++i, (byte)-1);
                 }
                 DbUtils.setLong(stmt, ++i, holdingId);
-                stmt.setBytes(++i, change.toByteArray());
-                stmt.setBytes(++i, balance.toByteArray());
+                stmt.setBigDecimal(++i, new BigDecimal(change));
+                stmt.setBigDecimal(++i, new BigDecimal(balance));
+//                stmt.setBytes(++i, change.toByteArray());
+//                stmt.setBytes(++i, balance.toByteArray());
                 stmt.setLong(++i, blockId);
                 stmt.setInt(++i, height);
                 stmt.setInt(++i, timestamp);

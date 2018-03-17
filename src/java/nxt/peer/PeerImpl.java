@@ -375,6 +375,14 @@ final class PeerImpl implements Peer {
 
     @Override
     public void blacklist(String cause) {
+    		Logger.logDebugMessage("");
+    		Logger.logDebugMessage("XXXXXXXXXXXXXX BLACKLISTING XXXXXXXXXXXXXX");
+    		Logger.logDebugMessage("print stack trace, cause: " + cause);
+    		new Exception().printStackTrace();
+    		Logger.logDebugMessage("");
+    		if (cause.contains("nxt.BlockchainProcessor$BlockNotAcceptedException")) {
+    			System.exit(4);
+    		}
         blacklistingTime = Nxt.getEpochTime();
         blacklistingCause = cause;
         setState(State.NON_CONNECTED);

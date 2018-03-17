@@ -1131,8 +1131,11 @@ public final class Account {
             pstmt.setBytes(++i, this.forgedBalanceNQT.toByteArray());
             DbUtils.setLongZeroToNull(pstmt, ++i, this.activeLesseeId);
             pstmt.setBoolean(++i, controls.contains(ControlType.PHASING_ONLY));
-            pstmt.setInt(++i, Nxt.getBlockchain().getHeight());
+            pstmt.setInt(++i, CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
+            		Nxt.getBlockchain().getHeight());
             pstmt.executeUpdate();
+            Logger.logDebugMessage("ACCOUNT TABLE HEIGHT: " + (CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
+        		Nxt.getBlockchain().getHeight()));
         }
     }
 
@@ -1224,13 +1227,13 @@ public final class Account {
         if (this.publicKey == null) {
             this.publicKey = publicKeyTable.get(accountDbKeyFactory.newKey(this));
         }
-        if (this.publicKey == null || this.publicKey.publicKey == null || height - this.publicKey.height <= 1440) {
+        if (this.publicKey == null || this.publicKey.publicKey == null || height - this.publicKey.height <= Constants.EFF_BAL_HEIGHT) {
             return BigInteger.ZERO; // cfb: Accounts with the public key revealed less than 1440 blocks ago are not allowed to generate blocks
         }
         Nxt.getBlockchain().readLock();
         try {
         		BigInteger effectiveBalanceNQT = (getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height));
-            
+//            Logger.logDebugMessage("Effective Balance After EFF_BAL_HEIGHT: " + effectiveBalanceNQT);
 	        return effectiveBalanceNQT.compareTo(Constants.MIN_FORGING_BALANCE_HAEDS) < 0 ? BigInteger.ZERO : Constants.haedsToTaels(effectiveBalanceNQT).toBigInteger();
         } finally {
             Nxt.getBlockchain().readUnlock();
@@ -1256,6 +1259,10 @@ public final class Account {
         Nxt.getBlockchain().readLock();
         try {
             int height = currentHeight - numberOfConfirmations;
+//            Logger.logDebugMessage("currentHeight: " + currentHeight);
+//            Logger.logDebugMessage("numberOfConfirmations: " + numberOfConfirmations);
+//            Logger.logDebugMessage("minRollbackHeight: " + Nxt.getBlockchainProcessor().getMinRollbackHeight());
+            
             if (height + Constants.GUARANTEED_BALANCE_CONFIRMATIONS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
                     || height > Nxt.getBlockchain().getHeight()) {
                 throw new IllegalArgumentException("Height " + height + " not available for guaranteed balance calculation");
@@ -1270,13 +1277,24 @@ public final class Account {
                     if (!rs.next()) {
                         return balanceNQT;
                     }
- 
-                    BigInteger guaranteedBalanceHaeds = balanceNQT.subtract(rs.getBigDecimal("additions").toBigInteger());
                     
+//                    Logger.logDebugMessage("");
+//                    Logger.logDebugMessage("ACCOUNT RS ID: " + Crypto.rsEncode(this.id));
+//                    Logger.logDebugMessage("SELECT SUM (additions) AS additions "
+//                         + "FROM account_guaranteed_balance WHERE account_id = "+this.id+" AND height > "+height+" AND height <= " + currentHeight);
+//                    Logger.logDebugMessage("ADDITIONS: " + rs.getBigDecimal("additions").toBigInteger());
+//                    Logger.logDebugMessage("");
+                    
+                    BigDecimal additionsFromDb = rs.getBigDecimal("additions");
+                    BigInteger newAdditions = (additionsFromDb==null) ? BigInteger.ZERO: additionsFromDb.toBigInteger();
+                    
+                    BigInteger guaranteedBalanceHaeds = balanceNQT.subtract(newAdditions);
+                    Logger.logDebugMessage("guaranteedBal: " + guaranteedBalanceHaeds);
                     return guaranteedBalanceHaeds.compareTo(BigInteger.ZERO) < 0 ? BigInteger.ZERO : guaranteedBalanceHaeds;
 //                    return Math.max(Math.subtractExact(balanceNQT, rs.getLong("additions")), 0);
                 }
             } catch (SQLException e) {
+                new Exception().printStackTrace();
                 throw new RuntimeException(e.toString(), e);
             }
         } finally {
@@ -1683,16 +1701,24 @@ public final class Account {
     void addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent event, long eventId, BigInteger amountNQT) {
         addToBalanceAndUnconfirmedBalanceNQT(event, eventId, amountNQT, BigInteger.ZERO);
     }
-
+    
     void addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent event, long eventId, BigInteger amountNQT, BigInteger feeNQT) {
+    		addToBalanceAndUnconfirmedBalanceNQT( event,  eventId,  amountNQT,  feeNQT,  null);
+    }
+    
+    void addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent event, long eventId, BigInteger amountNQT, BigInteger feeNQT, Block newBlock) {
         if (amountNQT == BigInteger.ZERO && feeNQT == BigInteger.ZERO) {
             return;
         }
         BigInteger totalAmountNQT = amountNQT.add(feeNQT);
         this.balanceNQT = this.balanceNQT.add(totalAmountNQT);
         this.unconfirmedBalanceNQT = this.unconfirmedBalanceNQT.add(totalAmountNQT);
-        addToGuaranteedBalanceNQT(totalAmountNQT);
-        
+        if (newBlock == null) {
+        		addToGuaranteedBalanceNQT(totalAmountNQT);
+        }
+        else {
+        		addToGuaranteedBalanceNQT(totalAmountNQT, true);
+        }
 //        Logger.logDebugMessage("amount: " + String.valueOf(amountNQT));
 //        Logger.logDebugMessage("totalamt: " + String.valueOf(totalAmountNQT));
 //        
@@ -1700,6 +1726,9 @@ public final class Account {
         save();
         listeners.notify(this, Event.BALANCE);
         listeners.notify(this, Event.UNCONFIRMED_BALANCE);
+        
+        Logger.logDebugMessage("$$$$$$$$$$$$$$ EVENT: " + event + " " + amountNQT);
+        
         if (event == null) {
             return;
         }
@@ -1709,9 +1738,19 @@ public final class Account {
                         LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, feeNQT, this.unconfirmedBalanceNQT.subtract(amountNQT)));
             }
             if (amountNQT != BigInteger.ZERO) {
-                AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
+            	
+//            		Logger.logDebugMessage("in here");
+                
+            		if(newBlock == null) {
+            		AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
                         LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, amountNQT, this.unconfirmedBalanceNQT));
+            		}else {
+            			AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
+                                LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, amountNQT, this.unconfirmedBalanceNQT, newBlock));	
+            		}
             }
+            
+            
         }
         if (AccountLedger.mustLogEntry(this.id, false)) {
             if (feeNQT != BigInteger.ZERO) {
@@ -1719,8 +1758,14 @@ public final class Account {
                         LedgerHolding.NXT_BALANCE, null, feeNQT, this.balanceNQT.subtract(amountNQT)));
             }
             if (amountNQT != BigInteger.ZERO) {
-                AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
-                        LedgerHolding.NXT_BALANCE, null, amountNQT, this.balanceNQT));
+            	
+            		if (newBlock == null) {
+            			AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
+            					LedgerHolding.NXT_BALANCE, null, amountNQT, this.balanceNQT));
+            		}else {
+            			AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
+            					LedgerHolding.NXT_BALANCE, null, amountNQT, this.balanceNQT, newBlock));
+            		}
             }
         }
     }
@@ -1748,8 +1793,12 @@ public final class Account {
             throw new DoubleSpendingException("Unconfirmed exceeds confirmed balance or quantity: ", accountId, confirmed, unconfirmed);
         }
     }
-
+    
     private void addToGuaranteedBalanceNQT(BigInteger amountNQT) {
+    		addToGuaranteedBalanceNQT(amountNQT, false);
+    }
+    
+    private void addToGuaranteedBalanceNQT(BigInteger amountNQT, Boolean givingInterest) {
 		//long to BigInt question mark 3
     	//ANSWERED.
     		if ((amountNQT.compareTo(BigInteger.ZERO) == 0) ) {
@@ -1763,6 +1812,7 @@ public final class Account {
                      + " additions, height) KEY (account_id, height) VALUES(?, ?, ?)")) {
             pstmtSelect.setLong(1, this.id);
             pstmtSelect.setInt(2, blockchainHeight);
+            
             try (ResultSet rs = pstmtSelect.executeQuery()) {
                 BigInteger additions = amountNQT;
                 if (rs.next()) {
@@ -1772,8 +1822,22 @@ public final class Account {
                 }
                 pstmtUpdate.setLong(1, this.id);
                 pstmtUpdate.setBigDecimal(2, new BigDecimal(additions));
-                pstmtUpdate.setInt(3, blockchainHeight);
+                
+                if (givingInterest) {
+                		pstmtUpdate.setInt(3, blockchainHeight + 1);
+	            }
+	            else {
+	            		pstmtUpdate.setInt(3, blockchainHeight);
+	            }
+                
                 pstmtUpdate.executeUpdate();
+                
+                Logger.logDebugMessage("------- Acct Guaranteed Balance -------");
+                Logger.logDebugMessage("Account: " + Crypto.rsEncode(this.id));
+                Logger.logDebugMessage("Height: " + blockchainHeight);
+                Logger.logDebugMessage("Additions: " + additions);
+                
+                
             }
         } catch (SQLException e) {
             throw new RuntimeException(e.toString(), e);
@@ -1805,6 +1869,7 @@ public final class Account {
 //
     @Override
     public String toString() {
-        return "Account " + Long.toUnsignedString(getId());
+//        return "Account " + Long.toUnsignedString(getId());
+    		return "Account " + Crypto.rsEncode(getId());
     }
 }

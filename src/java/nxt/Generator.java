@@ -84,6 +84,7 @@ public final class Generator implements Comparable<Generator> {
                                     if (timestamp != generationLimit && generator.getHitTime() > 0 && timestamp < lastBlock.getTimestamp()) {
                                     	//if generator's timestamp earlier than current highest block
                                         Logger.logDebugMessage("Pop off: " + generator.toString() + " will pop off last block " + lastBlock.getStringId());
+                                        Logger.logDebugMessage("Pop off due to generator timestamp earlier than current highest block.");
                                         List<BlockImpl> poppedOffBlock = BlockchainProcessorImpl.getInstance().popOffTo(previousBlock);
                                         for (BlockImpl block : poppedOffBlock) {
                                             TransactionProcessorImpl.getInstance().processLater(block.getTransactions());
@@ -222,28 +223,36 @@ public final class Generator implements Comparable<Generator> {
     		
     		Set<Long> localForgerIds = new HashSet<Long>();
     		
-    		for (Generator eachForger : sortedForgers ) {
-    			localForgerIds.add(eachForger.accountId);
-    		}
+    		Logger.logDebugMessage("sortedForgers: " + sortedForgers);
+//    		Logger.logDebugMessage("1st element: " + sortedForgers.get(0).getAccountId());
     		
-    		return localForgerIds==null ? Collections.emptySet() : localForgerIds;
+    		if ((sortedForgers != null) && (!sortedForgers.isEmpty())) {
+	    		for (Generator eachForger : sortedForgers ) {
+	    			localForgerIds.add(eachForger.accountId);
+	    		}
+	    		return localForgerIds;
+    		}
+    		else {
+    			return Collections.emptySet();
+    		}
+//    		return localForgerIds==null ? Collections.emptySet() : localForgerIds;
 //    		return localForgerIds;
     }
     
     public static Map<Long, BigInteger> getLocalForgerBalanceMap(){
     		Map<Long, BigInteger> forgerBalanceMap = new HashMap<>(); 
     		// Hash map no duplicates. Duplicate entries, latest overwrites earlier.
-        
-        for (Generator eachForger : sortedForgers) {
-        		Account account = Account.getAccount(eachForger.accountId);
-//        		BigInteger balance = Constants.haedsToTaels(account.getBalanceNQT()).toBigInteger();
-        		forgerBalanceMap.put(eachForger.accountId, account.getBalanceNQT() );
-//        		System.out.println();
-//        		System.out.println(Crypto.rsEncode(eachForger.accountId));
-//        		System.out.println(balance);
-//        		System.out.println();
+    		if ((sortedForgers != null) && (!sortedForgers.isEmpty())) {
+	        for (Generator eachForger : sortedForgers) {
+	        		Account account = Account.getAccount(eachForger.accountId);
+	        		forgerBalanceMap.put(eachForger.accountId, account.getBalanceNQT() );
+	        }
+	        return forgerBalanceMap;
         }
-        return forgerBalanceMap == null ? Collections.emptyMap() : forgerBalanceMap;
+        else {
+        		return Collections.emptyMap();
+        }
+//        return forgerBalanceMap == null ? Collections.emptyMap() : forgerBalanceMap;
     }
 
     public static long getNextHitTime(long lastBlockId, int curTime) {
@@ -275,14 +284,16 @@ public final class Generator implements Comparable<Generator> {
         BigInteger prevTarget = effectiveBaseTarget.multiply(BigInteger.valueOf(elapsedTime - 1));
         BigInteger target = prevTarget.add(effectiveBaseTarget);
 //        
-//        Logger.logDebugMessage("--------------------------------");
-//        Logger.logDebugMessage("prev block base target: " + previousBlock.getBaseTarget().toString());
-//        Logger.logDebugMessage("effBaseTarget: " + effectiveBaseTarget.toString());
-//        Logger.logDebugMessage("prevTarget: " + prevTarget.toString());
-//        Logger.logDebugMessage("target: " + target.toString());
-//        Logger.logDebugMessage("hit: " + hit.toString());
-//        
-//        Logger.logDebugMessage("--------------------------------");
+        Logger.logDebugMessage("--------------------------------");
+        Logger.logDebugMessage("prev block base target: " + previousBlock.getBaseTarget().toString());
+        Logger.logDebugMessage("effBaseTarget: " + effectiveBaseTarget.toString());
+        Logger.logDebugMessage("prevTarget: " + prevTarget.toString());
+        Logger.logDebugMessage("target: " + target.toString());
+        Logger.logDebugMessage("hit: " + hit.toString());
+        Logger.logDebugMessage("elapsedTime: " + elapsedTime);
+        
+        
+        Logger.logDebugMessage("--------------------------------");
         
         return hit.compareTo(target) < 0
                 && (hit.compareTo(prevTarget) >= 0  
@@ -388,6 +399,13 @@ public final class Generator implements Comparable<Generator> {
 
     boolean forge(Block lastBlock, int generationLimit) throws BlockchainProcessor.BlockNotAcceptedException {
         int timestamp = getTimestamp(generationLimit);
+        
+        byte[] pbKey = Crypto.getPublicKey(secretPhrase);
+        long acctId = Account.getId(pbKey);
+        
+        Logger.logDebugMessage(Crypto.rsEncode(acctId) + " is forging...");
+        
+        
         if (!verifyHit(hit, effectiveBalance, lastBlock, timestamp)) {
             Logger.logDebugMessage(this.toString() + " failed to forge at " + timestamp + " height " + lastBlock.getHeight() + " last timestamp " + lastBlock.getTimestamp());
             return false;

@@ -22,6 +22,8 @@ import nxt.AccountLedger.LedgerEvent;
 import nxt.AccountLedger.LedgerHolding;
 import nxt.NxtException;
 import nxt.util.Convert;
+import nxt.util.Logger;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -287,6 +289,10 @@ public class GetAccountLedger extends APIServlet.APIRequestHandler {
             responseEntries.add(responseEntry);
         });
         JSONObject response = new JSONObject();
+        
+        Logger.logDebugMessage("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        Logger.logDebugMessage("responseEntries: " + responseEntries);
+        
         response.put("entries", responseEntries);
         return response;
     }

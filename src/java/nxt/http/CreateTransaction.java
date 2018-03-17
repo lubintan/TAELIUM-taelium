@@ -19,6 +19,8 @@ package nxt.http;
 import nxt.*;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
+import nxt.util.Logger;
+
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -214,6 +216,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
             } catch (ArithmeticException e) {
                 return NOT_ENOUGH_FUNDS;
             }
+            
+            Logger.logDebugMessage("Tx Initiated! ID: " + transaction.getId() + " Amount: " + amountNQT + " Sender: " + Crypto.rsEncode(transaction.getSenderId()) +
+            		" Recipient: " + Crypto.rsEncode(transaction.getRecipientId()) + " Height: " + transaction.getHeight()
+            );
+            
             JSONObject transactionJSON = JSONData.unconfirmedTransaction(transaction);
             response.put("transactionJSON", transactionJSON);
             try {

@@ -35,8 +35,8 @@ public final class Constants {
     
     public static final String dateFormat = "dd-MMM-yyyy";
     
-    public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
-    public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
+    public static final int BLOCK_TIME = 15; // should be 60. reducing it for testing purposes. 
+    public static final int DAILY_BLOCKS = 10; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(21).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
     public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
@@ -58,7 +58,7 @@ public final class Constants {
     public static final BigInteger MIN_FEE_HAEDS = taelsToHaeds(MIN_FEE_TAELS);
     public static final BigInteger STD_FEE = BigInteger.valueOf(10000);
     
-    public static final int EFF_BAL_HEIGHT = 1440;
+    public static final int EFF_BAL_HEIGHT = DAILY_BLOCKS;
     public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME).multiply(MAX_BALANCE_TAELS)); //153722867;
     public static final BigInteger MAX_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));
     public static final BigInteger MIN_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9)).divide(BigInteger.valueOf(10));
@@ -66,7 +66,8 @@ public final class Constants {
     public static final int MAX_BLOCKTIME_LIMIT = BLOCK_TIME + 7;
     public static final int BASE_TARGET_GAMMA = 64;
     public static final int MAX_ROLLBACK = Math.max(Nxt.getIntProperty("nxt.maxRollback"), 720);
-    public static final int GUARANTEED_BALANCE_CONFIRMATIONS = isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", 1440) : 1440;
+    public static final int GUARANTEED_BALANCE_CONFIRMATIONS = DAILY_BLOCKS;
+//    		isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", ) : 5;
     public static final int LEASING_DELAY = isTestnet ? Nxt.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
     public static final BigInteger MIN_FORGING_BALANCE_HAEDS = BigInteger.ONE; //One Haed
     

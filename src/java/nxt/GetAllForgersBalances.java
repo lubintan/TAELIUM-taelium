@@ -76,7 +76,7 @@ public class GetAllForgersBalances {
 	}
 	
 	public static void getAllForgerIds(){
-		allForgerIds.removeAll(allForgerIds); //remove everything (reset) 
+		allForgerIds.clear(); //remove everything (reset) 
 		allForgerIds.addAll(getPeersForgerIds());
 		allForgerIds.addAll(getLocalForgerIds());
 		

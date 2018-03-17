@@ -70,7 +70,7 @@ public class NtpTime {
         		//########## TEST SECTION #############
         		currentDate = getZeroTimeDate(getDate());
         		
-        		currentDate = getZeroTimeDate(DebugDayTimer.currentDate);
+//        		currentDate = getZeroTimeDate(DebugDayTimer.currentDate);
     			//########## END TEST SECTION ############
         		Logger.logDebugMessage("Retrieving Time: " + NtpTime.toString(currentDate));
         }};
@@ -127,11 +127,31 @@ public class NtpTime {
     
     private static long getTime(String url, int timeout) { //timeout in ms
     		long now = 0;
+    		long current = 0;
     	
+//    		if (requestTime(url, timeout)) {
+//    			now = getNtpTime() + (System.nanoTime()/1000000) - getNtpTimeReference();
+//    		}
+    		
     		if (requestTime(url, timeout)) {
     			now = getNtpTime() + (System.nanoTime()/1000000) - getNtpTimeReference();
+//    			Logger.logDebugMessage("");
+//    			Logger.logDebugMessage("getNtpTime: "+getNtpTime()); 
+//    			Logger.logDebugMessage("System nano:"+System.nanoTime());
+//    			Logger.logDebugMessage("timeref: " + getNtpTimeReference());
+    			
+    			long xianZai = 1521186178589L;
+    			double secondsPerDay = 150;
+    			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
+    			currentDouble += xianZai;
+    			current = (long) currentDouble;
+    			
+//    			Logger.logDebugMessage("now: " + now);
+//    			Logger.logDebugMessage("current: " + current);
     		}  	 
-    		return now;
+
+    			
+    		return current;
     }
     
     public static Date getZeroTimeDate(Date date) {

@@ -215,6 +215,10 @@ var NRS = (function(NRS, $) {
             "firstIndex": 0,
             "lastIndex": 100
         }, function (response) {
+        	
+        		console.log("$$$$$$$$$$$$ ACCOUNt LEDGER$$$$$$$$");
+        		conosle.log(response.entries);
+        	
             var infoModalLedgerTable = $("#user_info_modal_ledger_table");
             if (response.entries && response.entries.length) {
                 var rows = "";

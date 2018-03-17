@@ -32,6 +32,7 @@ public class CalculateInterestAndG {
 	
 	private CalculateInterestAndG() {};
 	
+	static Boolean givingInterest = false;
 	static double rDay = Constants.INITIAL_R_YEAR/Constants.INTEREST_DIVISOR;
 //	static BigInteger currentBlockHoldings;
 	static BigInteger supplyCurrent = Constants.INITIAL_BALANCE_HAEDS;
@@ -121,9 +122,9 @@ public class CalculateInterestAndG {
 				BigInteger day1Holdings = loadAvgHoldings(day1Searching);
 				BigInteger day2Holdings = loadAvgHoldings(day2Searching);
 				BigInteger thisDeltaT = day1Holdings.subtract(day2Holdings); 
-				Logger.logDebugMessage("day1 - day2 holdings:");
-				Logger.logDebugMessage(" " + day1Holdings.toString() + " - " + day2Holdings.toString() + " = ");
-				Logger.logDebugMessage(thisDeltaT.toString());
+//				Logger.logDebugMessage("day1 - day2 holdings:");
+//				Logger.logDebugMessage(" " + day1Holdings.toString() + " - " + day2Holdings.toString() + " = ");
+//				Logger.logDebugMessage(thisDeltaT.toString());
 				
 				deltaTList.add(thisDeltaT);
 			}
@@ -301,7 +302,7 @@ public class CalculateInterestAndG {
 		return rYear;
 	}
 	
-	public static BigInteger giveInterest(Date date, Boolean isGenerator, List<TransactionImpl> blockTxes) {
+	public static BigInteger giveInterest(Block newBlock) {
 		//To be called only when 1440th block is to be generated!
 		rYear = getLatestRYear();
 //		BlockchainProcessorImpl.getInstance().printAccountTable("interesting giving");
@@ -309,14 +310,14 @@ public class CalculateInterestAndG {
 		Logger.logDebugMessage("");
 		Logger.logDebugMessage("**************** *************** *****************");
 		Logger.logDebugMessage("**************** GIVING INTEREST *****************");
-		Logger.logDebugMessage("**************** DATE: " + NtpTime.toString(date) + "**************");
-		int height = Nxt.getBlockchain().getHeight();
-		Logger.logDebugMessage("HEIGHT" + height);
+		Logger.logDebugMessage("**************** DATE: " + NtpTime.toString(newBlock.getDate()) + "**************");
+//		int height = Nxt.getBlockchain().getHeight();
+		Logger.logDebugMessage("HEIGHT" + newBlock.getHeight());
 		BigInteger totalPayout = BigInteger.ZERO;
 		rDay = rYear / Constants.INTEREST_DIVISOR;
 			
 		
-		BlockchainProcessorImpl.getInstance().printAccountTable("  before----------");
+//		BlockchainProcessorImpl.getInstance().printAccountTable("  before----------");
 		
 //		select ID,BALANCE from account where latest=true	
 		
@@ -348,7 +349,6 @@ public class CalculateInterestAndG {
 		                    		}
 		                    } //if account's balance is too low such that interest is less than smallest denomination (1 haed),
 		                    //if interest > 0 do nothing, if interest < 0 pay -1 haed.
-		                    
 		                    if (thisAcct.getBalanceNQT().compareTo(BigInteger.ZERO) > 0) {
 //			                    	Logger.logDebugMessage(Crypto.rsEncode(accountId));
 //			                    	Logger.logDebugMessage("DBBALANCE == GETBAL: " + dbBalance.equals(thisAcct.getBalanceNQT()));
@@ -401,9 +401,14 @@ public class CalculateInterestAndG {
 //		                    		}
 		                    	
 		                    	
-		                    	
-		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, date.getTime(), payment);
+		                    		Logger.logDebugMessage("Giving Interest to: " + Crypto.rsEncode(accountId));
+		                    		
+		                    		givingInterest = true;
+		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, newBlock.getDate().getTime(), payment, BigInteger.ZERO, newBlock);
+		                    		givingInterest = false;
+		                    		
 //		                    		Logger.logDebugMessage("");
+		                    		
 //		                    		BigInteger beforeAcct = thisAcct.getBalanceNQT();
 //		                    		if (thisAcct.getUnconfirmedBalanceNQT().compareTo(BigInteger.ZERO) < 0) {
 //		                    			Logger.logDebugMessage("======= Negative Balance Error!! =======");
@@ -419,7 +424,8 @@ public class CalculateInterestAndG {
 		                    		}
 		                    
 		                    }
-		            	
+		            		
+		            			
 		            			Logger.logDebugMessage("totalPayout: " + totalPayout);
 //		            			Logger.logDebugMessage("supplyCurrent:" + supplyCurrent);
 		            			
@@ -493,7 +499,7 @@ public class CalculateInterestAndG {
 		Logger.logDebugMessage("next height:" + nextHeight);
 		
 		while (nextBlock.getDate().equals(yesterday) && (nextHeight > 0)) {
-			Logger.logDebugMessage("NEXT HEIGHT:" + nextHeight);
+//			Logger.logDebugMessage("NEXT HEIGHT:" + nextHeight);
 			
 			BigInteger thisBlocksTxVolume = nextBlock.getTotalAmountNQT();
 			totalTxVolume = totalTxVolume.add(thisBlocksTxVolume);

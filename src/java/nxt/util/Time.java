@@ -18,6 +18,8 @@ package nxt.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import nxt.NtpTime;
+
 public interface Time {
 
     int getTime();
@@ -25,7 +27,8 @@ public interface Time {
     final class EpochTime implements Time {
 
         public int getTime() {
-            return Convert.toEpochTime(System.currentTimeMillis());
+//            return Convert.toEpochTime(System.currentTimeMillis());
+        	return Convert.toEpochTime(NtpTime.getDateMs());
         }
 
     }

@@ -18,6 +18,7 @@ package nxt.http;
 
 import nxt.AccountLedger;
 import nxt.AccountLedger.LedgerEntry;
+import nxt.util.Logger;
 import nxt.NxtException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -197,9 +198,14 @@ public class GetAccountLedgerEntry extends APIServlet.APIRequestHandler {
         // Get the ledger entry
         //
         LedgerEntry ledgerEntry = AccountLedger.getEntry(ledgerId);
-        if (ledgerEntry == null)
-            return JSONResponses.UNKNOWN_ENTRY;
-        //
+        if (ledgerEntry == null) {
+         
+        		Logger.logDebugMessage("***************** UNKNOWN ENTRY **************");
+        		Logger.logDebugMessage("Ledger ID: " + ledgerId);
+        	
+        		return JSONResponses.UNKNOWN_ENTRY;
+        
+        }//
         // Return the response
         //
         JSONObject response = new JSONObject();
