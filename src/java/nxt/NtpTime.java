@@ -140,8 +140,8 @@ public class NtpTime {
 //    			Logger.logDebugMessage("System nano:"+System.nanoTime());
 //    			Logger.logDebugMessage("timeref: " + getNtpTimeReference());
     			
-    			long xianZai = 1521186178589L;
-    			double secondsPerDay = 150;
+    			long xianZai = 1521436890040L;
+    			double secondsPerDay = 400; //400s in real life
     			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
     			currentDouble += xianZai;
     			current = (long) currentDouble;

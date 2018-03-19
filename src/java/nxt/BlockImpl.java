@@ -469,10 +469,11 @@ final class BlockImpl implements Block {
     byte[] bytes() {
     		
         if (bytes == null) {
-            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2 + 8 + 10 + 10 + 10 + 8);
+            ByteBuffer buffer = ByteBuffer.allocate(4 + 4 + 8 + 4 + 8 + 8 + 4 + 32 + 32 + 32 + 32 + (blockSignature != null ? 64 : 0) + 2 + 2 + 8 + 10 + 10 + 10 + 8 + 4);
             // +2 +2 at the end for 10-byte BigInt. (instead of 8-byte long).
             // +10 +10 +8 +10
             // +8 (for date)
+            // +4 (for first block of new day)
             buffer.order(ByteOrder.LITTLE_ENDIAN);
             buffer.putInt(version); //4
             buffer.putInt(timestamp);//4
@@ -487,6 +488,14 @@ final class BlockImpl implements Block {
           buffer.putDouble(latestRYear); //8
           
           buffer.putLong(date.getTime()); //8
+          
+          if (firstBlockOfDay) { //4
+        	  	buffer.putInt(1);
+          }
+          else {
+        	  	buffer.putInt(0);
+          }
+          
             
             buffer.putInt(payloadLength);//4
             buffer.put(payloadHash);//32
