@@ -499,6 +499,9 @@ var NRS = (function (NRS, $) {
 		var accountId = NRS.getAccountId(password);
 		if (accountId != NRS.account && !useSharedKey) {
 			$form.find(".callout").html($.t("error_incorrect_passphrase")).show();
+			$.growl($.t("error_passphrase_incorrect"), {
+				"type": "danger"
+			});
 			return;
 		}
 
@@ -603,6 +606,9 @@ var NRS = (function (NRS, $) {
 					"message": $.t("error_incorrect_passphrase"),
 					"errorCode": 2
 				};
+				$.growl($.t("error_passphrase_incorrect"), {
+					"type": "danger"
+				});
 			}
 		}
 

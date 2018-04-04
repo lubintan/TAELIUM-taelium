@@ -18,28 +18,27 @@
  * @depends {nrs.js}
  */
 var NRS = (function(NRS, $) {
-	NRS.automaticallyCheckRecipient = function() {
-        var $recipientFields = $("#send_money_recipient, #transfer_asset_recipient, #transfer_currency_recipient, " +
-        "#send_message_recipient, #add_contact_account_id, #update_contact_account_id, #lease_balance_recipient, " +
-        "#transfer_alias_recipient, #sell_alias_recipient, #set_account_property_recipient, #delete_account_property_recipient, " +
-		"#add_monitored_account_recipient");
+	NRS.automaticallyCheckRecipient2 = function() {
+        var $recipientFields = $("#recipient_address");
 
 		$recipientFields.on("blur", function() {
+			console.log("A");
 			$(this).trigger("checkRecipient");
 		});
 
 		$recipientFields.on("checkRecipient", function() {
+			console.log("B");
 			var value = $(this).val();
 			var modal = $(this).closest(".modal");
-
 			if (value && value != NRS.getAccountMask("_")) {
 				NRS.checkRecipient(value, modal);
 			} else {
-				modal.find(".account_info").hide();
+//				modal.find(".account_info").hide();
 			}
 		});
 
 		$recipientFields.on("oldRecipientPaste", function() {
+			console.log("C");
 			var modal = $(this).closest(".modal");
 
 			var callout = modal.find(".account_info").first();
@@ -48,74 +47,20 @@ var NRS = (function(NRS, $) {
 		});
 	};
 
-	$("#send_message_modal, #send_money_modal, #transfer_currency_modal, #add_contact_modal, #set_account_property_modal, #delete_account_property_modal").on("show.bs.modal", function(e) {
-		var $invoker = $(e.relatedTarget);
-		var account = $invoker.data("account");
-		if (!account) {
-			account = $invoker.data("contact");
-		}
-		if (account) {
-			var $inputField = $(this).find("input[name=recipient], input[name=account_id]").not("[type=hidden]");
-			if (!NRS.isRsAccount(account)) {
-				$inputField.addClass("noMask");
-			}
-			$inputField.val(account).trigger("checkRecipient");
-		}
-	});
 
-	//todo later: http://twitter.github.io/typeahead.js/
-	var modal = $(".modal");
-    modal.on("click", "span.recipient_selector button, span.plain_address_selector button", function(e) {
-		if (!Object.keys(NRS.contacts).length) {
-			e.preventDefault();
-			e.stopPropagation();
-			return;
-		}
 
-		var $list = $(this).parent().find("ul");
 
-		$list.empty();
-
-		for (var accountId in NRS.contacts) {
-			if (!NRS.contacts.hasOwnProperty(accountId)) {
-				continue;
-			}
-			$list.append("<li><a href='#' data-contact-id='" + accountId + "' data-contact='" + String(NRS.contacts[accountId].name).escapeHTML() + "'>" + String(NRS.contacts[accountId].name).escapeHTML() + "</a></li>");
-		}
-	});
-
-	modal.on("click", "span.recipient_selector ul li a", function(e) {
-		e.preventDefault();
-		$(this).closest("form").find("input[name=converted_account_id]").val("");
-		$(this).closest("form").find("input[name=recipient],input[name=account_id]").not("[type=hidden]").trigger("unmask").val($(this).data("contact")).trigger("blur");
-	});
-
-	modal.on("click", "span.plain_address_selector ul li a", function(e) {
-		e.preventDefault();
-		$(this).closest(".input-group").find("input.plain_address_selector_input").not("[type=hidden]").trigger("unmask").val($(this).data("contact-id")).trigger("blur");
-	});
-
-	modal.on("keyup blur show", ".plain_address_selector_input", function() {
-		var currentValue = $(this).val();
-		var contactInfo;
-		if (NRS.contacts[currentValue]) {
-			contactInfo = NRS.contacts[currentValue]['name'];
-		} else {
-			contactInfo = " ";
-		}
-		$(this).closest(".input-group").find(".pas_contact_info").text(contactInfo);
-	});
 
 	NRS.forms.sendMoneyComplete = function(response, data) {
-		if (!(data["_extra"] && data["_extra"].convertedAccount) && !(data.recipient in NRS.contacts)) {
-			$.growl($.t("success_send_money") + " <a href='#' data-account='" + NRS.getAccountFormatted(data, "recipient") + "' data-toggle='modal' data-target='#add_contact_modal' style='text-decoration:underline'>" + $.t("add_recipient_to_contacts_q") + "</a>", {
-				"type": "success"
-			});
-		} else {
+//		if (!(data["_extra"] && data["_extra"].convertedAccount) && !(data.recipient in NRS.contacts)) {
+//			$.growl($.t("success_send_money") + " <a href='#' data-account='" + NRS.getAccountFormatted(data, "recipient") + "' data-toggle='modal' data-target='#add_contact_modal' style='text-decoration:underline'>" + $.t("add_recipient_to_contacts_q") + "</a>", {
+//				"type": "success"
+//			});
+//		} else {
 			$.growl($.t("send_money_submitted"), {
 				"type": "success"
 			});
-		}
+//		}
 	};
 
 	NRS.sendMoneyShowAccountInformation = function(accountId) {
@@ -146,6 +91,7 @@ var NRS = (function(NRS, $) {
 						}),
 						"account": response
 					};
+					console.log(result);
 				}
 				else{
 					result = {
@@ -192,15 +138,18 @@ var NRS = (function(NRS, $) {
 				}
 			}
 			result.message = result.message.escapeHTML();
+			$.growl(result,{"type":"danger"});
 			callback(result);
 		});
 	};
 
 	NRS.correctAddressMistake = function(el) {
-		$(el).closest(".modal-body").find("input[name=recipient],input[name=account_id]").val($(el).data("address")).trigger("blur");
+		$(el).find("input[name=recipient],input[name=account_id]").val($(el).data("address")).trigger("blur");
 	};
 
 	NRS.checkRecipient = function(account, modal) {
+		console.log("checking Recipient.....");
+		
 		var classes = "callout-info callout-danger callout-warning";
 
 		var callout = modal.find(".account_info").first();
@@ -218,27 +167,37 @@ var NRS = (function(NRS, $) {
 
 			if (address.set(account)) {
 				NRS.getAccountError(account, function(response) {
-					if (response.noPublicKey && account!=NRS.accountRS) {
-						modal.find(".recipient_public_key").show();
-					} else {
-						modal.find("input[name=recipientPublicKey]").val("");
-						modal.find(".recipient_public_key").hide();
-					}
-					if (response.account && response.account.description) {
-						checkForMerchant(response.account.description, modal);
-					}
 					
-					if (account==NRS.accountRS)
-						callout.removeClass(classes).addClass("callout-" + response.type).html("This is your account").show();
+					console.log("Here");
+					if (response.noPublicKey && account!=NRS.accountRS) {
+						$.growl("Account has no public key.\nSee taelium.com/faq for more info??",{"type":"danger"});
+//						modal.find(".recipient_public_key").show();
+					} else {
+//						$.growl("",{"type":"danger"});
+//						modal.find("input[name=recipientPublicKey]").val("");
+//						modal.find(".recipient_public_key").hide();
+					}
+//					if (response.account && response.account.description) {
+//						checkForMerchant(response.account.description, modal);
+//					}
+					
+					if (account==NRS.accountRS){
+//						callout.removeClass(classes).addClass("callout-" + response.type).html("This is your account").show();
+						$.growl("This is your account",{"type":"danger"});
+				}
 					else{
-						callout.removeClass(classes).addClass("callout-" + response.type).html(response.message).show();
+						$.growl(response.message,{"type":"info"});
+//						callout.removeClass(classes).addClass("callout-" + response.type).html(response.message).show();
 					}
 				});
 			} else {
 				if (address.guess.length == 1) {
-					callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed_suggestion", {
+					$.growl($.t("recipient_malformed_suggestion", {
 						"recipient": "<span class='malformed_address' data-address='" + NRS.escapeRespStr(address.guess[0]) + "' onclick='NRS.correctAddressMistake(this);'>" + address.format_guess(address.guess[0], account) + "</span>"
-					})).show();
+					}),{"type":"info"});
+//					callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed_suggestion", {
+//						"recipient": "<span class='malformed_address' data-address='" + NRS.escapeRespStr(address.guess[0]) + "' onclick='NRS.correctAddressMistake(this);'>" + address.format_guess(address.guess[0], account) + "</span>"
+//					})).show();
 				} else if (address.guess.length > 1) {
 					var html = $.t("recipient_malformed_suggestion", {
 						"count": address.guess.length
@@ -246,9 +205,10 @@ var NRS = (function(NRS, $) {
 					for (var i = 0; i < address.guess.length; i++) {
 						html += "<li><span class='malformed_address' data-address='" + NRS.escapeRespStr(address.guess[i]) + "' onclick='NRS.correctAddressMistake(this);'>" + address.format_guess(address.guess[i], account) + "</span></li>";
 					}
-
-					callout.removeClass(classes).addClass("callout-danger").html(html).show();
+					$growl(html,{"type":"info"});
+//					callout.removeClass(classes).addClass("callout-danger").html(html).show();
 				} else {
+					$growl($.t("recipient_malformed"),{"type":"info"});
 					callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed")).show();
 				}
 			}
@@ -270,9 +230,12 @@ var NRS = (function(NRS, $) {
 								checkForMerchant(response.account.description, modal);
 							}
 
-							callout.removeClass(classes).addClass("callout-" + response.type).html($.t("contact_account_link", {
+							$growl($.t("contact_account_link", {
 								"account_id": NRS.getAccountFormatted(contact, "account")
-							}) + " " + response.message).show();
+							}) + " " + response.message, {"type":"danger"});
+//							callout.removeClass(classes).addClass("callout-" + response.type).html($.t("contact_account_link", {
+//								"account_id": NRS.getAccountFormatted(contact, "account")
+//							}) + " " + response.message).show();
 
 							if (response.type == "info" || response.type == "warning") {
 								accountInputField.val(contact.accountRS);
@@ -281,7 +244,8 @@ var NRS = (function(NRS, $) {
 					} else if (/^[a-z0-9]+$/i.test(account)) {
 						NRS.checkRecipientAlias(account, modal);
 					} else {
-						callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed")).show();
+						$growl($.t("recipient_malformed"), {"type":"danger"});
+//						callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed")).show();
 					}
 				});
 			} else if (/^[a-z0-9@]+$/i.test(account)) {
@@ -290,13 +254,14 @@ var NRS = (function(NRS, $) {
 					NRS.checkRecipientAlias(account, modal);
 				}
 			} else {
-				callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed")).show();
+				$growl($.t("recipient_malformed"), {"type":"danger"});
+//				callout.removeClass(classes).addClass("callout-danger").html($.t("recipient_malformed")).show();
 			}
 		} else {
-			callout.removeClass(classes).addClass("callout-danger").html($.t("error_numeric_ids_not_allowed")).show();
+			$growl($.t("error_numeric_ids_not_allowed"), {"type":"danger"});
+//			callout.removeClass(classes).addClass("callout-danger").html($.t("error_numeric_ids_not_allowed")).show();
 		}
 		
-		console.log("__________ checking recipient ___________");
 		
 	}; //end checkRecipient
 

@@ -47,9 +47,9 @@ body {
 /* preload images or they will flicker */
 body::after{
   position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
+  
   content:url(../img/client_background.png)
-  url(../img/nxt-load-progress-logo-circle.png)
-  url(../img/nxt-load-progress-logo-circle.png);
+  url(../img/tempicon.png);
 }
 html.lockscreen, html.lockscreen body {
   height:100%;
@@ -94,16 +94,16 @@ body > .header {
 /*right side - contins main content*/
 .right-side {
   background-color: #f9f9f9;
-  margin-left: 220px;
+  /* margin-left: 220px; */
 }
 /*left side - contains sidebar*/
 .left-side {
-  position: absolute;
+  /* position: absolute;
   width: 220px;
   height: 100%;
   min-height: inherit !important;
   top: 0;
-  bottom: 0;
+  bottom: 0; */
 }
 @media screen and (min-width: 992px) {
   /*Right side strech mode*/
@@ -401,7 +401,7 @@ body > .header .navbar {
   height: 50px;
   margin-bottom: 0;
   padding-bottom:0;
-  margin-left: 220px;
+  /* margin-left: 220px; */
 }
 body > .header .navbar .sidebar-toggle {
   float: left;
@@ -1927,7 +1927,7 @@ body > .header .logo .icon {
 */
 /* ADD THIS CLASS TO THE <HTML> TAG */
 .lockscreen {
-  background-color: #002e43;
+  background-color: black;
   background: url(../img/client_background.png) repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;

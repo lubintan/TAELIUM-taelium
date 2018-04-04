@@ -1,0 +1,6 @@
+.navbar-default .navbar-custom > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+  color:white;
+  text-decoration:underline;
+  background-color:transparent;
+}
+

@@ -20,11 +20,16 @@ import nxt.AccountLedger;
 import nxt.Block;
 import nxt.BlockchainProcessor;
 import nxt.Constants;
+import nxt.NtpTime;
 import nxt.Nxt;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,6 +64,39 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
         response.put("includeExpiredPrunable", Constants.INCLUDE_EXPIRED_PRUNABLE);
         response.put("correctInvalidFees", Constants.correctInvalidFees);
         response.put("ledgerTrimKeep", AccountLedger.trimKeep);
+        response.put("rYear", lastBlock.getLatestRYear());
+        response.put("supplyCurrent", Constants.haedsToTaels(lastBlock.getSupplyCurrent()));
+        response.put("blockReward", Constants.haedsToTaels(lastBlock.getBlockReward()));
+        response.put("date", NtpTime.toString(lastBlock.getDate()));
+        response.put("totalForgingHoldings", Constants.haedsToTaels(lastBlock.getTotalForgingHoldings()));
+        
+//        Compute average time here instead of in html.
+        double avgBlockTime = 0;
+        double sumAvgBlockTime = 0;
+        int currHeight = lastBlock.getHeight();
+        
+        if (currHeight > (Constants.DAILY_BLOCKS+1)) {
+        		for(int i=currHeight; i>=(currHeight-Constants.DAILY_BLOCKS); i--) {
+        			sumAvgBlockTime += Nxt.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
+        					Nxt.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
+        		}
+        		
+        		avgBlockTime = sumAvgBlockTime/Constants.DAILY_BLOCKS;
+        }
+        else if (currHeight!=1){
+        		for(int i=currHeight; i>1; i--) {
+        			sumAvgBlockTime += Nxt.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
+        					Nxt.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
+        		}
+        		
+        		avgBlockTime = sumAvgBlockTime/(currHeight-1);
+        }
+//        else avgBlockTime = 0
+        
+        
+        response.put("avgBlockTime", avgBlockTime);
+        
+        
         JSONArray servicesArray = new JSONArray();
         Peers.getServices().forEach(service -> servicesArray.add(service.name()));
         response.put("services", servicesArray);

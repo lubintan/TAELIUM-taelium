@@ -295,7 +295,7 @@ var NRS = (function(NRS, $, undefined) {
                 "desiredPosition": 110,
                 "depends": { apis: [ NRS.constants.REQUEST_TYPES.getPlugins ] }
             };
-            NRS.addTreeviewSidebarMenuItem(options);
+//            NRS.addTreeviewSidebarMenuItem(options);
         }
 
         $.each(NRS.plugins, function(pluginId, pluginDict) {
