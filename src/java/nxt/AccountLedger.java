@@ -198,7 +198,7 @@ public class AccountLedger {
         // only logged while processing block
         if (!blockchainProcessor.isProcessingBlock()) {
         	
-        		Logger.logDebugMessage("This Guy....");
+//        		Logger.logDebugMessage("This Guy....");
             return false;
         }
         //

@@ -1134,8 +1134,8 @@ public final class Account {
             pstmt.setInt(++i, CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
             		Nxt.getBlockchain().getHeight());
             pstmt.executeUpdate();
-            Logger.logDebugMessage("ACCOUNT TABLE HEIGHT: " + (CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
-        		Nxt.getBlockchain().getHeight()));
+//            Logger.logDebugMessage("ACCOUNT TABLE HEIGHT: " + (CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
+//        		Nxt.getBlockchain().getHeight()));
         }
     }
 

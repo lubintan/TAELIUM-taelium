@@ -35,13 +35,14 @@ public final class Constants {
     
     public static final String dateFormat = "dd-MMM-yyyy";
     
-    public static final int BLOCK_TIME = 8000; // should be 60. reducing it for testing purposes. 
-    public static final int DAILY_BLOCKS = 10; //blocks. Ie. one day's worth of blocks.
+    public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
+    public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
-    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(21).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
+    public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(1000).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
     public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
     public static BigInteger MAX_BALANCE_HAEDS = MAX_BALANCE_TAELS.multiply(ONE_TAEL); // make this non-final
-    public static final BigInteger INITIAL_VAULT_HAEDS = BigInteger.valueOf(25000000).multiply(ONE_TAEL);
+    public static final BigInteger INITIAL_VAULT_HAEDS = INITIAL_BALANCE_HAEDS;
+//    		BigInteger.valueOf(25000000).multiply(ONE_TAEL);
     public static final int MA_WINDOW = 10; //days. 
     public static final BigInteger VAULT_SUPPLY_BUFFER = BigInteger.valueOf(0).multiply(ONE_TAEL);
     public static final double K = 0.01/(365.0*(double)DAILY_BLOCKS);

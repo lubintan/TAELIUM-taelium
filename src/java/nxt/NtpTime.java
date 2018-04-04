@@ -72,7 +72,7 @@ public class NtpTime {
         		
 //        		currentDate = getZeroTimeDate(DebugDayTimer.currentDate);
     			//########## END TEST SECTION ############
-        		Logger.logDebugMessage("Retrieving Time: " + NtpTime.toString(currentDate));
+//        		Logger.logDebugMessage("Retrieving Time: " + NtpTime.toString(currentDate));
         }};
         
         
@@ -140,14 +140,16 @@ public class NtpTime {
 //    			Logger.logDebugMessage("System nano:"+System.nanoTime());
 //    			Logger.logDebugMessage("timeref: " + getNtpTimeReference());
     			
-    			long xianZai = 1521436890040L;
-    			double secondsPerDay = 400; //400s in real life
-    			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
-    			currentDouble += xianZai;
-    			current = (long) currentDouble;
+//    			long xianZai = 1521611480164L;
+//    			double secondsPerDay = 400; //400s in real life
+//    			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
+//    			currentDouble += xianZai;
+//    			current = (long) currentDouble;
     			
 //    			Logger.logDebugMessage("now: " + now);
 //    			Logger.logDebugMessage("current: " + current);
+    			
+    			current = now;
     		}  	 
 
     			
