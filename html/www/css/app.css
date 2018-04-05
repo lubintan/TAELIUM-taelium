@@ -14,6 +14,240 @@
  *                                                                            *
  ******************************************************************************/
 
+/*for general use over all UI pages*/
+
+.fluidborder
+{
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+    border: 1px solid white;
+}
+
+/* general use section end*/
+
+/* Locksreen.html custom classes:; These classes are used to center the logo, 
+captions, login buttons in locksreen.html*/
+
+.lockscreenbuttonwrapper
+{ 
+  margin-bottom: 4%;
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  width: auto;
+}
+
+.lockscreencaptionwrapper
+{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;"
+}
+
+.lockscreenlogowrapper
+{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 35%;
+ 
+}
+/*lockscreen.html custom classes end*/
+
+/*accountSummary.html custom classes: These classes are used in accountSummary.html*/
+
+.containerwrapper
+{
+  margin-top: 0%;
+  margin-bottom: -2%;
+  /*background-color: #363a55;*/
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  padding: 0% 0% 2% 2%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);
+  border: 1px solid white;
+  
+}
+.containerbalancewrapper
+{
+  margin-top: 2%;
+  /*background-color: #4f7cac;*/
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  padding: 0% 0% 2% 2%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border: 1px solid white;
+  background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);
+}
+.rowaddress
+{
+  margin-top: 3%;
+  margin-right: -10px !important;
+  margin-left: -10px !important;
+}
+.addresswrapper
+{
+  color: white;
+  text-align: left;
+  font-size: 32px;
+
+}
+.balancewrapper
+{ 
+  color: white;
+  text-align:left;
+  font-size:24px;
+ }
+ .balancevalues
+ {
+  font-size: 22px;
+  color: white;
+ }
+.btn.btn-default.btn-xs.copyaddress
+{
+  margin-top: 1%;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  background-color: #399e5a;
+  color: white;
+  padding:2%;
+}
+.btn.btn-default.btn-xs.copyaddress:hover,
+.btn.btn-default.btn-xs.copyaddress:active,
+.btn.btn-default.btn-xs.copyaddress.hover {
+    background-color: #77878B!important;
+}
+.boxwrappersummarypage
+{
+  height: 285px;
+  font-size: 24px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border: 1px solid white;
+  color: white;
+  padding: 3% 3% 0% 2%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-image: url("../img/lightblueworldmap3.jpg");
+  background-size: contain;
+        
+}
+.txinfowrapper
+{
+  font-size: 22px;
+}
+.radiobuttontextwrappertop
+{
+  font-size: 20px;
+  margin-top: 17%;
+  margin-left: -25%;
+
+}
+.radiobuttontextwrapperbottom
+{
+  font-size: 20px;
+  margin-top: 8%;
+  margin-left: -25%;
+
+}
+.fontawesomewrappersummarypage
+{
+  font-size: 22px;
+  margin-left: 5%;
+  margin-top: 10%;
+
+}
+.statustextwrappersummarypage
+{
+  color: white;
+  font-size: 22px;
+
+}  
+.spacingrowsummarypage
+{
+  height: 4%;
+}
+
+.stakingstatustitlewrapper
+{
+  margin-left:27%;
+  text-align: center;
+}
+/*accountSummary.html custom classes end*/
+
+/*info.html custom classes: These classes are used in info.html*/
+
+.titlewrapper
+{
+  background-color: #363a55;
+  color: white;
+  width: 100%;
+  padding: 1% 0% 1% 2%;
+  text-align: left;
+  border-bottom: 2px solid #363a55;
+  font-size: 32px;
+  margin-bottom: 4%;
+  background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);
+  border-radius: 10px;
+  -webkit-border-radius: 20px;    
+}
+.boxwrapper
+{
+  height: 200px;
+  font-size: 24px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  border: 1px solid white;
+  color: white;
+  padding: 3% 3% 0% 3%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-image: url("../img/lightblueworldmap3.jpg");
+  background-size: cover;
+        
+}
+.boxtextwrapper
+{
+  text-align: right;
+  margin-top: 20%;
+  margin-left: 20%;
+}
+.boxtextunitwrapper
+{
+  text-align: right;
+  /*margin-top: %;*/
+
+}
+.spacingrow
+{
+  height: 6%;
+}
+.statustextwrapper
+{
+  font-size: 22px;
+}
+    
+/*info.html custom classes end*/
+
+/*header.html custom classes: These classes are used in info.html*/
+
+.nav-pills a /*this class changes font color of pills */
+{
+  color: #363a55;
+}
+
+.nav-pills>li.active>a
+{
+  background-color: #363a55;
+}
+.nav-pills>li>a:hover,
+.nav-pills>li>a:focus 
+{
+   background-color: #4f7cac;
+   color: white;
+   
+}
+
+/*header.html custom classes end*/
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12
 {
 	padding-left: 10px !important;
@@ -48,8 +282,8 @@ body {
 body::after{
   position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
   
-  content:url(../img/client_background.png)
-  url(../img/tempicon.png);
+  content:url(../img/worldmap.jpeg)
+  url(../img/taeliumlogo.png);
 }
 html.lockscreen, html.lockscreen body {
   height:100%;
@@ -1673,15 +1907,16 @@ body > .header .logo .icon {
 .btn.btn-default:active,
 .btn.btn-default.hover {
  /* background-color: #AFAFAF!important; */
-    background-color: #f4f4f4!important;
+    background-color: #77878B!important;
 
 }
 .btn.btn-default.btn-flat {
   border-bottom-color: #d9dadc;
 }
 .btn.btn-primary {
-  background-color: #3c8dbc;
+  background-color: #ffffff;
   border-color: #367fa9;
+  color: #363a55;
 }
 .btn.btn-primary:hover,
 .btn.btn-primary:active,
@@ -1689,7 +1924,7 @@ body > .header .logo .icon {
   background-color: #367fa9;
 }
 .btn.btn-success {
-  background-color: #00a65a;
+  background-color: #14cc60;
   border-color: #008d4c;
 }
 .btn.btn-success:hover,
@@ -1928,7 +2163,7 @@ body > .header .logo .icon {
 /* ADD THIS CLASS TO THE <HTML> TAG */
 .lockscreen {
   background-color: black;
-  background: url(../img/client_background.png) repeat center center fixed;
+  background: url(../img/worldmap.jpeg) repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -2358,9 +2593,11 @@ body {
 	color: black !important;
 }
 
+/* 
 .page {
 	 display: none;
 }
+*/
 
 .lockscreen header, .lockscreen #page {
 	display: none !important;

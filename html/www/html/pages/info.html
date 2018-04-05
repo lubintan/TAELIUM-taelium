@@ -2,89 +2,124 @@
 
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taelium Info</title>
+     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+      <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="../../css/ionicons.min.css" rel="stylesheet" type="text/css">
+        <link href="../../css/app.css" rel="stylesheet" type="text/css">
+        <link href="../../css/highlight.style.css" rel="stylesheet" type="text/css">
+        
+        <link rel="stylesheet" href="../../css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic">
+            <link rel="stylesheet" href="../../css/user.css">
+            <link rel="stylesheet" href="../../css/header.css">
+            <link rel="stylesheet" href="fonts/simple-line-icons.min.css">
+
+    <style>
+    body
+    {
+        font-family: Ubuntu;
+      
+    }
+
+    </style>
+
 </head>
 
 <body>
+        <div class="container-fluid fluidborder">
             <div class="row">
-                <div class="col-md-12" style="height:195px;"><span class="label label-default" style="margin:auto;display:block;font-size:99px;margin-top:2%;">Taelium Info</span></div>
-            </div>
-            
-	        	<div class="row">
-				<div class="col-md-12" style="margin:auto;display:block;height:80px">Current Blockchain Height: 
-				<span class="badge-active" style="padding:3px;" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height"></span>
-				</div>
-	    		</div>
-	    		
-	    		<div class="row">
-				<div class="col-md-12" style="margin:auto;display:block;height:80px">
-                    <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" style="display:none;font-size:13px;" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status"><i class="fa fa-circle" style="font-size:12px;"></i> <span data-18n="connected">Connected</span></a>
-                    <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom" style="display:none;font-size:13px;">
-                        <i class="fa fa-circle" style="font-size:12px;"></i> <span data-18n="forging">Forging</span>
-                    </a>
+                <div class="col-md-12">
+                    <div class="titlewrapper">Taelium Info</div>
                 </div>
             </div>
+        </div>
             
-            <div class="row">  
-            		<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Yearly Interest Rate:&nbsp;</span></div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-	            		<span class="label label-default" id="rYear" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
-            		</div>
-            		<div class="col-md-3" style="margin:auto;display:block;height:80px;">
-            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">%</span>
-            		</div>
-    			</div>
-    			
-			<div class="row">  
-				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Average Block Time:&nbsp;</span></div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-	            		<span class="label label-default" id="avgBlockTime" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
-	            		</div>
-            		<div class="col-md-3" style="margin:auto;display:block;height:80px;">
-            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">s</span>
-            		</div>
-    			</div>
-    			
-    			<div class="row">  
-    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Today's Reward Per Block:&nbsp;</span></div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;"> 
-	            		<span class="label label-default" id="blockReward" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span>
-	            </div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
-            		</div>
-    			</div>
-    			
-    			<div class="row">  
-    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Current Supply:&nbsp;</span></div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-	            		<span class="label label-default" id="supplyCurrent" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Taels</span>
-	            </div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
-            		</div>
-    			</div>
-    			
-    			<div class="row">  
-    				<div class="col-md-6"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Current Taels Being Staked:&nbsp;</span></div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-	            		<span class="label label-default" id="totalForgingHoldings" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Taels</span>
-	            </div>
-	            <div class="col-md-3" style="margin:auto;display:block;height:80px;">
-            			<span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Taels</span>
-            		</div>
-    			</div>
-    
-    
-    
-    
-	<div class="container">
-	    <div class="row">
-	        <div class="col-md-12" style="height:17px;"></div>
-	    </div>
-	</div>
- 
+	        	<div class="row">
+				    <div class="col-md-3 col-md-offset-1">
+                        <div class="boxwrapper">
+                            <div >Current Blockchain Height</div>
+                            <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height">12345</div>
+                            <div class="boxtextunitwrapper">Blocks</div>
+                        </div>
+				    </div>
+                    <div class="col-md-3">
+                        <div class="boxwrapper">
+                            <div >Annual Interest Rate</div>
+                            <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height">20.0000</div>
+                            <div class="boxtextunitwrapper">%</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="boxwrapper">
+                            <div >Average Block Time</div>
+                              <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height">120</div>
+                              <div class="boxtextunitwrapper">seconds</div>
+                        </div>
+                    </div>
+	    		</div>
+
+                <div class="row spacingrow"></div>
+
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1">
+                        <div class="boxwrapper">
+                            <div >Reward per block</div>
+                            <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height">19</div>
+                            <div class="boxtextunitwrapper">Taels</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="boxwrapper">
+                            <div >Circulated Supply</div>
+                              <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title="HEIGHT" data-i18n="[title]current_blockchain_height">1,000,000,000</div>
+                            <div class="boxtextunitwrapper">Taels</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="boxwrapper">
+                            <div >Taels Being Staked</div>
+                            <div class="boxtextwrapper" id="sidebar_block_link" data-toggle="tooltip" data-placement="bottom" title=" HEIGHT" data-i18n="[title]current_blockchain_height">12345</div>
+                            <div class="boxtextunitwrapper">Taels</div>
+                        </div>
+                    </div>
+                </div>
+
+	    		<div class="row spacingrow"></div>
+
+            <!--
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="titlewrapper" >Status</div>
+                    </div>
+                </div>
+            </div>
+	    		<div class="row">
+				    <div class="col-md-2" >
+                        <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status"><i class="fa fa-circle fontawesomewrapper"></i> 
+                        <span data-18n="connected" class="statustextwrapper">Connected</span></a>
+                    </div>
+                
+                
+                    <div class="col-md-4">
+                        <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
+                        <i class="fa fa-circle fontawesomewrapper"></i> 
+                        <span data-18n="forging" class="statustextwrapper">Participating in Proof of Stake</span>
+                        </a>
+                    </div>
+
+                </div>
+                -->
+        </div>
+    </div>
+        
+   
 </body>
 
-</div>
+ </div>   

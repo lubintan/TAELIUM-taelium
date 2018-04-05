@@ -1,59 +1,167 @@
-<div id="dashboard_page" class="page" style="display:block">
+
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/app.css" rel="stylesheet" type="text/css">
+
+    <style>
+    body
+    {
+        font-family: Ubuntu;
+      
+    }
+    </style>
 
 </head>
 
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12" style="height:195px;"><span class="label label-default" id="sidebar_account_id" style="margin:auto;display:block;text-align:center;font-size:66px;margin-top:2%;"></span></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12" style="height:50px;"><span><a class='btn btn-default btn-xs' style="margin:auto;display:block;width:50%;" href="#" id="copy_account_id" data-clipboard-target="#sidebar_account_id" ><span class="fa fa-copy"></span>Copy Address</a></span></div>
-            </div>
+<div id="dashboard_page" class="page" style="display:block">
+        <div class="container-fluid containerwrapper">
+            <div class="row rowaddress">
+                <div class="col-md-2 addresswrapper">
+                    <span  id="sidebar_account_id">Address:</span>
+                </div>
             
+                 <div class="col-md-7 addresswrapper">
+                        <span id="sidebar_account_id">TAEL-XXXX-XXXX-XXXX-XXXXX</span>
+                 </div>
+
+                 <div class="col-md-3">
+                    <span>
+                        <a class='btn btn-default btn-xs copyaddress' href="#" id="copy_account_id" data-clipboard-target="#sidebar_account_id" >
+                            <span class="fa fa-copy"></span>
+                            Copy Address
+                        </a>
+                    </span>
+                </div>
+             </div>
+
+             <div class="row rowaddress">
+                <div class="col-md-2 addresswrapper">
+                    <span  id="sidebar_account_id">Public Key:</span>
+                </div>
             
-        </div>
-    </div>
-    
-    <div>
-        <div class="container">
-        		
-            <div class="row">
-                <div class="col-md-6" style="height:80px;"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Date:&nbsp;</span></div>
-                <div class="col-md-6"><span class="label label-default" id="date" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;"></span></div>
-            </div>
-        </div>
-    </div>
-    
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3" style="height:80px;"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;">Confirmed Balance:&nbsp;</span></div>
-                <div class="col-md-3"><span class="label label-default" id="account_confirmed_balance_sidebar" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;"></span></div>
-                <div class="col-md-3"><span class="label label-default" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;height:80px;">Unconfirmed Balance:&nbsp;</span></div>
-                <div class="col-md-3" style="height:80px;"><span class="label label-default" id="account_balance_sidebar" style="margin:auto;display:block;background:transparent;color:black;font-size:20px;padding-top:23px;"></span></div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12" style="height:17px;"></div>
-            </div>
-        </div>
-    </div>
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12" style="height:100%;">
-                    <p>Your confirmed balance is confirm one. Unconfirmed balance is not confirm one.........................</p>
+                 <div class="col-md-7 publickeywrapper">
+                        <span id="sidebar_publickey_id">123456789223456789323456789423456789523456789623456789723456789123</span>
+                 </div>
+
+                 <div class="col-md-3">
+                    <span>
+                        <a class='btn btn-default btn-xs copyaddress' href="#" id="copy_account_id" data-clipboard-target="#sidebar_publickey_id" >
+                            <span class="fa fa-copy"></span>
+                            Copy Public Key
+                        </a>
+                         <tr>
+					        <td style="font-weight: bold"><span data-i18n="account_qr_code">Account QR Code</span>:</td>
+					        <td>
+					            <div id="account_details_modal_account_display">
+					                <button class="btn btn-default" data-i18n="show">SHOW</button>
+					            </div>
+					            <div id="account_details_modal_account_qr_code"></div>
+					        </td>
+					    </tr>
+					    <tr>
+					        <td style="font-weight: bold"><span data-i18n="passphrase_qr_code">Passphrase QR Code</span>:</td>
+					        <td>
+					            <div id="account_details_modal_passphrase_display">
+					                <button class="btn btn-default" data-i18n="show">SHOW</button>
+					            </div>
+					            <div id="account_details_modal_passphrase_qr_code"></div>
+					        </td>
+					    </tr>
+                    </span>
+                </div>
+             </div>
+             
+            
+
+             <div class="spacingrowsummarypage"></div>
+             
+              <div class="row rowaddress">
+                <div class="col-md-3 balancewrapper">
+                    <span>Confirmed Balance:&nbsp;</span>
+                </div>
+                <div class="col-md-2 balancevalues">
+                    <span id="account_confirmed_balance_sidebar">10,000,000</span>
+                </div>
+                
+                <div class="col-md-3 balancewrapper">
+                    <span >Unconfirmed Balance:&nbsp;</span>
+                </div>
+                <div class="col-md-2 balancevalues">
+                    <span id="account_balance_sidebar" >10,000,000</span>
                 </div>
             </div>
         </div>
+   
+    
+    <div>
+     
+
+        <div class="spacingrowsummarypage"></div>
+
+            <div class="container-fluid boxwrappersummarypage">
+                <div class="row">
+                    <div class="col-md-4 ">
+                        <div >
+                            <div>Connection Status</div>
+                             <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status">
+                            <i class="fa fa-circle fontawesomewrappersummarypage" style="color:#7fff00"></i> 
+                            <span data-18n="connected" class="statustextwrappersummarypage">Connected</span>
+                            </a>
+                        </div>
+                        <div>
+                             <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status">
+                            <i class="fa fa-circle fontawesomewrappersummarypage" style="color:red"></i> 
+                            <span data-18n="connected" class="statustextwrappersummarypage"> Not Connected</span>
+                            </a>
+                           
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div >
+                            <div class="stakingstatustitlewrapper" >Account Staking Status</div>
+                            <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
+                            <i class="fa fa-circle fontawesomewrappersummarypage" style="color:#7fff00"></i> 
+                            <span data-18n="forging" class="statustextwrappersummarypage">Participating</span>
+                            </a>
+                        </div>
+                        <div >
+                            <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
+                            <i class="fa fa-circle fontawesomewrappersummarypage" style="color:red"></i> 
+                            <span data-18n="forging" class="statustextwrappersummarypage">Not Participating 
+                            </span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ">
+                        <div>
+                            <div class="radio">
+                            <label class="radiobuttontextwrappertop"><input type="radio" name="optradio">Participate in Proof of Stake</label>
+                        </div>
+                               <div class="radio">
+                            <label class="radiobuttontextwrapperbottom"><input type="radio" name="optradio">Do Not Participate in Proof of Stake</label>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       
+      
     </div>
 
+    
+       
+    
+    <div>
+        
+    </div>
+
+
 </div>
+

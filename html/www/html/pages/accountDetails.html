@@ -13,10 +13,100 @@
   ~ Removal or modification of this copyright notice is prohibited.           ~
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-
+<head>
+ <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ledger</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+    <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+ 
+  <style>
+   
+    .headerone
+     {
+        color: white;
+        background-color: #363a55;
+     }
+     .tablenamewrapper1
+     {
+        background-color: #363a55;
+        color: white;
+        width: 100%;
+        padding: 1% 0% 1% 2%;
+        text-align: left;
+        border-bottom: 2px solid #363a55;
+        font-size: 32px;
+        background: linear-gradient(45deg, #363a55, #4f7cac, #363a55);
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        
+     }
+    body 
+    {
+        color: black;
+        font-family: Ubuntu;
+    }
+    .numeric
+    {
+        border-radius: 20px;
+        -webkit-border-radius: 20px;
+        background-color: #77878B;
+        text-align: center;
+        color: white;
+     }
+   .titlerowdatetype
+    {
+        border-radius: 20px;
+        -webkit-border-radius: 20px;
+        background-color: #4f7cac;
+        text-align: center;
+        color: white;
+    }
+    .titlerow
+    {
+        border-radius: 20px;
+        -webkit-border-radius: 20px;
+        background-color: #77878B;
+        text-align: center;
+        color: white;
+    }
+    .loadinggif
+    {
+        width: 32; 
+        height: 32;
+        margin-left: 50%;
+        top: 22%;
+    }
+    .fontawesomebackground
+    {
+        background-color: #399e5a;
+        color: white;
+        border-radius: 20px;
+        -webkit-border-radius: 20px;
+        text-align: center;
+    }
+    .tabletextwrapper
+    {
+        padding-top:80px;
+        padding-bottom:100px;
+        text-align: center;
+    }
+    .panel.panel-default
+    {
+        border-bottom: none;
+    }
+   
+</style>
+</head>
 <div id="ledger_page" class="paginated page">
     <section class="content-header">
-        <h1 data-i18n="account_ledger">Account Ledger</h1>
+        <div class="container-fluid">
+            <div data-i18n="account_ledger">
+                <div class="tablenamewrapper1">Account Ledger</div>
+            </div>
+        </div>
     </section>
 
     <section class="content">
@@ -26,11 +116,11 @@
                 <table class="table table-striped" id="ledger_table">
                     <thead>
                     <tr>
-                        <th data-i18n="date">Date</th>
-                        <th data-i18n="type">TYPE</th>
+                        <th data-i18n="date" class="titlerowdatetype">Date</th>
+                        <th data-i18n="type" class="titlerowdatetype">TYPE</th>
                         <th class="numeric" data-i18n="change">CHANGE</th>
                         <th class="numeric" data-i18n="balance">BALANCE</th>
-                        <th data-i18n="holding">HOLDING</th>
+                        <th data-i18n="holding" class="titlerow">HOLDING</th>
                         <th class="numeric" data-i18n="change">CHANGE</th>
                         <th class="numeric" data-i18n="balance">BALANCE</th>
                     </tr>
@@ -38,9 +128,9 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                <div class="data-empty-container" style="text-align:center;">
-                    <p style="padding-top:80px;padding-bottom:100px;"><span data-i18n="no_account_ledger">No account ledger entries found</span>.</p>
+                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." class="loadinggif"></div>
+                <div class="data-empty-container">
+                    <p class="tabletextwrapper"><span data-i18n="no_account_ledger">No account ledger entries found</span>.</p>
                 </div>
             </div>
         </div>
@@ -50,15 +140,17 @@
 
 <div id="transactions_page" class="paginated page">
     <section class="content-header">
-        <h1 data-i18n="my_transactions">My Transactions</h1>
+        <div class="container-fluid">
+            <div data-i18n="my_transactions">
+                <div class="tablenamewrapper1"> My Transactions</div>
+            </div>
+        </div>
     </section>
 
     <section class="content">
-        <div class="panel panel-default" style="margin-bottom:4px;" id="transactions_type_navi_box">
+        <div class="panel panel-default"  id="transactions_type_navi_box">
             <div class="panel-body">
-                <div style="float:right;padding-top:3px;">
-                    <a href="#" data-i18n="show_type_menu" class="btn btn-default" id="transactions_sub_type_show_hide_btn" role="button">Show Type Menu</a>
-                </div>
+              
                 <ul class="nav nav-pills" id="transactions_type_navi"></ul>
             </div>
         </div>
@@ -72,23 +164,23 @@
                 <table class="table table-striped" id="transactions_table">
                     <thead>
                     <tr>
-                        <th data-i18n="date">Date</th>
-                        <th style="width:60px;text-align:center;"><i class="fa fa-envelope-o"></i></th>
-                        <th data-i18n="type">Type</th>
+                        <th data-i18n="date" class="titlerowdatetype">Date</th>
+                        <th data-i18n="type" class="titlerowdatetype">Type</th>
                         <th class="numeric" data-i18n="amount">Amount</th>
                         <th class="numeric" data-i18n="fee">Fee</th>
-                        <th data-i18n="account">Account</th>
-                        <th style="text-align:center;"><i class="fa fa-gavel"></i></th>
-                        <th style="text-align:center;" data-i18n="height">Height</th>
-                        <th style="text-align:center;" data-i18n="confirmations">Confirmations</th>
+                        <th data-i18n="account" class="titlerow">Account</th>
+                        <th  data-i18n="height" class="titlerow">Height</th>
+                        <th  data-i18n="confirmations" class="titlerow">Confirmations</th>
+                        <th class="fontawesomebackground"><i class="fa fa-envelope-o"></i></th>
+                        <th class="fontawesomebackground" ><i class="fa fa-gavel"></i></th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
-                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                <div class="data-empty-container" style="text-align:center;">
-                    <p style="padding-top:80px;padding-bottom:100px;"><span data-i18n="no_transactions_found">No transactions found</span>.</p>
+                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." class="loadinggif" /></div>
+                <div class="data-empty-container" >
+                    <p class="tabletextwrapper"><span data-i18n="no_transactions_found">No transactions found</span>.</p>
                 </div>
             </div>
         </div>
@@ -96,35 +188,40 @@
     </section>
 </div>
 
+<!--
 <div id="approval_requests_account_page" class="paginated page">
     <section class="content-header">
-        <h1><span data-i18n="approval_requests">Approval Requests</span> (<span data-i18n="account">Account</span>)</h1>
+        <div class="container-fluid">
+            <div data-i18n="approval_requests">
+                <div class = "tablenamewrapper1">Approval Requests(<span data-i18n="account">Account</span>)</div>
+            </div>
+        </div>
     </section>
 
-    <section class="content" style="margin-top:40px;">
+    <section class="content">
         <div class="panel panel-default">
             <div class="data-container data-loading panel-body">
                 <table class="table table-striped" id="approval_requests_account_table">
                     <thead>
                     <tr>
-                        <th data-i18n="date">Date</th>
-                        <th style="width:60px;text-align:center;"><i class="fa fa-envelope-o"></i></th>
-                        <th data-i18n="type">Type</th>
+                        <th data-i18n="date" class="titlerowdatetype">Date</th>
+                        <th data-i18n="type" class="titlerowdatetype">Type</th>
                         <th class="numeric" data-i18n="amount">Amount</th>
                         <th class="numeric" data-i18n="fee">Fee</th>
-                        <th data-i18n="account">Account</th>
-                        <th style="text-align:center;"><i class="fa fa-gavel"></i></th>
-                        <th style="text-align:center;" data-i18n="height">Height</th>
-                        <th style="text-align:center;" data-i18n="confirmations">Confirmations</th>
-                        <th data-i18n="actions" style="text-align:right;">Actions</th>
+                        <th data-i18n="account" class="titlerow">Account</th>
+                        <th data-i18n="height" class="titlerow">Height</th>
+                        <th data-i18n="confirmations" class="titlerow">Confirmations</th>
+                        <th data-i18n="actions" class="titlerow">Actions</th>
+                        <th class="fontawesomebackground"><i class="fa fa-envelope-o"></i></th>
+                        <th class="fontawesomebackground"><i class="fa fa-gavel"></i></th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
-                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                <div class="data-empty-container" style="text-align:center;">
-                    <p style="padding-top:80px;padding-bottom:100px;"><span data-i18n="no_current_approval_requests">No current approval requests</span>.</p>
+                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." class="loadinggif" /></div>
+                <div class="data-empty-container">
+                    <p class="tabletextwrapper"><span data-i18n="no_current_approval_requests">No current approval requests</span>.</p>
                 </div>
             </div>
         </div>
@@ -134,7 +231,11 @@
 
 <div id="scheduled_transactions_page" class="paginated page">
     <section class="content-header">
-        <h1 data-i18n="scheduled_transactions">Scheduled Transactions</h1>
+        <div class="container-fluid">
+            <div data-i18n="scheduled_transactions">
+                <div class="tablenamewrapper1"> Scheduled Transactions</div>
+            </div>
+        </div>  
     </section>
 
     <section class="content">
@@ -144,24 +245,25 @@
                 <table class="table table-striped" id="scheduled_transactions_table">
                     <thead>
                     <tr>
-                        <th data-i18n="date">Date</th>
-                        <th style="width:60px;text-align:center;"><i class="fa fa-envelope-o"></i></th>
-                        <th data-i18n="type">Type</th>
+                        <th data-i18n="date" class="titlerowdatetype">Date</th>                       
+                        <th data-i18n="type" class="titlerowdatetype">Type</th>
                         <th class="numeric" data-i18n="amount">Amount</th>
                         <th class="numeric" data-i18n="fee">Fee</th>
-                        <th data-i18n="account">Account</th>
-                        <th data-i18n="actions" style="text-align:right;">Actions</th>
+                        <th data-i18n="account" class="titlerow">Account</th>
+                        <th data-i18n="actions" class="titlerow">Actions</th>
+                         <th class="fontawesomebackground"><i class="fa fa-envelope-o"></i></th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
-                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                <div class="data-empty-container" style="text-align:center;">
-                    <p style="padding-top:80px;padding-bottom:100px;"><span data-i18n="no_transactions_found">No transactions found</span>.</p>
+                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." class="loadinggif" /></div>
+                <div class="data-empty-container">
+                    <p class="tabletextwrapper"><span data-i18n="no_transactions_found">No transactions found</span>.</p>
                 </div>
             </div>
         </div>
         <div class="data-pagination"></div>
     </section>
 </div>
+-->
