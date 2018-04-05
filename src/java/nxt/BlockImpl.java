@@ -653,27 +653,47 @@ final class BlockImpl implements Block {
         if (blockchainHeight > 2 && blockchainHeight % 2 == 0) {
             BlockImpl block = BlockDb.findBlockAtHeight(blockchainHeight - 2);
             int blocktimeAverage = (this.timestamp - block.timestamp) / 3;
+            Logger.logDebugMessage("-----------------------------------------");
+            Logger.logDebugMessage("this.timestamp: " + this.timestamp + " block-3.timestamp: " + block.timestamp);
+            Logger.logDebugMessage("<><><><><>blocktimeAverage: " + blocktimeAverage);
+            Logger.logDebugMessage("-----------------------------------------");
+            
             if (blocktimeAverage > Constants.BLOCK_TIME) {
                 baseTarget = prevBaseTarget.multiply(BigInteger.valueOf(Math.min(blocktimeAverage, Constants.MAX_BLOCKTIME_LIMIT))).divide(BigInteger.valueOf(Constants.BLOCK_TIME));
+                
+                Logger.logDebugMessage("baseTarget INCREASED from " + prevBaseTarget + " to " + baseTarget);
             } else {
 //                baseTarget = prevBaseTarget - prevBaseTarget * Constants.BASE_TARGET_GAMMA
 //                        * (Constants.BLOCK_TIME - Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)) / (100 * Constants.BLOCK_TIME);
             		baseTarget = prevBaseTarget.subtract(
-            				prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA)).multiply(
-            						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)).divide(
+            				prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA).multiply(
+            						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)))).divide(
             								BigInteger.valueOf(100 * Constants.BLOCK_TIME)
             								)
-            						)
+            						
             				);
+            		
+            		Logger.logDebugMessage("math max: " + Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT));
+            		Logger.logDebugMessage("prevBTgamma60part: " + prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA).multiply(
+    						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)))).divide(
+    								BigInteger.valueOf(100 * Constants.BLOCK_TIME))
+    								);
+    						
+    				
+         
+            		
+            		Logger.logDebugMessage("prevBT: " +prevBaseTarget);
+            		
+            		Logger.logDebugMessage("baseTarget DECREASED from " + prevBaseTarget + " to " + baseTarget);
             }
             if (baseTarget.compareTo(BigInteger.ZERO) < 0 || baseTarget.compareTo(Constants.MAX_BASE_TARGET) > 0) {
                 baseTarget = Constants.MAX_BASE_TARGET;
-//                Logger.logDebugMessage("***HIT BASE TARGET CEILING***");
+                Logger.logDebugMessage("***HIT BASE TARGET CEILING***");
                 
             }
             if (baseTarget.compareTo(Constants.MIN_BASE_TARGET) < 0) {
                 baseTarget = Constants.MIN_BASE_TARGET;
-//                Logger.logDebugMessage("***HIT BASE TARGET FLOOR***");
+                Logger.logDebugMessage("***HIT BASE TARGET FLOOR***");
             }
         } else {
             baseTarget = prevBaseTarget;
