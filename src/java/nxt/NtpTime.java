@@ -135,21 +135,22 @@ public class NtpTime {
     		
     		if (requestTime(url, timeout)) {
     			now = getNtpTime() + (System.nanoTime()/1000000) - getNtpTimeReference();
+    			current = now;
 //    			Logger.logDebugMessage("");
 //    			Logger.logDebugMessage("getNtpTime: "+getNtpTime()); 
 //    			Logger.logDebugMessage("System nano:"+System.nanoTime());
 //    			Logger.logDebugMessage("timeref: " + getNtpTimeReference());
     			
-//    			long xianZai = 1521611480164L;
-//    			double secondsPerDay = 400; //400s in real life
-//    			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
-//    			currentDouble += xianZai;
-//    			current = (long) currentDouble;
-    			
+////    			long xianZai = 1522909702850L;
+////    			double secondsPerDay = 400; //400s in real life
+////    			double currentDouble = (now - xianZai) * (86400/secondsPerDay);	//since 14 March 2018 UTC 0 
+////    			currentDouble += xianZai;
+////    			current = (long) currentDouble;
+//    			
 //    			Logger.logDebugMessage("now: " + now);
 //    			Logger.logDebugMessage("current: " + current);
     			
-    			current = now;
+    			
     		}  	 
 
     			
@@ -207,7 +208,10 @@ public class NtpTime {
             mNtpTimeReference = responseTicks;
             mRoundTripTime = roundTripTime;
         } catch (Exception e) {
-            if (false) Logger.logDebugMessage("request time failed: " + e);
+            
+        		Logger.logDebugMessage("Could not retrieve time. Taelium runs on a global clock. Please make sure you are connected to the internet.");
+        	
+        		if (false) Logger.logDebugMessage("request time failed: " + e);
             return false;
         } finally {
             if (socket != null) {

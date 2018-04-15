@@ -47,6 +47,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -1509,6 +1511,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 
                 BlockDb.commit(block);
                 Db.db.commitTransaction();
+                
+                Constants.updateMaxBal(block.getSupplyCurrent());
                 
                 Logger.logDebugMessage("****** BLOCK SUMMARY *******");
                 Logger.logDebugMessage("id: " + block.getId());

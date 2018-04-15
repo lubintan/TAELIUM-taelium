@@ -1222,7 +1222,7 @@ public final class Account {
     public BigInteger getEffectiveBalanceNXT(int height) {
         if (height <= Constants.EFF_BAL_HEIGHT) {
             Account genesisAccount = getAccount(id, 0);
-            return genesisAccount == null ? BigInteger.ZERO : Constants.haedsToTaels(genesisAccount.getBalanceNQT()).toBigInteger();
+            return genesisAccount == null ? BigInteger.ZERO : Constants.haedsToTaels(genesisAccount.getBalanceNQT());
         }
         if (this.publicKey == null) {
             this.publicKey = publicKeyTable.get(accountDbKeyFactory.newKey(this));
@@ -1234,7 +1234,7 @@ public final class Account {
         try {
         		BigInteger effectiveBalanceNQT = (getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height));
 //            Logger.logDebugMessage("Effective Balance After EFF_BAL_HEIGHT: " + effectiveBalanceNQT);
-	        return effectiveBalanceNQT.compareTo(Constants.MIN_FORGING_BALANCE_HAEDS) < 0 ? BigInteger.ZERO : Constants.haedsToTaels(effectiveBalanceNQT).toBigInteger();
+	        return effectiveBalanceNQT.compareTo(Constants.MIN_FORGING_BALANCE_HAEDS) < 0 ? BigInteger.ZERO : Constants.haedsToTaels(effectiveBalanceNQT);
         } finally {
             Nxt.getBlockchain().readUnlock();
         }

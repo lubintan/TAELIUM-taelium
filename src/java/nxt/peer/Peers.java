@@ -106,7 +106,7 @@ public final class Peers {
     static final boolean useProxy = System.getProperty("socksProxyHost") != null || System.getProperty("http.proxyHost") != null;
     static final boolean isGzipEnabled;
 
-    private static final int DEFAULT_PEER_PORT = 37777;
+    private static final int DEFAULT_PEER_PORT = 37523;
     private static final int TESTNET_PEER_PORT = 46874;
     private static final String myPlatform;
     private static final String myAddress;

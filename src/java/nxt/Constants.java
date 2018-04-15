@@ -39,8 +39,14 @@ public final class Constants {
     public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(1000).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
-    public static BigInteger MAX_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
-    public static BigInteger MAX_BALANCE_HAEDS = MAX_BALANCE_TAELS.multiply(ONE_TAEL); // make this non-final
+    public static final BigInteger INITIAL_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL);
+    public static BigInteger MAX_BALANCE_HAEDS = Nxt.getBlockchain().getHeight() > 0 ? Nxt.getBlockchain().getLastBlock().getSupplyCurrent():
+    														INITIAL_BALANCE_HAEDS; // make this non-final
+    
+    public static BigInteger MAX_BALANCE_TAELS = Nxt.getBlockchain().getHeight() > 0 ? Nxt.getBlockchain().getLastBlock().getSupplyCurrent():
+														INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
+    
+    
     public static final BigInteger INITIAL_VAULT_HAEDS = INITIAL_BALANCE_HAEDS;
 //    		BigInteger.valueOf(25000000).multiply(ONE_TAEL);
     public static final int MA_WINDOW = 10; //days. 
@@ -60,9 +66,9 @@ public final class Constants {
     public static final BigInteger STD_FEE = BigInteger.valueOf(10000);
     
     public static final int EFF_BAL_HEIGHT = DAILY_BLOCKS;
-    public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME).multiply(MAX_BALANCE_TAELS)); //153722867;
-    public static final BigInteger MAX_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));
-    public static final BigInteger MIN_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9)).divide(BigInteger.valueOf(10));
+    public static final BigInteger INITIAL_BASE_TARGET = BigInteger.valueOf(2).pow(63).divide(BigInteger.valueOf(BLOCK_TIME).multiply(INITIAL_BALANCE_TAELS)); //153722867;
+    public static final BigInteger MAX_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(50));//7686143350
+    public static final BigInteger MIN_BASE_TARGET = INITIAL_BASE_TARGET.multiply(BigInteger.valueOf(9)).divide(BigInteger.valueOf(10));//138350580
     public static final int MIN_BLOCKTIME_LIMIT = BLOCK_TIME - 7;
     public static final int MAX_BLOCKTIME_LIMIT = BLOCK_TIME + 7;
     public static final int BASE_TARGET_GAMMA = 64;
@@ -181,10 +187,15 @@ public final class Constants {
     		return num.divide(denom);
     }
     
-    public static BigDecimal haedsToTaels(BigInteger haeds) {
-		return divideDec(haeds, ONE_TAEL);
+    public static BigInteger haedsToTaels(BigInteger haeds) {
+		return divideDec(haeds, ONE_TAEL).toBigInteger();
 }
     public static BigInteger taelsToHaeds(BigInteger taels) {
     		return taels.multiply(ONE_TAEL);
+    }
+    
+    public static void updateMaxBal(BigInteger currentSupply) {
+    		MAX_BALANCE_HAEDS = currentSupply;
+    		MAX_BALANCE_TAELS = haedsToTaels(currentSupply);
     }
 }

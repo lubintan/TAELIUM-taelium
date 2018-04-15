@@ -755,7 +755,7 @@ final class TransactionImpl implements Transaction {
                 
                 for (Appendix appendage : appendages) {
                 	
-                		Logger.logDebugMessage("APPENDAGE: " + appendage.toString());
+//                		Logger.logDebugMessage("APPENDAGE: " + appendage.toString());
                     appendage.putBytes(buffer);
                 }
                 bytes = buffer.array();
@@ -1121,8 +1121,11 @@ final class TransactionImpl implements Transaction {
 
     @Override
     public void validate() throws NxtException.ValidationException {
-        if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
-        	(deadline < 1 || feeNQT.compareTo(BigInteger.ZERO) <= 0)
+        
+    		Logger.logDebugMessage("MAX_BALANCE_HAEDS: " + Constants.MAX_BALANCE_HAEDS);
+    	
+    		if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
+    			(deadline < 1 || feeNQT.compareTo(BigInteger.ZERO) <= 0)
                 || feeNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0
                 || amountNQT.compareTo(BigInteger.ZERO) < 0
                 || amountNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0 
@@ -1172,7 +1175,7 @@ final class TransactionImpl implements Transaction {
             BigInteger minimumFeeNQT = getMinimumFeeNQT(blockchainHeight);
             if (feeNQT.compareTo(Constants.MIN_FEE_HAEDS) < 0) {
                 throw new NxtException.NotCurrentlyValidException(String.format("Transaction fee %s %s less than minimum fee %s %s at height %d",
-                        Constants.haedsToTaels(feeNQT).toPlainString(), Constants.COIN_SYMBOL, Constants.haedsToTaels(minimumFeeNQT).toPlainString(), Constants.COIN_SYMBOL, blockchainHeight));
+                        Constants.haedsToTaels(feeNQT).toString(), Constants.COIN_SYMBOL, Constants.haedsToTaels(minimumFeeNQT).toString(), Constants.COIN_SYMBOL, blockchainHeight));
             }
             if (ecBlockId != 0) {
                 if (blockchainHeight < ecBlockHeight) {

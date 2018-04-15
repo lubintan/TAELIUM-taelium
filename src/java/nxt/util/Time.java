@@ -16,6 +16,9 @@
 
 package nxt.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import nxt.NtpTime;
@@ -28,6 +31,22 @@ public interface Time {
 
         public int getTime() {
 //            return Convert.toEpochTime(System.currentTimeMillis());
+        	
+//        SimpleDateFormat isoFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mmm:ss:SSS");
+//		isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+//		String systemDateAndTime = isoFormat.format(new Date(System.currentTimeMillis()));
+//		String ntpDateAndTime = isoFormat.format(new Date(NtpTime.getDateMs()));
+//        	
+//        	
+//        	
+//        	Logger.logDebugMessage("System  ms: " + systemDateAndTime);
+//        	Logger.logDebugMessage("NTP  ms: " + ntpDateAndTime);
+//        	
+//        	Logger.logDebugMessage("System Epoch ms: " + Convert.toEpochTime(System.currentTimeMillis()));
+//        	Logger.logDebugMessage("NTP Epoch ms: " + Convert.toEpochTime(NtpTime.getDateMs()));
+//        	
+//        	Logger.logDebugMessage("");
+//        	
         	return Convert.toEpochTime(NtpTime.getDateMs());
         }
 
