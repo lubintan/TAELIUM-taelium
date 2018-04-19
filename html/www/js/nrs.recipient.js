@@ -123,7 +123,6 @@ var NRS = (function(NRS, $) {
 			if (response.type == "success") {
 				$("#send_money_account_info").hide();
 			} else {
-				console.log("!!!!!!!! show me the money !!!!!!!!!!");
 				$("#send_money_account_info").html(response.message).show();
 
 			}
@@ -295,10 +294,7 @@ var NRS = (function(NRS, $) {
 		} else {
 			callout.removeClass(classes).addClass("callout-danger").html($.t("error_numeric_ids_not_allowed")).show();
 		}
-		
-		console.log("__________ checking recipient ___________");
-		
-	}; //end checkRecipient
+	};
 
 	NRS.checkRecipientAlias = function(account, modal) {
 		var classes = "callout-info callout-danger callout-warning";

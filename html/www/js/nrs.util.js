@@ -1016,27 +1016,27 @@ var NRS = (function (NRS, $, undefined) {
 	});
 
     $("#offcanvas_toggle").on("click", function (e) {
-		e.preventDefault();
-
-		//If window is small enough, enable sidebar push menu
-        var leftSide = $(".left-side");
-        var rightSide = $(".right-side");
-		if ($(window).width() <= 992) {
-            var rowOffCanvas = $('.row-offcanvas');
-            rowOffCanvas.toggleClass('active');
-            leftSide.removeClass("collapse-left");
-            rightSide.removeClass("strech");
-            rowOffCanvas.toggleClass("relative");
-		} else {
-			//Else, enable content streching
-            leftSide.toggleClass("collapse-left");
-            rightSide.toggleClass("strech");
-		}
-
-        leftSide.one($.support.transition.end,
-            function () {
-			$(".content.content-stretch:visible").width($(".page:visible").width());
-		});
+		// e.preventDefault();
+    //
+		// //If window is small enough, enable sidebar push menu
+    //     var leftSide = $(".left-side");
+    //     var rightSide = $(".right-side");
+		// if ($(window).width() <= 992) {
+    //         var rowOffCanvas = $('.row-offcanvas');
+    //         rowOffCanvas.toggleClass('active');
+    //         leftSide.removeClass("collapse-left");
+    //         rightSide.removeClass("strech");
+    //         rowOffCanvas.toggleClass("relative");
+		// } else {
+		// 	//Else, enable content streching
+    //         leftSide.toggleClass("collapse-left");
+    //         rightSide.toggleClass("strech");
+		// }
+    //
+    //     leftSide.one($.support.transition.end,
+    //         function () {
+		// 	$(".content.content-stretch:visible").width($(".page:visible").width());
+		// });
 	});
 
     $.fn.tree = function () {

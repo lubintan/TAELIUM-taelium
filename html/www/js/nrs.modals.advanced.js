@@ -488,9 +488,6 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			} else {
 				output.errorMessage = $.t("error_passphrase_incorrect");
-				$.growl($.t("error_passphrase_incorrect"), {
-					"type": "danger"
-				});
 			}
 			output.stop = true;
 			output.keepOpen = true;

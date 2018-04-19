@@ -29,18 +29,18 @@ var NRS = (function(NRS, $) {
 
     $(window).on('load', function() {
         widgetVisibility($("#header_send_money"), { apis: [NRS.constants.REQUEST_TYPES.sendMoney] });
-        widgetVisibility($("#header_transfer_currency"), { apis: [NRS.constants.REQUEST_TYPES.transferCurrency] });
-        widgetVisibility($("#header_send_message"), { apis: [NRS.constants.REQUEST_TYPES.sendMessage] });
-        if (!NRS.isFundingMonitorSupported()) {
-            $("#funding_monitor_menu_item").hide();
-        }
-        if (!NRS.isExternalLinkVisible()) {
-            $("#api_console_li").hide();
-            $("#database_shell_li").hide();
-        }
-        if (!NRS.isWebWalletLinkVisible()) {
-            $("#web_wallet_li").remove();
-        }
+        // widgetVisibility($("#header_transfer_currency"), { apis: [NRS.constants.REQUEST_TYPES.transferCurrency] });
+        // widgetVisibility($("#header_send_message"), { apis: [NRS.constants.REQUEST_TYPES.sendMessage] });
+        // if (!NRS.isFundingMonitorSupported()) {
+        //     $("#funding_monitor_menu_item").hide();
+        // }
+        // if (!NRS.isExternalLinkVisible()) {
+        //     $("#api_console_li").hide();
+        //     $("#database_shell_li").hide();
+        // }
+        // if (!NRS.isWebWalletLinkVisible()) {
+        //     $("#web_wallet_li").remove();
+        // }
     });
 
     $("#refreshSearchIndex").on("click", function() {
@@ -55,11 +55,11 @@ var NRS = (function(NRS, $) {
         })
     });
 
-    $("#header_open_web_wallet").on("click", function() {
-        if (java) {
-            java.openBrowser(NRS.accountRS);
-        }
-    });
+    // $("#header_open_web_wallet").on("click", function() {
+    //     if (java) {
+    //         java.openBrowser(NRS.accountRS);
+    //     }
+    // });
 
     $("#client_status_modal").on("show.bs.modal", function() {
         if (NRS.isMobileApp()) {

@@ -1,41 +1,77 @@
-<!DOCTYPE html>
-<html>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright © 2013-2016 The Nxt Core Developers.                            ~
+  ~ Copyright © 2016-2017 Jelurida IP B.V.                                    ~
+  ~                                                                           ~
+  ~ See the LICENSE.txt file at the top-level directory of this distribution  ~
+  ~ for licensing information.                                                ~
+  ~                                                                           ~
+  ~ Unless otherwise agreed in a custom licensing agreement with Jelurida B.V.,
+  ~ no part of the Nxt software, including this file, may be copied, modified,~
+  ~ propagated, or distributed except according to the terms contained in the ~
+  ~ LICENSE.txt file.                                                         ~
+  ~                                                                           ~
+  ~ Removal or modification of this copyright notice is prohibited.           ~
+  ~                                                                           ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <header class="header">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header</title>
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
-    <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="../css/app.css" rel="stylesheet" type="text/css">
-    
+    <span id="logo">
+        <a href="#" class="logo" data-page="dashboard">
+            <img src="img/brand/logo_small.png" style="opacity:0.95" />
+        </a>
+    </span>
+    <nav class="navbar navbar-static-top" role="navigation">
+        <!-- <a href="#" class="navbar-btn sidebar-toggle" id="offcanvas_toggle" role="button">
+            <span class="sr-only" data-i18n="toggle_navigation">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a> -->
 
 
-    <style>
-    body
-    {
-        font-family: Ubuntu;
-        font-size: 24px;
-      
-    }
-    </style>
+        <ul class="nav navbar-nav">
+          <li id="Account Summary">
+            <a href="#" class="goto-page" data-page="dashboard">
+                Account Details
+            </a>
+          </li>
+          <li id="Account Details">
+            <a href="#" class="goto-page" data-page="ledger">
+                Account Ledger
+            </a>
+          </li>
+          <li id="Blockchain Info">
+            <a href="#" class="goto-page" data-page="info">
+                Taelium Info
+            </a>
+          </li>
+        </ul>
 
-</head>
+        <div id="header_right" class="navbar-right">
+            <ul class="nav navbar-nav sends">
+                <li id="header_send_money" class="dropdown">
+                    <a href="#" data-toggle="modal" data-target="#send_money_modal">
+                        <span data-i18n="send">Send</span>
+                        <span class="coin-symbol"></span>
+                        <i class="fa fa-money"></i>
+                    </a>
+                </li>
 
-<div class="container-fluid">
-<ul class="nav nav-pills">
-  <li class="active"><a href="#" class="goto-page" data-page="dashboard">Account</a></li>
-  <li><a href="#" class="goto-page" data-page="ledger">Ledger</a></li>
-  <li><a href="#" class="goto-page" data-page="contacts">Send Taels</a></li>
-  <li><a href="#" class="goto-page" data-page="peers">Taelium Info</a></li>
-  <li><a href="#" class="goto-page" data-page="peers">Logout</a></li>
-</ul>
-</div>
+            </ul>
+            <ul class="nav navbar-nav">
+
+                <li class="dropdown" id="logout_button_container">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="logout_button">
+                        Log Out
+                        <i class="fa fa-power-off"></i>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a role="menuitem" tabindex="-1" href="#" onclick="NRS.logout()" data-i18n="logout">Log Out</a></li>
+                        <li><a role="menuitem" tabindex="-1" href="#" onclick="NRS.logout(true)" data-i18n="logout_stop_forging">Log Out &amp; Stop Forging</a></li>
+                        <li><a role="menuitem" tabindex="-1" href="#" data-toggle="modal" data-target="#logout_clear_user_data_modal" data-i18n="logout_clear_user_data">Log Out and Clear User Data</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header>
-</html>
-
-
-
-  

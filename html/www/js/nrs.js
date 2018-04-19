@@ -33,12 +33,10 @@
  * @depends {util/converters.js}
  * @depends {util/extensions.js}
  * @depends {util/nxtaddress.js}
- * @depends {nrs.transactions.js}
  */
 var NRS = (function(NRS, $, undefined) {
 	"use strict";
 
-	
 	NRS.client = "";
 	NRS.state = {};
 	NRS.blocks = [];
@@ -46,12 +44,6 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.accountRS = NRS.accountRS ? NRS.accountRS : "";
 	NRS.publicKey = "";
 	NRS.accountInfo = {};
-	NRS.rYear = 0.0;
-	NRS.supplyCurrent = 0.0;
-	NRS.blockReward = 0.0;
-	NRS.date = "";
-	NRS.totalForgingHoldings = 0.0;
-	NRS.avgBlockTime = 0.0;
 
 	NRS.database = null;
 	NRS.databaseSupport = false;
@@ -355,7 +347,7 @@ var NRS = (function(NRS, $, undefined) {
 				setInterval(NRS.checkAliasVersions, 1000 * 60 * 60);
 
 				NRS.allowLoginViaEnter();
-				NRS.automaticallyCheckRecipient2();
+				NRS.automaticallyCheckRecipient();
 
 				$("#dashboard_table, #transactions_table").on("mouseenter", "td.confirmations", function () {
 					$(this).popover("show");
@@ -450,24 +442,14 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.handleBlockchainStatus = function(response, callback) {
 		var firstTime = !("lastBlock" in NRS.state);
 		var previousLastBlock = (firstTime ? "0" : NRS.state.lastBlock);
-		
+
 		NRS.state = response;
 		var lastBlock = NRS.state.lastBlock;
-		
-		
 		var height = response.apiProxy ? NRS.lastProxyBlockHeight : NRS.state.numberOfBlocks - 1;
 
 		NRS.serverConnect = true;
 		NRS.ledgerTrimKeep = response.ledgerTrimKeep;
 		$("#sidebar_block_link").html(NRS.getBlockLink(height));
-		$("#rYear").html(NRS.state.rYear);
-		$("#supplyCurrent").html(NRS.state.supplyCurrent);
-		$("#blockReward").html(NRS.state.blockReward);
-		$("#date").html(NRS.state.date);
-		$("#totalForgingHoldings").html(NRS.state.totalForgingHoldings);
-		$("#avgBlockTime").html(NRS.state.avgBlockTime);
-		
-		
 		if (firstTime) {
 			$("#nrs_version").html(NRS.state.version).removeClass("loading_dots");
 			NRS.getBlock(lastBlock, NRS.handleInitialBlocks);
@@ -555,7 +537,6 @@ var NRS = (function(NRS, $, undefined) {
 							NRS.lastBlockHeight = NRS.lastProxyBlockHeight;
 							NRS.incoming.updateDashboardBlocks(NRS.lastProxyBlockHeight - prevHeight);
 							NRS.updateDashboardLastBlock(proxyBlocksResponse.blocks[0]);
-							
 							NRS.handleBlockchainStatus(response, callback);
                             NRS.updateDashboardMessage();
 						}
@@ -674,7 +655,6 @@ var NRS = (function(NRS, $, undefined) {
 
 	$("button.goto-page, a.goto-page").click(function(event) {
 		event.preventDefault();
-		
 		NRS.goToPage($(this).data("page"), undefined, $(this).data("subpage"));
 	});
 
@@ -684,34 +664,23 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.goToPage = function(page, callback, subpage) {
-		console.log(page);
-		console.log(callback);
-		console.log(subpage);
 		var $link = $("ul.sidebar-menu a[data-page=" + page + "]");
-//		console.log(page);
-//		console.log($link);
+
 		if ($link.length > 1) {
 			if ($link.last().is(":visible")) {
 				$link = $link.last();
-				
-				console.log("1");
 			} else {
 				$link = $link.first();
-				console.log("2");
 			}
 		}
 
 		if ($link.length == 1) {
-			console.log("3");
-			
 			$link.trigger("click", [{
 				"callback": callback,
 				"subpage": subpage
 			}]);
 			NRS.resetNotificationState(page);
 		} else {
-			
-			console.log("4");
 			NRS.currentPage = page;
 			NRS.currentSubPage = "";
 			NRS.pageNumber = 1;
@@ -724,31 +693,10 @@ var NRS = (function(NRS, $, undefined) {
 				NRS.pageLoading();
 				NRS.resetNotificationState(page);
 				NRS.pages[page](callback, subpage);
-				console.log("5");
 			}
 		}
 	};
 
-	NRS.loadWoGoingToPage = function(page, callback, subpage) {
-		
-		var $link = $("ul.sidebar-menu a[data-page=" + page + "]");
-		NRS.currentPage = page;
-		NRS.currentSubPage = "";
-		NRS.pageNumber = 1;
-		NRS.showPageNumbers = false;
-
-			if (NRS.pages[page]) {
-				NRS.pageLoading();
-				NRS.resetNotificationState(page);
-				NRS.pages[page](callback, subpage);
-
-			}
-		
-	};
-
-	
-	
-	
 	NRS.pageLoading = function() {
 		NRS.hasMorePages = false;
 
@@ -1165,7 +1113,7 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.accountInfo = response;
 			if (response.errorCode) {
 				NRS.logConsole("Get account info error (" + response.errorCode + ") " + response.errorDescription);
-				$("#account_balance, #account_balance_sidebar, #account_confirmed_balance_sidebar, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
+				$("#account_balance, #account_balance_sidebar, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
                 NRS.updateDashboardMessage();
 			} else {
 				if (NRS.accountRS && NRS.accountInfo.accountRS != NRS.accountRS) {
@@ -1176,7 +1124,6 @@ var NRS = (function(NRS, $, undefined) {
 				}
                 NRS.updateDashboardMessage();
                 $("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
-                $("#account_confirmed_balance_sidebar").html(NRS.formatStyledAmount(response.balanceNQT));
                 $("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
                 if (NRS.isDisplayOptionalDashboardTiles()) {
@@ -1371,7 +1318,7 @@ var NRS = (function(NRS, $, undefined) {
 			}
 
 			if (firstRun) {
-				$("#account_balance, #account_balance_sidebar, #account_confirmed_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
+				$("#account_balance, #account_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
 			}
 
 			if (callback) {
@@ -1891,4 +1838,3 @@ if (isNode) {
         NRS.init();
     });
 }
-
