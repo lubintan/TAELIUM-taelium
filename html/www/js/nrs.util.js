@@ -116,7 +116,7 @@ var NRS = (function (NRS, $, undefined) {
 		a = new Big(String(a));
 		b = new Big(String(b));
 
-		var result = a.div(b).times(new Big("100")).toFixed(2);
+		var result = a.div(b).times(new Big("100")).toFixed(8);
 		Big.RM = 1;
 		return NRS.format(result.toString());
 	};

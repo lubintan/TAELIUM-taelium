@@ -78,6 +78,9 @@ import java.util.concurrent.TimeoutException;
 
 public final class Peers {
 
+    private static final int DEFAULT_PEER_PORT = 12343;
+
+	
     public enum Event {
         BLACKLIST, UNBLACKLIST, DEACTIVATE, REMOVE,
         DOWNLOADED_VOLUME, UPLOADED_VOLUME, WEIGHT,
@@ -106,7 +109,6 @@ public final class Peers {
     static final boolean useProxy = System.getProperty("socksProxyHost") != null || System.getProperty("http.proxyHost") != null;
     static final boolean isGzipEnabled;
 
-    private static final int DEFAULT_PEER_PORT = 12343;
     private static final int TESTNET_PEER_PORT = 46874;
     private static final String myPlatform;
     private static final String myAddress;

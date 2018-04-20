@@ -65,10 +65,10 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
         response.put("correctInvalidFees", Constants.correctInvalidFees);
         response.put("ledgerTrimKeep", AccountLedger.trimKeep);
         response.put("rYear", lastBlock.getLatestRYear());
-        response.put("supplyCurrent", Constants.haedsToTaels(lastBlock.getSupplyCurrent()));
-        response.put("blockReward", Constants.haedsToTaels(lastBlock.getBlockReward()));
+        response.put("supplyCurrent", Constants.divideDec(lastBlock.getSupplyCurrent(), BigInteger.valueOf(100000000)));
+        response.put("blockReward", Constants.divideDec(lastBlock.getBlockReward(), BigInteger.valueOf(100000000)));
         response.put("date", NtpTime.toString(lastBlock.getDate()));
-        response.put("totalForgingHoldings", Constants.haedsToTaels(lastBlock.getTotalForgingHoldings()));
+        response.put("totalForgingHoldings", Constants.divideDec(lastBlock.getTotalForgingHoldings(), BigInteger.valueOf(100000000)));
         
 //        Compute average time here instead of in html.
         double avgBlockTime = 0;

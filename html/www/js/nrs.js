@@ -45,6 +45,13 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.accountRS = NRS.accountRS ? NRS.accountRS : "";
 	NRS.publicKey = "";
 	NRS.accountInfo = {};
+	NRS.rYear = 0.0;
+	NRS.supplyCurrent = 0.0;
+	NRS.blockReward = 0.0;
+	NRS.date = "";
+	NRS.totalForgingHoldings = 0.0;
+	NRS.avgBlockTime = 0.0;
+
 
 	NRS.database = null;
 	NRS.databaseSupport = false;
@@ -450,7 +457,14 @@ var NRS = (function(NRS, $, undefined) {
 
 		NRS.serverConnect = true;
 		NRS.ledgerTrimKeep = response.ledgerTrimKeep;
-		$("#sidebar_block_link").html(NRS.getBlockLink(height));
+		$("#sidebar_block_link").html(height);
+		$("#rYear").html(NRS.state.rYear);
+		$("#supplyCurrent").html(NRS.state.supplyCurrent);
+		$("#blockReward").html(NRS.state.blockReward);
+		$("#date").html(NRS.state.date);
+		$("#totalForgingHoldings").html(NRS.state.totalForgingHoldings);
+		$("#avgBlockTime").html(NRS.state.avgBlockTime);
+
 		if (firstTime) {
 			$("#nrs_version").html(NRS.state.version).removeClass("loading_dots");
 			NRS.getBlock(lastBlock, NRS.handleInitialBlocks);
@@ -1114,7 +1128,8 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.accountInfo = response;
 			if (response.errorCode) {
 				NRS.logConsole("Get account info error (" + response.errorCode + ") " + response.errorDescription);
-				$("#account_balance, #account_balance_sidebar, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
+				// $("#account_balance, #account_balance_sidebar, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
+				$("#account_balance, #account_balance_sidebar, #account_confirmed_balance_sidebar, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").html("0");
                 NRS.updateDashboardMessage();
 			} else {
 				if (NRS.accountRS && NRS.accountInfo.accountRS != NRS.accountRS) {
@@ -1125,7 +1140,8 @@ var NRS = (function(NRS, $, undefined) {
 				}
                 NRS.updateDashboardMessage();
                 $("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
-                $("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
+                $("#account_confirmed_balance_sidebar").html(NRS.formatStyledAmount(response.balanceNQT));
+								$("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
                 if (NRS.isDisplayOptionalDashboardTiles()) {
                     // only show if happened within last week and not during account switch
@@ -1319,7 +1335,8 @@ var NRS = (function(NRS, $, undefined) {
 			}
 
 			if (firstRun) {
-				$("#account_balance, #account_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
+				// $("#account_balance, #account_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
+          $("#account_balance, #account_balance_sidebar, #account_confirmed_balance_sidebar, #account_assets_balance, #account_nr_assets, #account_currencies_balance, #account_nr_currencies, #account_purchase_count, #account_pending_sale_count, #account_completed_sale_count, #account_message_count, #account_alias_count").removeClass("loading_dots");
 			}
 
 			if (callback) {
