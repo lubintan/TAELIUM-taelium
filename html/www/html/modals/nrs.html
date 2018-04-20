@@ -14,6 +14,35 @@
   ~                                                                           ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+  <script type="text/javascript">
+    function calculate(){
+    try{
+    var result = document.getElementById('total');
+    var amount = document.getElementById('send_money_amount');
+    const fee = Big(0.001);
+    var amountVal = amount.value;
+    // console.log(amountVal);
+    var total = fee;
+    var numAmount = Big(amountVal);
+
+      if (!numAmount.isNaN && numAmount.gte(Big(0))){
+      total = numAmount.plus(fee);
+      total = total.toFixed(8);
+      }
+      else{
+      total = fee;
+      }
+    }catch(error){
+      total = fee;
+      result.value = total.toString(10);
+      console.log(error);
+    }finally{
+
+      result.value = total.toString(10);
+    }
+    }
+    </script>
+
 <div class="modal fade" id="send_money_modal" data-transaction-type="0" data-transaction-subtype="0" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-700">
         <div class="modal-content">
@@ -30,11 +59,15 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="form-group">
+                                <label>Tx Fee: 0.001 Taels </label>
+                                <br>
                                 <label for="send_money_amount" data-i18n="amount">AMOUNT</label>
                                 <div class="input-group">
-                                    <input type="text" name="amountNXT" id="send_money_amount" step="any" min="0" class="form-control" placeholder="Amount" data-i18n="[placeholder]amount" tabindex="3">
+                                    <input type="text" name="amountNXT" id="send_money_amount" step="any" min="0" class="form-control" onkeyup="calculate()" placeholder="Amount" data-i18n="[placeholder]amount" tabindex="3">
                                     <span class="input-group-addon coin-symbol"></span>
                                 </div>
+                                <label for="total">Total Spending: </label>
+                                <input type="text"  id="total" class="form-control" value="0.001" readonly>
                             </div>
                         </div>
                     </div>
@@ -54,7 +87,7 @@
                 </form>
             </div>
             <div class="modal-footer" style="margin-top:0;">
-                <div class="advanced_info"><a href="#" data-i18n="advanced">advanced</a></div>
+                <!-- <div class="advanced_info"><a href="#" data-i18n="advanced">advanced</a></div> -->
 
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-i18n="cancel">Cancel</button>
                 <button type="button" class="btn btn-primary" data-loading-text="Submitting..." data-i18n="submit;[data-loading-text]submitting">Submit</button>
