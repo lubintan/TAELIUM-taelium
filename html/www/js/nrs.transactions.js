@@ -252,6 +252,11 @@ var NRS = (function(NRS, $, undefined) {
 					NRS.incoming[NRS.currentPage]();
 				}
 
+				if (NRS.currentPage == 'ledger'){
+					NRS.loadPage('ledger');
+					NRS.goToPage('ledger');
+				}
+
 				NRS.getAccountInfo();
 			} else if (callback) {
 				callback(false);
@@ -546,51 +551,62 @@ var NRS = (function(NRS, $, undefined) {
 		}
 		var html = "";
 		html += "<tr class='tr_transaction_" + t.transaction + "'>";
-		html += "<td style='vertical-align:middle;'>";
-		if (isScheduled) {
-            html += "<a href='#' onclick='NRS.showTransactionModal(" + JSON.stringify(t) + ");'>" + NRS.formatTimestamp(t.timestamp) + "</a>";
-		}  else {
-            html += "<a class='show_transaction_modal_action' href='#' data-timestamp='" + NRS.escapeRespStr(t.timestamp) + "' ";
-            html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "'>";
-            html += NRS.formatTimestamp(t.timestamp) + "</a>";
-		}
-  		html += "</td>";
-  		html += "<td style='vertical-align:middle;text-align:center;'>" + (hasMessage ? "&nbsp; <i class='fa fa-envelope-o'></i>&nbsp;" : "&nbsp;") + "</td>";
-		html += '<td style="vertical-align:middle;">';
-		html += NRS.getTransactionIconHTML(t.type, t.subtype) + '&nbsp; ';
-		html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + transactionType + '</span>';
-		html += '</td>';
-        html += "<td style='vertical-align:middle;text-align:right;" + amountColor + "'>" + formattedAmount + "</td>";
-        html += "<td style='vertical-align:middle;text-align:right;" + feeColor + "'>" + formattedFee + "</td>";
-		html += "<td style='vertical-align:middle;'>" + ((NRS.getAccountLink(t, "sender") == "/" && t.type == 2) ? "Asset Exchange" : NRS.getAccountLink(t, "sender")) + " ";
-		html += "<i class='fa fa-arrow-circle-right' style='color:#777;'></i> " + ((NRS.getAccountLink(t, "recipient") == "/" && t.type == 2) ? "Asset Exchange" : NRS.getAccountLink(t, "recipient")) + "</td>";
-		if (!isScheduled) {
-            html += "<td class='td_transaction_phasing' style='min-width:100px;vertical-align:middle;text-align:center;'></td>";
-            html += "<td style='vertical-align:middle;text-align:center;'>" + (t.confirmed ? NRS.getBlockLink(t.height, null, true) : "-") + "</td>";
-            html += "<td class='confirmations' style='vertical-align:middle;text-align:center;font-size:12px;'>";
-            html += "<span class='show_popover' data-content='" + (t.confirmed ? NRS.formatAmount(t.confirmations) + " " + $.t("confirmations") : $.t("unconfirmed_transaction")) + "' ";
-            html += "data-container='body' data-placement='left'>";
-            html += (!t.confirmed ? "-" : (t.confirmations > 1440 ? (NRS.formatAmount('144000000000') + "+") : NRS.formatAmount(t.confirmations))) + "</span></td>";
-        }
-		if (actions && actions.length != undefined) {
-			html += '<td class="td_transaction_actions" style="vertical-align:middle;text-align:right;">';
-			if (actions.indexOf('approve') > -1) {
-                html += "<a class='btn btn-xs btn-default approve_transaction_btn' href='#' data-toggle='modal' data-target='#approve_transaction_modal' ";
-				html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "' data-fullhash='" + NRS.escapeRespStr(t.fullHash) + "' ";
-				html += "data-timestamp='" + t.timestamp + "' " + "data-votingmodel='" + t.attachment.phasingVotingModel + "' ";
-				html += "data-fee='1' data-min-balance-formatted=''>" + $.t('approve') + "</a>";
-			}
-			if (actions.indexOf('delete') > -1) {
-                html += "<a class='btn btn-xs btn-default' href='#' data-toggle='modal' data-target='#delete_scheduled_transaction_modal' ";
-				html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "'>" + $.t("delete") + "</a>";
-			}
-			html += "</td>";
-		}
+		// html += "<td style='vertical-align:middle;'>";
+		//
+	  // // html += "<a class='show_transaction_modal_action' href='#' data-timestamp='" + NRS.escapeRespStr(t.timestamp) + "' ";
+	  // // html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "'>";
+    // html += NRS.formatTimestamp(t.blockTimestamp);
+		//
+  	// 	html += "</td>";
+  	// 	// html += "<td style='vertical-align:middle;text-align:center;'>" + (hasMessage ? "&nbsp; <i class='fa fa-envelope-o'></i>&nbsp;" : "&nbsp;") + "</td>";
+		// html += '<td style="vertical-align:middle;">';
+		// html += NRS.getTransactionIconHTML(t.type, t.subtype) + '&nbsp; ';
+		// html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + transactionType + '</span>';
+		// html += '</td>';
+        html += "<td style='vertical-align:middle;text-align:center;" + amountColor + "'>" + formattedAmount + "</td>";
+        html += "<td style='vertical-align:middle;text-align:center;" + feeColor + "'>" + formattedFee + "</td>";
+				html += "<td style='vertical-align:middle;text-align:center;'>" + t.transaction; + "</td>";
+		html += "<td style='vertical-align:middle;text-align:center;'>" + t.senderRS; + "</td>";
+		html += "<td style='vertical-align:middle;text-align:center;'>" + t.recipientRS; + "</td>";
+
+		// html += "<i class='fa fa-arrow-circle-right' style='color:#777;'></i> " + t.recipientR + "</td>";
+
+
+
+
+		// if (!isScheduled) {
+    //         html += "<td class='td_transaction_phasing' style='min-width:100px;vertical-align:middle;text-align:center;'></td>";
+    //         html += "<td style='vertical-align:middle;text-align:center;'>" + (t.confirmed ? NRS.getBlockLink(t.height, null, true) : "-") + "</td>";
+    //         html += "<td class='confirmations' style='vertical-align:middle;text-align:center;font-size:12px;'>";
+    //         html += "<span class='show_popover' data-content='" + (t.confirmed ? NRS.formatAmount(t.confirmations) + " " + $.t("confirmations") : $.t("unconfirmed_transaction")) + "' ";
+    //         html += "data-container='body' data-placement='left'>";
+    //         html += (!t.confirmed ? "-" : (t.confirmations > 1440 ? (NRS.formatAmount('144000000000') + "+") : NRS.formatAmount(t.confirmations))) + "</span></td>";
+    //     }
+		// if (actions && actions.length != undefined) {
+		// 	html += '<td class="td_transaction_actions" style="vertical-align:middle;text-align:right;">';
+		// 	if (actions.indexOf('approve') > -1) {
+    //             html += "<a class='btn btn-xs btn-default approve_transaction_btn' href='#' data-toggle='modal' data-target='#approve_transaction_modal' ";
+		// 		html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "' data-fullhash='" + NRS.escapeRespStr(t.fullHash) + "' ";
+		// 		html += "data-timestamp='" + t.timestamp + "' " + "data-votingmodel='" + t.attachment.phasingVotingModel + "' ";
+		// 		html += "data-fee='1' data-min-balance-formatted=''>" + $.t('approve') + "</a>";
+		// 	}
+		// 	if (actions.indexOf('delete') > -1) {
+    //             html += "<a class='btn btn-xs btn-default' href='#' data-toggle='modal' data-target='#delete_scheduled_transaction_modal' ";
+		// 		html += "data-transaction='" + NRS.escapeRespStr(t.transaction) + "'>" + $.t("delete") + "</a>";
+		// 	}
+		// 	html += "</td>";
+		// }
 		html += "</tr>";
+		//
+		// console.log("*******************************************");
+		// console.log(html);
+		// console.log("*******************************************");
+
 		return html;
-	};
+	}; //getTransactionRowHTML
 
     NRS.getLedgerEntryRow = function(entry, decimalParams) {
+
         var linkClass;
         var dataToken;
         if (entry.isTransactionEvent) {
@@ -644,30 +660,51 @@ var NRS = (function(NRS, $, undefined) {
         var html = "";
 		html += "<tr>";
 		html += "<td style='vertical-align:middle;'>";
-  		html += "<a class='show_ledger_modal_action' href='#' data-entry='" + NRS.escapeRespStr(entry.ledgerId) +"'";
-        html += "data-change='" + (entry.change < 0 ? ("-" + change) : change) + "' data-balance='" + balance + "'>";
-  		html += NRS.formatTimestamp(entry.timestamp) + "</a>";
+  		// html += "<a class='show_ledger_modal_action' hef='#' data-entry='" + NRS.escapeRespStr(entry.ledgerId) +"'";
+        // html += "data-change='" + (entry.change < 0 ? ("-" + change) : change) + "' data-balance='" + balance + "'>";
+
+			html += NRS.formatTimestamp(entry.timestamp);
+
   		html += "</td>";
 		html += '<td style="vertical-align:middle;">';
-        html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + eventType + '</span>';
-        html += "<a class='" + linkClass + "' href='#' data-timestamp='" + NRS.escapeRespStr(entry.timestamp) + "' " + dataToken + ">";
-        html += " <i class='fa fa-info'></i></a>";
+		html += eventType;
+        // html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + eventType + '</span>';
+        // html += "<div class='" + linkClass + " data-timestamp='" + NRS.escapeRespStr(entry.timestamp) + "' " + dataToken + ">";
+        // html += " <i class='fa fa-info'></i></a>";
+				// html += "</div>";
 		html += '</td>';
-		if (balanceType == "nxt") {
-            html += "<td style='vertical-align:middle;" + color + "' class='numeric'>" + sign + change + "</td>";
-            html += "<td style='vertical-align:middle;' class='numeric'>" + balance + "</td>";
-            html += "<td></td>";
-            html += "<td></td>";
-            html += "<td></td>";
-        } else {
-            html += "<td></td>";
-            html += "<td></td>";
-            html += "<td>" + holdingIcon + balanceEntity + "</td>";
-            html += "<td style='vertical-align:middle;" + color + "' class='numeric'>" + sign + change + "</td>";
-            html += "<td style='vertical-align:middle;' class='numeric'>" + balance + "</td>";
-        }
+		// if (balanceType == "nxt") {
+    html += "<td style='vertical-align:middle;border-radius:0px;" + color + "' class='numeric'>" + sign + change + "</td>";
+    html += "<td style='vertical-align:middle;color:black;border-radius:0px;' class='numeric'>" + balance + "</td>";
+
+        // } else {
+        //     html += "<td></td>";
+        //     html += "<td></td>";
+        //     html += "<td>" + balanceEntity + "</td>";
+        //     html += "<td style='vertical-align:middle;" + color + "' class='numeric'>" + sign + change + "</td>";
+        //     html += "<td style='vertical-align:middle;' class='numeric'>" + balance + "</td>";
+        // }
+
+		html += "<td style='vertical-align:middle;'>" + entry.height + "</td>";
+
+		if (entry.isTransactionEvent){
+
+				html += "<td style='vertical-align:middle;'>" + entry.event + "</td>";
+				html += "<td style='vertical-align:middle;'>" + entry.transaction.senderRS + "</td>";
+				html += "<td style='vertical-align:middle;'>" + entry.transaction.recipientRS + "</td>";
+		}else{
+				var defaultString = "-                        "
+
+				html += "<td style='vertical-align:middle;'>" + defaultString + "</td>";
+				html += "<td style='vertical-align:middle;'>" + defaultString + "</td>";
+				html += "<td style='vertical-align:middle;'>" + defaultString + "</td>";
+		}
+				// console.log("∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑");
+				// console.log(html);
+				// console.log("∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑");
+
 		return html;
-	};
+	};// get Ledget Entry Row
 
 	NRS.buildTransactionsTypeNavi = function() {
 		var html = '';
@@ -745,28 +782,30 @@ var NRS = (function(NRS, $, undefined) {
 		});
 	};
 
-	NRS.displayPhasedTransactions = function() {
-		var params = {
-			"account": NRS.account,
-			"firstIndex": NRS.pageNumber * NRS.itemsPerPage - NRS.itemsPerPage,
-			"lastIndex": NRS.pageNumber * NRS.itemsPerPage
-		};
-		NRS.sendRequest("getAccountPhasedTransactions", params, function(response) {
-			var rows = "";
-			if (response.transactions && response.transactions.length) {
-				var decimals = NRS.getTransactionsAmountDecimals(response.transactions);
-				for (var i = 0; i < response.transactions.length; i++) {
-					var t = response.transactions[i];
-					t.confirmed = true;
-					rows += NRS.getTransactionRowHTML(t, false, decimals);
-				}
-				NRS.dataLoaded(rows);
-				NRS.addPhasingInfoToTransactionRows(response.transactions);
-			} else {
-				NRS.dataLoaded(rows);
-			}
-		});
-	};
+	// NRS.displayPhasedTransactions = function() {
+	// 	var params = {
+	// 		"account": NRS.account,
+	// 		"firstIndex": NRS.pageNumber * NRS.itemsPerPage - NRS.itemsPerPage,
+	// 		"lastIndex": NRS.pageNumber * NRS.itemsPerPage
+	// 	};
+	// 	NRS.sendRequest("getAccountPhasedTransactions", params, function(response) {
+	// 		var rows = "";
+	// 		if (response.transactions && response.transactions.length) {
+	// 			var decimals = NRS.getTransactionsAmountDecimals(response.transactions);
+	// 			for (var i = 0; i < response.transactions.length; i++) {
+	// 				var t = response.transactions[i];
+	// 				t.confirmed = true;
+	// 				rows += NRS.getTransactionRowHTML(t, false, decimals);
+	// 			}
+	// 			NRS.dataLoaded(rows);
+	// 			NRS.addPhasingInfoToTransactionRows(response.transactions);
+	// 		} else {
+	// 			NRS.dataLoaded(rows);
+	// 		}
+	// 	});
+	// };
+
+
 
     NRS.pages.dashboard = function() {
         var rows = "";
@@ -783,21 +822,23 @@ var NRS = (function(NRS, $, undefined) {
             }
         }
 
-        NRS.sendRequest("getBlockchainTransactions+", params, function(response) {
-            if (response.transactions && response.transactions.length) {
-				var decimals = NRS.getTransactionsAmountDecimals(response.transactions);
-                for (var i = 0; i < response.transactions.length; i++) {
-                    var transaction = response.transactions[i];
-                    transaction.confirmed = true;
-                    rows += NRS.getTransactionRowHTML(transaction, false, decimals);
-                }
+				NRS.dataLoaded(rows);
 
-                NRS.dataLoaded(rows);
-                NRS.addPhasingInfoToTransactionRows(response.transactions);
-            } else {
-                NRS.dataLoaded(rows);
-            }
-        });
+        // NRS.sendRequest("getBlockchainTransactions+", params, function(response) {
+        //     if (response.transactions && response.transactions.length) {
+				// var decimals = NRS.getTransactionsAmountDecimals(response.transactions);
+        //         for (var i = 0; i < response.transactions.length; i++) {
+        //             var transaction = response.transactions[i];
+        //             transaction.confirmed = true;
+        //             rows += NRS.getTransactionRowHTML(transaction, false, decimals);
+        //         }
+				//
+        //         NRS.dataLoaded(rows);
+        //         NRS.addPhasingInfoToTransactionRows(response.transactions);
+        //     } else {
+        //         NRS.dataLoaded(rows);
+        //     }
+        // });
     };
 
 	NRS.incoming.dashboard = function() {
@@ -838,6 +879,7 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
     NRS.pages.ledger = function() {
+			console.log('$$$$$$$$: in LEDGER');
 		var rows = "";
         var params = {
             "account": NRS.account,
@@ -865,9 +907,32 @@ var NRS = (function(NRS, $, undefined) {
 				ledgerMessage.show();
 			}
         });
-	};
+
+			// NRS.displayUnconfirmedTransactions(NRS.account);
+
+			var uTrows = "";
+			// var params = {
+			// 		"account": NRS.account,
+			// 		"firstIndex": 0,
+			// 		"lastIndex": 9
+			// };
+			var unconfirmedTransactions = NRS.unconfirmedTransactions;
+	var decimals = NRS.getTransactionsAmountDecimals(unconfirmedTransactions);
+			if (unconfirmedTransactions) {
+					for (var i = 0; i < unconfirmedTransactions.length; i++) {
+							uTrows += NRS.getTransactionRowHTML(unconfirmedTransactions[i], false, decimals);
+					}
+			}
+
+			NRS.dataLoadedTaelium(uTrows, true, "dashboard");
+			// NRS.dataLoaded(uTrows);
+
+			console.log('$$$$$$$$ end of ledger');
+	}; //end of nrs.pages.ledger
 
 	NRS.pages.transactions = function(callback, subpage) {
+				console.log('$$$$$$$$: in TRANSACTIONS');
+
         var typeNavi = $('#transactions_type_navi');
         if (typeNavi.children().length == 0) {
 			NRS.buildTransactionsTypeNavi();
@@ -884,18 +949,18 @@ var NRS = (function(NRS, $, undefined) {
 		if (!selectedSubType) {
 			selectedSubType = "";
 		}
-		if (selectedType == "unconfirmed") {
+		// if (selectedType == "unconfirmed") {
 			NRS.displayUnconfirmedTransactions(NRS.account);
 			return;
-		}
-		if (selectedType == "phasing") {
-			NRS.displayPhasedTransactions();
-			return;
-		}
-		if (selectedType == "all_unconfirmed") {
-			NRS.displayUnconfirmedTransactions("");
-			return;
-		}
+		// }
+		// if (selectedType == "phasing") {
+		// 	NRS.displayPhasedTransactions();
+		// 	return;
+		// }
+		// if (selectedType == "all_unconfirmed") {
+		// 	NRS.displayUnconfirmedTransactions("");
+		// 	return;
+		// }
 
 		var rows = "";
 		var params = {
@@ -937,7 +1002,7 @@ var NRS = (function(NRS, $, undefined) {
 				NRS.dataLoaded(rows);
 			}
 		});
-	};
+	}; // end of pages.transactions
 
 	NRS.updateApprovalRequests = function() {
 		var params = {

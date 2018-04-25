@@ -108,7 +108,7 @@ var NRS = (function(NRS, $) {
 
 	NRS.forms.sendMoneyComplete = function(response, data) {
 		if (!(data["_extra"] && data["_extra"].convertedAccount) && !(data.recipient in NRS.contacts)) {
-			$.growl($.t("success_send_money") + " <a href='#' data-account='" + NRS.getAccountFormatted(data, "recipient") + "' data-toggle='modal' data-target='#add_contact_modal' style='text-decoration:underline'>" + $.t("add_recipient_to_contacts_q") + "</a>", {
+			$.growl($.t("success_send_money"), {
 				"type": "success"
 			});
 		} else {
@@ -226,7 +226,7 @@ var NRS = (function(NRS, $) {
 					if (response.account && response.account.description) {
 						checkForMerchant(response.account.description, modal);
 					}
-					
+
 					if (account==NRS.accountRS)
 						callout.removeClass(classes).addClass("callout-" + response.type).html("This is your account").show();
 					else{

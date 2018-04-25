@@ -40,11 +40,11 @@ var NRS = (function(NRS, $) {
             NRS.modalStack.pop(); // The forward modal
             NRS.modalStack.pop(); // The current modal
         }
-        
-        console.log("$$$$$$$$$ ACCOUNT LEDGER $$$$$$$$");
-        console.log(change);
-        console.log(balance);
-        
+
+        // console.log("$$$$$$$$$ ACCOUNT LEDGER $$$$$$$$");
+        // console.log(change);
+        // console.log(balance);
+
         NRS.sendRequest("getAccountLedgerEntry+", { ledgerId: ledgerId }, function(response) {
 			NRS.showLedgerEntryModal(response, change, balance);
 		});
@@ -56,27 +56,38 @@ var NRS = (function(NRS, $) {
     		NRS.modalStack.push({ class: "show_ledger_modal_action", key: "entry", value: { entry: entry.ledgerId, change: change, balance: balance }});
             $("#ledger_info_modal_entry").html(entry.ledgerId);
             var entryDetails = $.extend({}, entry);
-            entryDetails.eventType = $.t(entryDetails.eventType.toLowerCase());
-            entryDetails.holdingType = $.t(entryDetails.holdingType.toLowerCase());
+						
+            // entryDetails.eventType = $.t(entryDetails.eventType.toLowerCase());
+						delete entryDetails.eventType;
+            // entryDetails.holdingType = $.t(entryDetails.holdingType.toLowerCase());
+						delete entryDetails.holdingType;
             if (entryDetails.timestamp) {
-                entryDetails.entryTime = NRS.formatTimestamp(entryDetails.timestamp);
+                // entryDetails.entryTime = NRS.formatTimestamp(entryDetails.timestamp);
+								delete entryDetails.timestamp;
             }
             if (entryDetails.holding) {
-                entryDetails.holding_formatted_html = NRS.getTransactionLink(entry.holding);
+                // entryDetails.holding_formatted_html = NRS.getTransactionLink(entry.holding);
                 delete entryDetails.holding;
             }
-            entryDetails.height_formatted_html = NRS.getBlockLink(entry.height);
+            // entryDetails.height_formatted_html = NRS.getBlockLink(entry.height);
             delete entryDetails.block;
             delete entryDetails.height;
             if (entryDetails.isTransactionEvent) {
-                entryDetails.transaction_formatted_html = NRS.getTransactionLink(entry.event);
+                // entryDetails.transaction_formatted_html = NRS.getTransactionLink(entry.event);
+								entryDetails.transaction_number_formatted_html = entry.event;
             }
             delete entryDetails.event;
             delete entryDetails.isTransactionEvent;
+						entryDetails.sender_formatted_html = entry.transaction.senderRS;
             entryDetails.change_formatted_html = change;
             delete entryDetails.change;
             entryDetails.balance_formatted_html = balance;
             delete entryDetails.balance;
+						delete entryDetails.ledgerId;
+						delete entryDetails.account;
+						delete entryDetails.accountRS;
+						delete entryDetails.balance_formatted_html;
+						delete entryDetails.transaction;
             var detailsTable = $("#ledger_info_details_table");
             detailsTable.find("tbody").empty().append(NRS.createInfoTable(entryDetails));
             detailsTable.show();

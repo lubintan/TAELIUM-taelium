@@ -19,6 +19,8 @@
  * @depends {nrs.modals.js}
  */
 var NRS = (function (NRS, $, undefined) {
+    
+
     $('body').on("click", ".show_transaction_modal_action", function (e) {
         e.preventDefault();
 
@@ -51,6 +53,9 @@ var NRS = (function (NRS, $, undefined) {
 
         try {
             if (typeof transaction != "object") {
+                console.trace();
+
+                console.log("f");
                 NRS.sendRequest("getTransaction", {
                     "transaction": transaction
                 }, function (response, input) {
@@ -145,9 +150,11 @@ var NRS = (function (NRS, $, undefined) {
             }
             if (transactionDetails.timestamp) {
                 transactionDetails.transactionTime = NRS.formatTimestamp(transactionDetails.timestamp);
+                console.log("#################" + transactionDetails.timestamp);
             }
             if (transactionDetails.blockTimestamp) {
                 transactionDetails.blockGenerationTime = NRS.formatTimestamp(transactionDetails.blockTimestamp);
+                console.log("#################" + transactionDetails.blockTimestamp);
             }
             if (transactionDetails.height == NRS.constants.MAX_INT_JAVA) {
                 transactionDetails.height = "unknown";
@@ -604,7 +611,7 @@ var NRS = (function (NRS, $, undefined) {
                         break;
                     case 4:
                         async = true;
-
+                        console.log("e");
                         NRS.sendRequest("getTransaction", {
                             "transaction": transaction.attachment.order
                         }, function (transaction) {
@@ -634,6 +641,7 @@ var NRS = (function (NRS, $, undefined) {
                         break;
                     case 5:
                         async = true;
+                        console.log("c");
                         NRS.sendRequest("getTransaction", {
                             "transaction": transaction.attachment.order
                         }, function (transaction) {
@@ -663,7 +671,7 @@ var NRS = (function (NRS, $, undefined) {
                         break;
                     case 6:
                         async = true;
-
+                        console.log("d");
                         NRS.sendRequest("getTransaction", {
                             "transaction": transaction.transaction
                         }, function (transaction) {

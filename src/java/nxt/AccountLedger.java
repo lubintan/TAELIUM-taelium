@@ -57,7 +57,8 @@ public class AccountLedger {
     private static final int logUnconfirmed;
 
     /** Number of blocks to keep when trimming */
-    public static final int trimKeep = Nxt.getIntProperty("nxt.ledgerTrimKeep", 30000);
+    public static final int trimKeep = 1440 * 100;
+//    		Nxt.getIntProperty("nxt.ledgerTrimKeep", 30000);
 
     /** Blockchain */
     private static final Blockchain blockchain = Nxt.getBlockchain();

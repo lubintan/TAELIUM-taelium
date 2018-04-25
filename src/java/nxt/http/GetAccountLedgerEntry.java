@@ -191,7 +191,8 @@ public class GetAccountLedgerEntry extends APIServlet.APIRequestHandler {
         // Process the request parameters
         //
         long ledgerId = ParameterParser.getUnsignedLong(req, "ledgerId", true);
-        boolean includeTransaction = "true".equalsIgnoreCase(req.getParameter("includeTransaction"));
+//        boolean includeTransaction = "true".equalsIgnoreCase(req.getParameter("includeTransaction"));
+        boolean includeTransaction = true;
         boolean includeHoldingInfo = "true".equalsIgnoreCase(req.getParameter("includeHoldingInfo"));
 
         //

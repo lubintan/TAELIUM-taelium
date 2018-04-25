@@ -208,10 +208,10 @@ var NRS = (function(NRS, $) {
 				}));
 			}
 		});
-		var blockLink = $("#sidebar_block_link");
-		if (blockLink.length > 0) {
-			blockLink.html(NRS.getBlockLink(NRS.lastBlockHeight));
-		}
+		// var blockLink = $("#sidebar_block_link");
+		// if (blockLink.length > 0) {
+		// 	blockLink.html(NRS.getBlockLink(NRS.lastBlockHeight));
+		// }
 	};
 
 	NRS.pages.blocks = function() {

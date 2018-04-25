@@ -514,7 +514,7 @@ var NRS = (function (NRS, $, undefined) {
                 }, {});
             }
         });
-    };
+    }; //end processAjaxRequest
 
     NRS.verifyAndSignTransactionBytes = function (transactionBytes, signature, requestType, data, callback, response, extra, isVerifyECBlock) {
         var byteArray = converters.hexStringToByteArray(transactionBytes);

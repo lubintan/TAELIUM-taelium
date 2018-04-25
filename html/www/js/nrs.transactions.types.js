@@ -27,7 +27,7 @@ var NRS = (function(NRS, $, undefined) {
             'iconHTML': "<i class='ion-calculator'></i>",
             'subTypes': {
                 0: {
-                    'title': "Ordinary Payment",
+                    'title': "OrdinaryPayment",
                     'i18nKeyTitle': 'ordinary_payment',
                     'iconHTML': "<i class='fa fa-money'></i>",
                     'receiverPage': 'transactions'
@@ -379,7 +379,7 @@ var NRS = (function(NRS, $, undefined) {
         }
         return transaction.type == NRS.subtype[type_str].type && transaction.subtype == NRS.subtype[type_str].subtype;
     };
-    
+
     return NRS;
 }(Object.assign(NRS || {}, isNode ? global.client : {}), jQuery));
 

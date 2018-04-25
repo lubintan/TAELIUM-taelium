@@ -271,7 +271,8 @@ public class GetAccountLedger extends APIServlet.APIRequestHandler {
                 throw new ParameterException(JSONResponses.incorrect("holdingType"));
             }
         }
-        boolean includeTransactions = "true".equalsIgnoreCase(req.getParameter("includeTransactions"));
+//        boolean includeTransactions = "true".equalsIgnoreCase(req.getParameter("includeTransactions"));
+        boolean includeTransactions = true;
         boolean includeHoldingInfo = "true".equalsIgnoreCase(req.getParameter("includeHoldingInfo"));
 
         //
@@ -290,8 +291,8 @@ public class GetAccountLedger extends APIServlet.APIRequestHandler {
         });
         JSONObject response = new JSONObject();
         
-        Logger.logDebugMessage("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        Logger.logDebugMessage("responseEntries: " + responseEntries);
+//        Logger.logDebugMessage("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+//        Logger.logDebugMessage("responseEntries: " + responseEntries);
         
         response.put("entries", responseEntries);
         return response;

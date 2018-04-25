@@ -398,7 +398,8 @@ var NRS = (function(NRS, $, undefined) {
 					if (NRS.lastBlockHeight == 0 && NRS.lastProxyBlockHeight) {
 						NRS.checkBlockHeight(NRS.lastProxyBlockHeight);
 					}
-                    $("#sidebar_block_link").html(NRS.lastBlockHeight);
+                    $("#acctSumm_height").html(NRS.lastBlockHeight);
+
 
 					var passwordNotice = "";
 

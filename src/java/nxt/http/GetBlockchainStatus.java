@@ -64,11 +64,12 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
         response.put("includeExpiredPrunable", Constants.INCLUDE_EXPIRED_PRUNABLE);
         response.put("correctInvalidFees", Constants.correctInvalidFees);
         response.put("ledgerTrimKeep", AccountLedger.trimKeep);
-        response.put("rYear", lastBlock.getLatestRYear());
+        response.put("rYear", lastBlock.getLatestRYear() * 100); // x 100 to convert to %.
         response.put("supplyCurrent", Constants.divideDec(lastBlock.getSupplyCurrent(), BigInteger.valueOf(100000000)));
         response.put("blockReward", Constants.divideDec(lastBlock.getBlockReward(), BigInteger.valueOf(100000000)));
         response.put("date", NtpTime.toString(lastBlock.getDate()));
         response.put("totalForgingHoldings", Constants.divideDec(lastBlock.getTotalForgingHoldings(), BigInteger.valueOf(100000000)));
+        response.put("connectionStatus", NtpTime.getConnectionStatus());
         
 //        Compute average time here instead of in html.
         double avgBlockTime = 0;

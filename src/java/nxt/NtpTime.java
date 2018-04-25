@@ -48,8 +48,13 @@ public class NtpTime {
     // round trip time in milliseconds
     private static long mRoundTripTime;
     
-    private static Date currentDate = getDate();
+    private static boolean connectionStatus = true;
+    
+    
+    private static long utcTime = 0;
+    private static long systemRef;
 
+//    private static Date currentDate = getDate();
 //    /**
 //     * Sends an SNTP request to the given host and processes the response.
 //     *
@@ -59,7 +64,7 @@ public class NtpTime {
 //     */
 //    
     public static Date getCurrentDate() {
-    		return currentDate;
+    		return getDate();
     }
     
     private static final Runnable dateThread = new Runnable() {
@@ -68,7 +73,7 @@ public class NtpTime {
         public void run() {
 //        		currentDate = getDate();
         		//########## TEST SECTION #############
-        		currentDate = getZeroTimeDate(getDate());
+        		utcTime = retrieveUtcTime();
         		
 //        		currentDate = getZeroTimeDate(DebugDayTimer.currentDate);
     			//########## END TEST SECTION ############
@@ -80,7 +85,12 @@ public class NtpTime {
     		ThreadPool.scheduleThread("DateThread", NtpTime.dateThread, 20);
     }
     private static Date getDate() {
-    		Date date = new Date(getDateMs());
+    		Date date = new Date(utcTime);
+    	
+    		if (utcTime==0){
+    			date = new Date(retrieveUtcTime());
+    		}
+    		
     		date = getZeroTimeDate(date);
     		return date;
     }
@@ -107,20 +117,16 @@ public class NtpTime {
     }
     
     public static long getDateMs() {
-		String url = "time.google.com";
-		int timeout = 30 * 1000; // in ms
+//    		Logger.logDebugMessage("utc: " + utcTime);
+//    		Logger.logDebugMessage("madeup: "+ (utcTime + System.currentTimeMillis() - systemRef));
+    	
+    		return utcTime + System.currentTimeMillis() - systemRef;
+    }
+    
+    private static long retrieveUtcTime() {
+    	String url = "time.google.com";
+		int timeout = 15 * 1000; // in ms
 		long epoch = NtpTime.getTime(url, timeout);
-//		System.out.println(epoch);
-		
-//		ZonedDateTime dateTime = Instant.ofEpochMilli(epoch)
-//	            .atZone(ZoneId.of("Z")); // Z: UTC Time
-//		
-////		String formatted1 = dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-////		Logger.logDebugMessage(formatted1);
-//
-//		String formatted = dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-//		
-////		return formatted;
 		
 		return epoch;
     }
@@ -128,12 +134,13 @@ public class NtpTime {
     private static long getTime(String url, int timeout) { //timeout in ms
     		long now = 0;
     		long current = 0;
+    		boolean retrieved = false;
     	
 //    		if (requestTime(url, timeout)) {
 //    			now = getNtpTime() + (System.nanoTime()/1000000) - getNtpTimeReference();
 //    		}
     		
-    		if (requestTime(url, timeout)) {
+    		if (requestTime(url, timeout, retrieved)) {
     			now = getNtpTime() + (System.nanoTime()/1000000) - getNtpTimeReference();
     			current = now;
 //    			Logger.logDebugMessage("");
@@ -169,7 +176,7 @@ public class NtpTime {
 		return date;
 	}
     	 
-    private static boolean requestTime(String host, int timeout) {
+    private static boolean requestTime(String host, int timeout, boolean retrieved) {
         DatagramSocket socket = null;
         try {
             socket = new DatagramSocket();
@@ -207,11 +214,16 @@ public class NtpTime {
             mNtpTime = responseTime + clockOffset;
             mNtpTimeReference = responseTicks;
             mRoundTripTime = roundTripTime;
-        } catch (Exception e) {
             
+            connectionStatus = true;
+            systemRef = System.currentTimeMillis();
+//            Logger.logDebugMessage("time: " + mNtpTime);
+            
+        } catch (Exception e) {
+            connectionStatus = false;
         		Logger.logDebugMessage("Could not retrieve time. Taelium runs on a global clock. Please make sure you are connected to the internet.");
         	
-        		if (false) Logger.logDebugMessage("request time failed: " + e);
+        		Logger.logDebugMessage("request time failed: " + e);
             return false;
         } finally {
             if (socket != null) {
@@ -222,6 +234,10 @@ public class NtpTime {
         return true;
     }
 
+    
+    public static boolean getConnectionStatus() {
+    		return connectionStatus;
+    }
     /**
      * Returns the time computed from the NTP transaction.
      *

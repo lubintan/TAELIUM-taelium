@@ -43,10 +43,15 @@ var NRS = (function(NRS, $) {
 		}
         if (response.foundAndStopped || (response.stopped && response.stopped > 0)) {
             NRS.isAccountForging = false;
-            if (!response.forgersCount || response.forgersCount == 0) {
-                setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
-                forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "forging");
-            }
+
+            // if (!response.forgersCount || response.forgersCount == 0) {
+            //     setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
+            //     forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "forging");
+            // }
+
+						setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
+						forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "not_forging");
+
             $.growl($.t("success_stop_forging"), {
 				type: 'success'
 			});
@@ -190,11 +195,23 @@ var NRS = (function(NRS, $) {
                 }
             }, { isAsync: false });
         }
-        setForgingIndicatorStatus(status);
+
+
+
+        // setForgingIndicatorStatus(status);
         if (status == NRS.constants.NOT_FORGING) {
             NRS.isAccountForging = false;
         }
-        forgingIndicator.find("span").html($.t(status)).attr("data-i18n", status);
+				if (NRS.isAccountForging){
+					setForgingIndicatorStatus(NRS.constants.FORGING);
+					forgingIndicator.find("span").html($.t(NRS.constants.FORGING)).attr("data-i18n", "forging");
+				}
+				else{
+					setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
+					forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "not_forging");
+				}
+
+        // forgingIndicator.find("span").html($.t(status)).attr("data-i18n", status);
         forgingIndicator.show();
         NRS.forgingStatus = status;
         NRS.updateForgingTooltip(tooltip);

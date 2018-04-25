@@ -103,10 +103,10 @@
                       <div class="col-md-4 ">
                           <div >
                               <div>Connection Status</div>
-                               <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status">
+                               <div id="connected_indicator" title="CONNECTION" data-i18n="[title]server_connection_status">
                               <i class="fa fa-circle fontawesomewrappersummarypage"></i>
                               <span data-18n="connected" class="statustextwrappersummarypage"></span>
-                              </a>
+                            </div>
                           </div>
                           <!-- <div> -->
                                <!-- <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status"> -->
@@ -120,10 +120,10 @@
                       <div class="col-md-4">
                           <div >
                               <div class="stakingstatustitlewrapper" >Account Staking Status</div>
-                              <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
+                              <div id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
                               <i class="fa fa-circle fontawesomewrappersummarypage"></i>
                               <span data-18n="forging" class="statustextwrappersummarypage"></span>
-                              </a>
+                            </div>
                           </div>
                           <!-- <div >
                               <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
@@ -181,4 +181,11 @@
           -->
 
   </section>
+
+  <section class="content">
+          <div class="alert-danger alert alert-no-icon" id="dashboard_message" style="display:none;padding:5px;margin-bottom:15px;"></div>
+  </section>
+
+
+
   </div>
