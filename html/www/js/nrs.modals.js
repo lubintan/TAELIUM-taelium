@@ -129,7 +129,7 @@ var NRS = (function(NRS, $, undefined) {
 
 		$(this).find(".form-group").css("margin-bottom", "");
 		$(this).find('.approve_tab_list a:first').click();
-		NRS.initAdvancedModalFormValues($(this));
+		// NRS.initAdvancedModalFormValues($(this));
 		$(this).find(".pas_contact_info").text(" ");
 		// Activating context help popovers
 		$(function () {

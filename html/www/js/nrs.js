@@ -561,12 +561,16 @@ var NRS = (function(NRS, $, undefined) {
         NRS.logConsole(msg);
     };
 
-    NRS.getState = function(callback, msg) {
-
+		NRS.refreshLedger = function(){
 			if (NRS.currentPage == "ledger"){
+				NRS.getState(null);
 				NRS.loadPage("ledger");
 				NRS.goToPage("ledger");
 			}
+		}
+
+    NRS.getState = function(callback, msg) {
+
 
 		if (msg) {
 			NRS.logConsole("getState event " + msg);
@@ -882,7 +886,7 @@ var NRS = (function(NRS, $, undefined) {
 			"id": "closed_groups"
 		}], function(error, result) {
 			if (result && result.length) {
-				NRS.setClosedGroups(result[0].contents.split("#"));
+				// NRS.setClosedGroups(result[0].contents.split("#"));
 			} else {
 				NRS.storageInsert("data", "id", {
 					id: "closed_groups",
@@ -890,7 +894,7 @@ var NRS = (function(NRS, $, undefined) {
 				});
 			}
 		});
-		NRS.loadContacts();
+		// NRS.loadContacts();
 		NRS.getSettings(true);
 		NRS.updateNotifications();
 		NRS.setUnconfirmedNotifications();

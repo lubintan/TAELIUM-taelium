@@ -56,11 +56,11 @@ var NRS = (function(NRS, $, undefined) {
 			}
 		}
 		if (!oldBlock || NRS.unconfirmedTransactionsChange) {
-			// always call incoming for messages to enable message notifications
-			NRS.incoming['messages'](transactions);
-			NRS.updateNotifications();
-			NRS.setPhasingNotifications();
-            NRS.setShufflingNotifications();
+			// // always call incoming for messages to enable message notifications
+			// NRS.incoming['messages'](transactions);
+			// NRS.updateNotifications();
+			// NRS.setPhasingNotifications();
+      //       NRS.setShufflingNotifications();
 		}
 	};
 
