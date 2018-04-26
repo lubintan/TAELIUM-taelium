@@ -20,7 +20,7 @@
     <table id="center" style="display:none;width:100%;height:100%;">
         <tr><td style="text-align:center;vertical-align:middle">
             <img src="img/brand/logo.png" id="logo-nxt-img" />
-            <div class="row">
+            <div class="row" style="margin-top: -3%;">
               <div class="col-md-6 col-md-offset-3 ">
                 <div class="lockscreencaptionwrapper"> <!-- edit class properties in app.css -->
                   <h1 style="font-family: Ubuntu;color: white;">Taelium</h1>
@@ -28,7 +28,7 @@
               </div>
               <div class="col-md-6 col-md-offset-3 ">
                 <div class="lockscreencaptionwrapper">
-                    <p style="font-family: Ubuntu;color: white;"><strong>The Global Reserve Cryptocurrency </strong></p>
+                    <p style="font-family: Ubuntu;color: white; font-size: 18px;"><strong>The Global Reserve Cryptocurrency </strong></p>
                 </div>
               </div>
             </div>
@@ -42,36 +42,11 @@
 
                 <div id="account_data_reader" style="display:none;margin:auto;width:384px;height:384px;"></div>
 				<table style="width:100%;height:100%;">
-          <label><font color="white">Log In With</font></label>
-				<tr><td style="text-align:center;vertical-align:middle">
-                <div class="lockscreen-widget btn-group" data-toggle="buttons" id="loginButtons">
-                    <label class="lockscreen-widget btn btn-primary btn-lg active" data-login-type="account" data-reader="account_data_reader">
-                        <input type="radio" name="loginButtons">
-                        Account ID
-                        <br>
-                        <i class="fa fa-male"></i>
-                    </label>
-                    <label class="lockscreen-widget btn btn-primary btn-lg" data-login-type="password" data-reader="account_data_reader">
-                        <input type="radio" name="loginButtons">
-                        Passphrase
-                        <br>
-                        <i class="fa fa-key"></i>
-                    </label>
-                    <label class="lockscreen-widget btn btn-primary btn-lg scan-qr-code" data-login-type="scan" data-reader="account_data_reader">
-                        <input type="radio" name="loginButtons">
-                        QR Code
-                        <br>
-                        <i class="fa fa-qrcode"></i>
-                    </label>
-                </div>
-				</td></tr>
-				</table>
-				<table style="width:100%;height:100%;">
 				<tr><td style="text-align:center;vertical-align:middle">
                 <div class="lockscreen-item">
                     <div class="lockscreen-credentials">
                     	<div class="input-group" id="login_account_container" style="display:table;height:34px;width: 100%;">
-                            <div class="dropdown" style="width: 100%;">
+                           <!-- <div class="dropdown" style="width: 100%;">
                                 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true" style="width: 100%;">
                                     <span data-i18n="select_account_to_login">Select an Account to Login with</span>
                                     <span class="caret"></span>
@@ -80,22 +55,25 @@
 
                                 </ul>
                             </div>
-                        </div>
+                        </div> -->
+                      </div>
                         <input type="hidden" name="check_password_length" id="login_check_password_length" value="1" />
-                        <div class="input-group" id="login_account_container_other">
+
+                        <!-- <div class="input-group" id="login_account_container_other">
                             <input type="text" class="form-control" id="login_account_other" name="login_account_other" placeholder="Your Account" data-i18n="[placeholder]your_account" autofocus />
                             <div class="input-group-btn" style="border:1px solid #fff;">
                                 <button class="btn btn-flat" onclick="NRS.login(0,$('#login_account_other').val())"><i class="fa fa-arrow-right text-muted"></i></button>
                             </div>
-                        </div>
-                        <div class="input-group" style="display:none">
-                            <input type="password" class="form-control" id="login_password" name="login_password" placeholder="Your Passphrase" data-i18n="[placeholder]your_passphrase" autofocus />
-                            <div class="input-group-btn" style="border:1px solid #fff;">
+                        </div> -->
+                        <div class="input-group">
+                            <input type="password" class="passwordbox" id="login_password" name="login_password" placeholder="Your Passphrase" data-i18n="[placeholder]your_passphrase" autofocus />
+                            <div class="input-group-btn" style="border:none; padding-top: 0px;">
                                 <button class="btn btn-flat" onclick="NRS.login(1,$('#login_password').val())"><i class="fa fa-arrow-right text-muted"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
+
 				</td></tr>
 				</table>
 				<table style="width:100%;height:100%;">
@@ -132,7 +110,7 @@
                 </div>
 
                 <div id="registration_link">
-                  <button class="btn btn-primary" onclick="NRS.registerAccount();">Create New Account</button>
+                  <button class="createaccountwrapper" onclick="NRS.registerAccount();">Create New Account</button>
                     <!-- <a href="#" onclick="NRS.registerAccount();" data-i18n="no_account_q_create_account">Don't have an account? Click here to create one!</a> -->
                 </div>
             </div>
@@ -244,7 +222,7 @@
                                     <label for="confirm_passphrase_warning" data-i18n="confirm_passphrase_warning">I will not forget my passphrase and I will never disclose it</label>
                                 </div>
                                 <div style="text-align:right">
-                                  <button class="btn btn-success btn-sm" onclick="NRS.registerUserDefinedAccount();">Use Own Passphrase Instead</button>
+                                  <button class="btn btn-success btn-sm" onclick="NRS.registerUserDefinedAccount();">Use My Own Passphrase</button>
                                     <input type="submit" class="btn btn-primary btn-sm" value="Next" data-i18n="[value]next" onclick="NRS.createPassphraseToConfirmPassphrase()" />&nbsp;&nbsp;
                                     <button class="btn btn-sm btn-default" onclick="NRS.showLoginOrWelcomeScreen();return false;" data-i18n="cancel">Cancel</button>
                                 </div>
