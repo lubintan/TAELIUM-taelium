@@ -17,7 +17,7 @@
 
  .fluidborder
  {
-	 margin-top: 100px; /* Need to check */
+
    border-radius: 20px;
    -webkit-border-radius: 20px;
      border: 1px solid white;
@@ -52,20 +52,63 @@
    margin-top: 35%;
 
  }
+ .passwordbox
+ {
+
+  font-size: 22px;
+  padding-left: 16%;
+
+ }
+ .createaccountwrapper
+ {
+  background-color: #00a65a;
+  font-size:22px;
+  padding: 5px 0 5px 0;
+  position: relative;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius:15px;
+  margin-top: -15%;
+  width: 100%;
+  max-width: 420px;
+  display: inline-block;
+  border: none;
+ }
+ .createaccountwrapper:focus
+ {
+  outline: none;
+ }
+
  /*lockscreen.html custom classes end*/
 
  /*accountSummary.html custom classes: These classes are used in accountSummary.html*/
 
+  .statuswrapper
+ {
+   height: 200px;
+   font-size: 24px;
+   border-radius: 20px;
+   -webkit-border-radius: 20px;
+   border: 1px solid white;
+   color: white;
+   padding: 3% 3% 0% 3%;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   /*background-image: url("../img/lightblueworldmap3.jpg");*/
+   background-size: cover;
+   background-color: #363a55;
+
+ }
  .containerwrapper
  {
-   margin-top: 100px; /*Need to check this*/
+   margin-top: 10px; /*Need to check this*/
    margin-bottom: -2%;
    /*background-color: #363a55;*/
    border-radius: 20px;
    -webkit-border-radius: 20px;
    padding: 0% 0% 2% 2%;
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-   background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);
+   /*background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);*/
+   background-color: #363a55;
    border: 1px solid white;
 
  }
@@ -93,6 +136,14 @@
    font-size: 32px;
 
  }
+ .publickeywrapper
+{
+  color: white;
+  text-align: left;
+  font-size: 20px;
+  padding-top: 12px;
+
+}
  .balancewrapper
  {
    color: white;
@@ -130,6 +181,7 @@
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
    background-image: url("../img/lightblueworldmap3.jpg");
    background-size: contain;
+   margin-top: 3%;
 
  }
  .txinfowrapper
@@ -153,25 +205,48 @@
  .fontawesomewrappersummarypage
  {
    font-size: 22px;
-   margin-left: 5%;
+   margin-left: 0%;
    margin-top: 10%;
 
  }
- .statustextwrappersummarypage
+ .stakingstatusfontawesomewrappersummarypage
+ {
+   font-size: 22px;
+   margin-left: 0%;
+   margin-top: 10%;
+
+ }
+ .stakingstatustextwrappersummarypage
  {
    color: white;
    font-size: 22px;
-
+   /*background: linear-gradient(45deg, #898989, #adabab,#898989);
+   padding: 10px 15px 10px 15px;
+   border-radius: 15px;
+    -webkit-border-radius: 15px;
+    border: 1px solid #e1e1e1 ; */
+ }
+  .networkstatustextwrappersummarypage
+ {
+   color: white;
+   font-size: 22px;
  }
  .spacingrowsummarypage
  {
    height: 4%;
+   margin-top: 5%;
  }
 
- .stakingstatustitlewrapper
+
+ .fontawesomesummarywrapper /*Changes position of div holding the FA icon*/
  {
-   margin-left:27%;
-   text-align: center;
+  margin-top: -40px;
+  text-align: right;
+ }
+ .fontawesomeiconwrapper /*Changes color and size of FA icon*/
+ {
+  color: rgba(0, 0, 0, 0.20);
+  font-size:105px;
  }
  /*accountSummary.html custom classes end*/
 
@@ -187,9 +262,11 @@
    border-bottom: 2px solid #363a55;
    font-size: 32px;
    margin-bottom: 4%;
-   background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);
+   /*background: linear-gradient(45deg, #363a55, #4f7cac,#363a55);*/
+   background-color: #363a55;
    border-radius: 10px;
-   -webkit-border-radius: 20px;
+   -webkit-border-radius: 10px;
+   margin-top: 1%;
  }
  .boxwrapper
  {
@@ -208,7 +285,7 @@
  .boxtextwrapper
  {
    text-align: right;
-   margin-top: 20%;
+   margin-top: -15%;
    margin-left: 20%;
  }
  .boxtextunitwrapper
@@ -217,35 +294,92 @@
    /*margin-top: %;*/
 
  }
- .spacingrow
+ .addpeerbuttonwrapper /*aligns add peer button*/
  {
-   height: 6%;
+  text-align: right;
+  margin-top: 4%;
+
+ }
+ .boxtextpeerswrapper
+ {
+   text-align: right;
+   margin-top: -80px;
+   margin-left: 15%;
+
+
+ }
+.spacingrow
+ {
+
+   margin-top: 2%;
  }
  .statustextwrapper
  {
    font-size: 22px;
  }
+ .infopagefontawesomesummarywrapper /*Changes position of div holding the FA icon*/
+ {
+  margin-top: 30px;
+  text-align: left;
+ }
+ .infopagefontawesomeiconwrapper /*Changes color and size of FA icon*/
+ {
+  color: rgba(0, 0, 0, 0.20);
+  font-size:105px;
+  position: relative;
+  z-index: 0;
+ }
+  .connectionswrapper
+ {
+   height: 200px;
+   font-size: 24px;
+   border-radius: 20px;
+   -webkit-border-radius: 20px;
+   border: 1px solid white;
+   color: white;
+   padding: 3% 3% 0% 3%;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+   /*background-image: url("../img/lightblueworldmap3.jpg");*/
+   background-size: cover;
+   background-color: #363a55;
 
+ }
  /*info.html custom classes end*/
 
  /*header.html custom classes: These classes are used in info.html*/
 
- .nav-pills a /*this class changes font color of pills */
+.nav.nav-pills
+{
+  background-color: #fff;
+  width: 100%;
+  border: none;
+
+}
+ .nav.nav-pills a /*this class changes font color of pills */
  {
    color: #363a55;
+   font-size: 24px;
+
  }
 
- .nav-pills>li.active>a
+ .nav.nav-pills>li.active>a
  {
    background-color: #363a55;
  }
- .nav-pills>li>a:hover,
- .nav-pills>li>a:focus
+ .nav.nav-pills>li>a:focus
  {
-    background-color: #4f7cac;
+    background-color: #363a55;
     color: white;
 
  }
+ .nav.nav-pills>li>a:hover
+
+ {
+    background-color: #d3d3d3;
+    color: white;
+
+ }
+
 
  /*header.html custom classes end*/
  .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12
@@ -259,7 +393,7 @@
  	margin-left: -10px !important;
  }
 
- /*===========Copy pasted the above from Arthur's app.css. The rest below are from the original NXT.==============  */
+ /*===========Copy pasted the above from Taelium app.css. The rest below are from the original NXT.==============  */
 
 
 .col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12
@@ -297,7 +431,7 @@ body::after{
   position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
   content:url(../img/client_background.png)
   url(../img/tael-load-progress-logo-circle.png)
-  /* url(../img/tael-load-progress-logo-circle.png); */
+  url(../img/tael-load-progress-logo-circle.png);
 }
 html.lockscreen, html.lockscreen body {
   height:100%;
@@ -520,13 +654,14 @@ img {
   background-color: #85144b !important;
 }
 .small-box {
-  background: #217ba5; /* Old browsers */
-  background: -moz-linear-gradient(left,  #217ba5 0%, #56b3d8 100%); /* FF3.6+ */
+
+  background: #363a55; /* Old browsers */
+  background: -moz-linear-gradient(left,  #363455 0%, #363a55 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right top, color-stop(0%,#217ba5), color-stop(100%,#56b3d8)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left,  #217ba5 0%,#56b3d8 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left,  #217ba5 0%,#56b3d8 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(left,  #217ba5 0%,#56b3d8 100%); /* IE10+ */
-  background: linear-gradient(to right,  #217ba5 0%,#56b3d8 100%); /* W3C */
+  background: -webkit-linear-gradient(left,  #363455 0%,#363a55 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left,  #363455 0%,#363a55 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(left,  #363455 0%,#363a55 100%); /* IE10+ */
+  background: linear-gradient(to right,  #363455 0%,#363a55 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#217ba5', endColorstr='#56b3d8',GradientType=1 ); /* IE6-9 */
 }
 
@@ -626,6 +761,12 @@ img {
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #f3f4f5;
+  color: black;
+}
+.table-striped > tbody > tr:nth-child(even) > td,
+.table-striped > tbody > tr:nth-child(even) > th {
+
+  color: black;
 }
 /* .text-center in tables */
 table.text-center td,
@@ -1491,6 +1632,7 @@ body > .header .logo .icon {
   -moz-border-radius: 2px;
   border-radius: 2px;
   margin-bottom: 15px;
+  margin-left: 15px;
 }
 .small-box > .inner {
   padding: 10px;
@@ -1989,13 +2131,14 @@ body > .header .logo .icon {
   padding: 7px;
 }
 .btn.btn-flat {
-  -webkit-border-radius: 0;
-  -moz-border-radius: 0;
-  border-radius: 0;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
   border-width: 1px;
+
 }
 .btn:active {
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
@@ -2214,15 +2357,15 @@ body > .header .logo .icon {
 }
 /* Will contain the image and the sign in form */
 .lockscreen-item {
-  padding: 0;
+  padding: 5px 0 5px 0;;
   background: #fff;
   position: relative;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius:15px;
   margin: 10px auto;
-  width: 80%;
-  max-width: 320px;
+  width: 100%;
+  max-width: 420px;
   display: inline-block;
 }
 .lockscreen-item:before,
@@ -2256,11 +2399,22 @@ body > .header .logo .icon {
 
 .lockscreen-item > .lockscreen-credentials input {
   border: 0 !important;
+  background-color: #ffffff;
+  font-size: 22px;
+
+
+
+}
+input:focus /*takes away outline from input box on lockscreen.html page*/
+{
+  outline: none;
 }
 .lockscreen-item > .lockscreen-credentials .btn {
   background-color: #fff;
   border: 0;
+
 }
+
 /* Extra to give the user an option to navigate the website [optional]*/
 #registration_link {
   color: #fff;
@@ -3195,6 +3349,7 @@ a.list-group-item-header:hover {
 .navbar { border:none; }
 
 #downloading_blockchain {
+  font-family: Ubuntu;
 	position:fixed;
   z-index:1031;
   height:100%;
@@ -3202,12 +3357,13 @@ a.list-group-item-header:hover {
 	bottom:10px;
 	right:10px;
 	color:white;
-	background:black;
+  background-color:#363a55;
   opacity: 0.78;
 	padding:10px 15px 10px 15px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+  border: 1px solid white;
 	display:none;
 }
 
@@ -4139,6 +4295,7 @@ body > .header .navbar {
     min-width: 256px;
     max-width: 320px;
     width: 100%;
+
 }
 
 .lockscreen-credentials .dropdown-menu a {

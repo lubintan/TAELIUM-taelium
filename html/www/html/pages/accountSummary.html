@@ -42,11 +42,11 @@
                       <span  >Address:</span>
                   </div>
 
-                   <div class="col-md-6 addresswrapper">
+                   <div class="col-md-7 addresswrapper">
                           <span id="sidebar_account_id"></span>
                    </div>
 
-                   <div class="col-md-4">
+                   <div class="col-md-3">
                       <span>
                           <a class='btn btn-default btn-xs copyaddress' href="#" id="copy_account_id" data-clipboard-target="#sidebar_account_id" >
                               <span class="fa fa-copy"></span>
@@ -55,6 +55,25 @@
                       </span>
                   </div>
                </div>
+
+               <div class="row rowaddress">
+                <div class="col-md-2 addresswrapper">
+                    <span >Public Key:</span>
+                </div>
+
+                 <div class="col-md-7 publickeywrapper">
+                        <span id="sidebar_publickey_id"></span>
+                 </div>
+
+                 <div class="col-md-3">
+                    <span>
+                        <a class='btn btn-default btn-xs copyaddress' href="#" id="copy_account_id" data-clipboard-target="#sidebar_publickey_id" >
+                            <span class="fa fa-copy"></span>
+                            Copy Public Key
+                        </a>
+                    </span>
+                </div>
+             </div>
 
                <div class="spacingrowsummarypage"></div>
 
@@ -72,41 +91,29 @@
                   <div class="col-md-2 balancevalues">
                       <span id="account_balance_sidebar" ></span>
                   </div>
-              </div>
+                      <div class="fontawesomesummarywrapper">
+                      <i class="fa fa-bank fontawesomeiconwrapper"></i>
+                      </div>
+                </div>
+
           </div>
 
 
-          <!-- <div class="container containerbalancewrapper">
-              <div class="row rowaddress">
-                  <div class="col-md-3 balancewrapper">
-                      <span>Confirmed Balance:&nbsp;</span>
-                  </div>
-                  <div class="col-md-2 balancevalues">
-                      <span id="account_confirmed_balance_sidebar">10,000,000</span>
-                  </div>
-
-                  <div class="col-md-3 balancewrapper">
-                      <span >Unconfirmed Balance:&nbsp;</span>
-                  </div>
-                  <div class="col-md-2 balancevalues">
-                      <span id="account_balance_sidebar" >10,000,000</span>
-                  </div>
-              </div>
-          </div> -->
 
           <div class="spacingrowsummarypage"></div>
-          <div class="spacingrowsummarypage"></div>
-          <div class="spacingrowsummarypage"></div>
 
-              <div class="container-fluid boxwrappersummarypage">
+              <div class="container-fluid">
                   <div class="row">
                       <div class="col-md-4 ">
-                          <div >
-                              <div>Connection Status</div>
-                               <div id="connected_indicator" title="CONNECTION" data-i18n="[title]server_connection_status">
-                              <i class="fa fa-circle fontawesomewrappersummarypage"></i>
-                              <span data-18n="connected" class="statustextwrappersummarypage"></span>
-                            </div>
+                          <div class="statuswrapper">
+                              <div>Network Connection Status</div>
+                               <div id="connected_indicator" class="connected" data-i18n="[title]server_connection_status" data-placement="top">
+                                <i class="fa fa-circle fontawesomewrappersummarypage"></i>
+                                <span data-18n="connected" class="networkstatustextwrappersummarypage"></span>
+                              </div>
+                              <div class="fontawesomesummarywrapper">
+                                <i class="fa fa-exchange fontawesomeiconwrapper"></i>
+                              </div>
                           </div>
                           <!-- <div> -->
                                <!-- <a href="#" data-page="peers" id="connected_indicator" class="connected goto-page" data-toggle="tooltip" data-placement="top" title="CONNECTION" data-i18n="[title]server_connection_status"> -->
@@ -118,12 +125,15 @@
                           <!-- </div> -->
                       </div>
                       <div class="col-md-4">
-                          <div >
-                              <div class="stakingstatustitlewrapper" >Account Staking Status</div>
-                              <div id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
-                              <i class="fa fa-circle fontawesomewrappersummarypage"></i>
-                              <span data-18n="forging" class="statustextwrappersummarypage"></span>
-                            </div>
+                          <div class="statuswrapper">
+                              <div>Account Proof of Stake Status</div>
+                                <div id="forging_indicator" class="forging" data-placement="bottom">
+                                  <i class="fa fa-circle stakingstatusfontawesomewrappersummarypage"></i>
+                                  <span data-18n="forging" class="stakingstatustextwrappersummarypage"></span>
+                                </div>
+                                <div class="fontawesomesummarywrapper">
+                                  <i class="fa fa-database fontawesomeiconwrapper"></i>
+                                </div>
                           </div>
                           <!-- <div >
                               <a href="#" id="forging_indicator" class="forging" data-toggle="tooltip" title="" data-placement="bottom">
@@ -133,59 +143,19 @@
                               </a>
                           </div> -->
                       </div>
-                      <!-- <div class="col-md-4 "> -->
-                          <!-- <div> -->
-                              <!-- <div class="radio"> -->
-                              <!-- <label class="radiobuttontextwrappertop"><input type="radio" name="optradio">Participate in Proof of Stake</label> -->
-                          <!-- </div> -->
-                                 <!-- <div class="radio"> -->
-                              <!-- <label class="radiobuttontextwrapperbottom"><input type="radio" name="optradio">Do Not Participate in Proof of Stake</label> -->
-                          <!-- </div> -->
-                          <!-- </div> -->
-                      <!-- </div> -->
-                  </div>
-              </div>
+                      <div class="col-md-4">
+                          <div class="statuswrapper" >
+                              <div>Account QR Code</div>
+                              <div>
+                                <!-- insert QR Code here -->
+                                <span id=acct_qr_code></span>
+                              </div>
 
-          <!--
-          <div class="container">
-
-              <div class="row rowaddress">
-                  <div class="col-md-6 txinfowrapper">
-                      <span >Date:&nbsp;</span>
-                  </div>
-                  <div class="col-md-6 txinfowrapper">
-                      <span id="date">Per mockup,or something else?</span>
-                  </div>
-              </div>
-          </div>
-          -->
-
-
-
-
-          <!--
-          <div class="container">
-              <div class="rowaddress">
-                  <div class="col-md-12 txinfowrapper">there is something here</div>
-              </div>
-          </div>
-      </div>
-      <div>
-          <div class="container">
-              <div class="rowaddress">
-                  <div class="col-md-12 txinfowrapper">
-                      <p>Per mockup or something else?</p>
-                  </div>
-              </div>
-          </div>
-          -->
-
-  </section>
-
-  <section class="content">
-          <div class="alert-danger alert alert-no-icon" id="dashboard_message" style="display:none;padding:5px;margin-bottom:15px;"></div>
-  </section>
-
-
-
+                          </div>
+                      </div>
+        </div>
+    </section>
+    <!-- <section class="content">
+         <div class="alert-danger alert alert-no-icon" id="dashboard_message" style="display:none;padding:5px;margin-bottom:15px;"></div>
+ </section> -->
   </div>

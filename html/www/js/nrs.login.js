@@ -390,7 +390,12 @@ var NRS = (function(NRS, $, undefined) {
                         $(".hide_secret_phrase").hide();
                     }
 					NRS.disablePluginsDuringSession = $("#disable_all_plugins").is(":checked");
+
+
 					$("#sidebar_account_id").html(String(NRS.accountRS).escapeHTML());
+					$("#sidebar_publickey_id").html(String(NRS.publicKey).escapeHTML());
+					var accountImg = NRS.generateQRCode(null, NRS.accountRS, 2, 4);
+					$("#acct_qr_code").html(accountImg);
 					$("#sidebar_account_link").html(NRS.getAccountLink(NRS, "account", NRS.accountRS, "details", false, "btn btn-default btn-xs"));
 					if (NRS.lastBlockHeight == 0 && NRS.state.numberOfBlocks) {
 						NRS.checkBlockHeight(NRS.state.numberOfBlocks - 1);

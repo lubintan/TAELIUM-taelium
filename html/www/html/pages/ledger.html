@@ -21,6 +21,7 @@
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
     <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../../css/app.css" rel="stylesheet" type="text/css">
 
   <style>
 
@@ -38,9 +39,10 @@
         text-align: left;
         border-bottom: 2px solid #363a55;
         font-size: 32px;
-        background: linear-gradient(45deg, #363a55, #4f7cac, #363a55);
+        /* background: linear-gradient(45deg, #363a55, #4f7cac, #363a55); */
         border-radius: 10px;
         -webkit-border-radius: 10px;
+        margin-top: 1%;
 
      }
     body
@@ -103,9 +105,9 @@
 <div id="ledger_page" class="paginated page">
     <section class="content-header">
         <div class="container-fluid">
-            <div data-i18n="account_ledger">
-                <div class="tablenamewrapper1">Account Ledger</div>
-            </div>
+          <div data-i18n="account_ledger" class="tablenamewrapper1">
+            Account Ledger
+          </div>
         </div>
     </section>
 
@@ -129,7 +131,7 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." class="loadinggif"></div>
+                <div class="data-loading-container"><img src="../../img/loading_indicator.gif" alt="Loading..." ></div>
                 <div class="data-empty-container">
                     <p class="tabletextwrapper"><span data-i18n="no_account_ledger">No account ledger entries found</span>.</p>
                 </div>

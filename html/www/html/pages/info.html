@@ -9,7 +9,6 @@
     <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
       <link href="../../css/bootstrap.min.css" rel="stylesheet" type="text/css">
-        <link href="../../css/font-awesome.min.css" rel="stylesheet" type="text/css">
         <link href="../../css/ionicons.min.css" rel="stylesheet" type="text/css">
         <link href="../../css/app.css" rel="stylesheet" type="text/css">
         <link href="../../css/highlight.style.css" rel="stylesheet" type="text/css">
@@ -44,6 +43,9 @@
 				    <div class="col-md-3 col-md-offset-1">
                         <div class="boxwrapper">
                             <div >Current Blockchain Height</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                                <i class="fa fa-cubes infopagefontawesomeiconwrapper"></i>
+                            </div>
                             <div class="boxtextwrapper" id="acctSumm_height" data-placement="bottom">Processing..</div>
                             <div class="boxtextunitwrapper"></div>
                         </div>
@@ -51,6 +53,10 @@
                     <div class="col-md-3">
                         <div class="boxwrapper">
                             <div >Annual Interest Rate</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                              <i class="fa fa-percent infopagefontawesomeiconwrapper"></i>
+                            </div>
+
                             <div class="boxtextwrapper" id="rYear" data-placement="bottom">Processing..</div>
                             <div class="boxtextunitwrapper">%</div>
                         </div>
@@ -58,6 +64,9 @@
                     <div class="col-md-3">
                         <div class="boxwrapper">
                             <div >Average Block Time</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                              <i class="fa fa-clock-o infopagefontawesomeiconwrapper"></i>
+                            </div>
                               <div class="boxtextwrapper" id="avgBlockTime" data-placement="bottom">Processing..</div>
                               <div class="boxtextunitwrapper">seconds</div>
                         </div>
@@ -70,6 +79,9 @@
                     <div class="col-md-3 col-md-offset-1">
                         <div class="boxwrapper">
                             <div >Reward per block</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                              <i class="fa fa-trophy infopagefontawesomeiconwrapper"></i>
+                          </div>
                             <div class="boxtextwrapper" id="blockReward" data-placement="bottom">Processing..</div>
                             <div class="boxtextunitwrapper">Taels</div>
                         </div>
@@ -77,6 +89,9 @@
                     <div class="col-md-3">
                         <div class="boxwrapper">
                             <div >Circulated Supply</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                                <i class="fa fa-refresh infopagefontawesomeiconwrapper"></i>
+                            </div>
                               <div class="boxtextwrapper" id="supplyCurrent" data-placement="bottom">Processing..</div>
                             <div class="boxtextunitwrapper">Taels</div>
                         </div>
@@ -84,13 +99,15 @@
                     <div class="col-md-3">
                         <div class="boxwrapper">
                             <div >Taels Being Staked</div>
+                            <div class="infopagefontawesomesummarywrapper">
+                                <i class="fa fa-database infopagefontawesomeiconwrapper"></i>
+                            </div>
                             <div class="boxtextwrapper" id="totalForgingHoldings" data-placement="bottom">Processing..</div>
                             <div class="boxtextunitwrapper">Taels</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row spacingrow"></div>
                 <div class="row spacingrow"></div>
 
                 <!-- <div id="downloading_blockchain">
@@ -127,8 +144,6 @@
                     </div>
                 </div> -->
             <div class="row spacingrow"></div>
-            <div class="row spacingrow"></div>
-
 
             <!-- <div class=row>
             <div class="col-lg-1 col-xs-1">
@@ -142,17 +157,65 @@
                 </div>
             </div>
           </div> -->
-          <div class="row spacingrow"></div>
-          <div class="row spacingrow"></div>
-          <div class="row spacingrow"></div>
-          <div class="row">
-              <div class="col-md-12">
-                    <div class="box-header"><h3 class="box-title">Connected Peers (Nodes?)</h3></div>
+          <div class="container-fluid fluidborder">
+              <div class=row>
+                  <div class="col-md-12">
+                     <div class="titlewrapper">Connections</div>
+                  </div>
+                  </div>
+                 <!-- <div class="inner inner-smaller"> -->
+          </div>
+          <div class="container-fluid">
+
+            <div class="row">
+      <div class="col-md-3 col-md-offset-1">
+          <div class="connectionswrapper">
+              <p data-i18n="connected_peers">Connected Peers</p>
+              <div class="infopagefontawesomesummarywrapper">
+                  <i class="fa fa-users infopagefontawesomeiconwrapper"></i>
+              </div>
+              <div class="boxtextpeerswrapper">
+              <span id="peers_connected" class="loading_dots"><span>.</span><span>.</span><span>.</span></span>
+              </div>
+              <div class="addpeerbuttonwrapper">
+              <button id="add_peer_button" type="button" class="btn btn-default" data-toggle="modal" data-target="#add_peer_modal" data-i18n="add_peer">Add Peer</button>
               </div>
           </div>
+      </div>
 
-          <button id="add_peer_button" type="button" class="btn btn-default" data-toggle="modal" data-target="#add_peer_modal" data-i18n="add_peer">Add Peer</button>
-          <div class="row spacingrow"></div>
+   <div class="col-md-3">
+          <div class="connectionswrapper">
+              <p data-i18n="uploaded_volume" ></p>
+              <div class="infopagefontawesomesummarywrapper">
+                  <i class="fa fa-upload infopagefontawesomeiconwrapper"></i>
+              </div>
+              <div class="boxtextpeerswrapper">
+              <span id="peers_uploaded_volume" class="loading_dots"><span>.</span><span>.</span><span>.</span></span>
+              </div>
+          </div>
+   </div>
+      <div class="col-md-3">
+          <div class="connectionswrapper">
+              <p data-i18n="downloaded_volume"></p>
+              <div class="infopagefontawesomesummarywrapper">
+                 <i class="fa fa-download infopagefontawesomeiconwrapper"></i>
+              </div>
+              <div class="boxtextpeerswrapper">
+              <span id="peers_downloaded_volume" class="loading_dots"><span>.</span><span>.</span><span>.</span></span>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+      <!-- </div> -->
+      <!-- <div class="icon-smaller" style="bottom:-12px"><i class="fa fa-cloud"></i></div>
+      <div class="small-box-footer"></div> -->
+
+
+
+
+<div class="row spacingrow"></div>
+<div class="row spacingrow"></div>
           <div class="row">
 
           <section class="content">
