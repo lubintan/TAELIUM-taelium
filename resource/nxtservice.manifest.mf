@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Class-Path: lib/websocket-client-9.3.20.v20170531.jar lib/h2-1.4.196.j
+ ar lib/bcprov-jdk15on-157.jar lib/jetty-io-9.3.20.v20170531.jar lib/s
+ lf4j-api-1.7.22.jar lib/lucene-core-5.3.2.jar lib/tika-core-1.13.jar 
+ lib/.DS_Store lib/websocket-common-9.3.20.v20170531.jar lib/jetty-uti
+ l-9.3.20.v20170531.jar lib/jetty-server-9.3.20.v20170531.jar lib/slf4
+ j-jdk14-1.7.22.jar lib/jetty-servlets-9.3.20.v20170531.jar lib/jetty-
+ continuation-9.3.20.v20170531.jar lib/javax.servlet-api-3.1.0.jar lib
+ /websocket-servlet-9.3.20.v20170531.jar lib/websocket-api-9.3.20.v201
+ 70531.jar lib/javase-3.3.0.jar lib/json-simple-1.1.1.jar lib/jetty-cl
+ ient-9.3.20.v20170531.jar lib/jetty-http-9.3.20.v20170531.jar lib/luc
+ ene-queryparser-5.3.2.jar lib/jetty-proxy-9.3.20.v20170531.jar lib/we
+ bsocket-server-9.3.20.v20170531.jar lib/jetty-security-9.3.20.v201705
+ 31.jar lib/lucene-analyzers-common-5.3.2.jar lib/tika-parsers-1.13.ja
+ r lib/jetty-servlet-9.3.20.v20170531.jar lib/lucene-queries-5.3.2.jar
+  lib/core-3.3.0.jar lib/weupnp-0.1.4.jar conf/
+Main-Class: nxt.env.service.NxtService
+

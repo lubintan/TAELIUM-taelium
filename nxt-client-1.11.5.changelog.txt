@@ -1,0 +1,23 @@
+Release 1.11.5
+
+https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-1.11.5.exe
+
+sha256:
+
+https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-1.11.5.jar
+
+sha256:
+
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  nxt-client-1.11.5.jar
+
+
+Change log:
+
+Added firstIndex, lastIndex parameters to the getUnconfirmedTransactions and
+getUnconfirmedTransactionIds APIs to support pagination.
+
+Minor performance optimizations and UI improvements.
+
+Updated H2 to version 1.4.194 and jetty to 9.3.17.
+
+
