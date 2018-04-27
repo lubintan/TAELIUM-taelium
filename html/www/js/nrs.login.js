@@ -38,11 +38,12 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.showLoginOrWelcomeScreen = function() {
-		if (localStorage.getItem("logged_in")) {
-			NRS.showLoginScreen();
-		} else {
-			NRS.showWelcomeScreen();
-		}
+		// if (localStorage.getItem("logged_in")) {
+		// 	NRS.showLoginScreen();
+		// } else {
+		// 	NRS.showWelcomeScreen();
+		// }
+		NRS.showLoginScreen();
 	};
 
 	NRS.showLoginScreen = function() {
@@ -57,11 +58,12 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
 	NRS.showWelcomeScreen = function() {
-		$("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
-        if (NRS.isMobileApp()) {
-            $(".mobile-only").show();
-        }
-		$("#welcome_panel").show();
+		// $("#login_panel, #account_phrase_generator_panel, #account_phrase_custom_panel, #welcome_panel, #custom_passphrase_link").hide();
+  //       if (NRS.isMobileApp()) {
+  //           $(".mobile-only").show();
+  //       }
+		// $("#welcome_panel").show();
+		NRS.showLoginScreen();
 	};
 
     NRS.createPassphraseToConfirmPassphrase = function() {
@@ -336,9 +338,16 @@ var NRS = (function(NRS, $, undefined) {
 			console.log("calling " + accountRequest);
 			NRS.sendRequest(accountRequest, requestVariable, function(response, data) {
 				console.log(accountRequest + " response received");
+
+				console.log('***************')
+				for (x in response){
+					console.log(x);
+				}
+
 				if (!response.errorCode) {
 					NRS.account = NRS.escapeRespStr(response.account);
 					NRS.accountRS = NRS.escapeRespStr(response.accountRS);
+
 					if (isPassphraseLogin) {
                         NRS.publicKey = NRS.getPublicKey(converters.stringToHexString(id));
                     } else {
@@ -429,21 +438,27 @@ var NRS = (function(NRS, $, undefined) {
 						NRS.updateForgingStatus(isPassphraseLogin ? id : null);
 						if (NRS.isForgingSafe() && isPassphraseLogin) {
 							var forgingIndicator = $("#forging_indicator");
+							var forgingIndicatorButton = $("#forging_indicator_button");
 							NRS.sendRequest("startForging", {
 								"secretPhrase": id
 							}, function (response) {
 								if ("deadline" in response) {
 									forgingIndicator.addClass("forging");
+									forgingIndicatorButton.addClass("start_participation");
 									forgingIndicator.find("span").html($.t("forging")).attr("data-i18n", "forging");
+									forgingIndicatorButton.find("span").html($.t("start_participation")).attr("data-i18n", "start_participation");
 									NRS.forgingStatus = NRS.constants.FORGING;
 									NRS.updateForgingTooltip(NRS.getForgingTooltip);
 								} else {
 									forgingIndicator.removeClass("forging");
+									forgingIndicatorButton.removeClass("start_participation");
 									forgingIndicator.find("span").html($.t("not_forging")).attr("data-i18n", "not_forging");
+									forgingIndicatorButton.find("span").html($.t("stop_participation")).attr("data-i18n", "stop_participation");
 									NRS.forgingStatus = NRS.constants.NOT_FORGING;
 									NRS.updateForgingTooltip(response.errorDescription);
 								}
 								forgingIndicator.show();
+								forgingIndicatorButton.show();
 							});
 						}
 					}, isAccountSwitch);

@@ -55,8 +55,9 @@
  .passwordbox
  {
 
-  font-size: 22px;
-  padding-left: 16%;
+  font-size: 5px;
+  padding-left: 15%;
+  padding-right: 5%;
 
  }
  .createaccountwrapper
@@ -236,18 +237,24 @@
    height: 4%;
    margin-top: 5%;
  }
-
+.QRcodecontainerwrapper
+{
+  margin-left: 24%;
+  margin-top: 1%;
+}
 
  .fontawesomesummarywrapper /*Changes position of div holding the FA icon*/
  {
-  margin-top: -40px;
+  margin-top: -10px;
   text-align: right;
  }
  .fontawesomeiconwrapper /*Changes color and size of FA icon*/
  {
   color: rgba(0, 0, 0, 0.20);
-  font-size:105px;
+  font-size:85px;
+  z-index: 0;
  }
+
  /*accountSummary.html custom classes end*/
 
  /*info.html custom classes: These classes are used in info.html*/
@@ -271,7 +278,7 @@
  .boxwrapper
  {
    height: 200px;
-   font-size: 24px;
+   font-size: 22px;
    border-radius: 20px;
    -webkit-border-radius: 20px;
    border: 1px solid white;
@@ -332,7 +339,7 @@
   .connectionswrapper
  {
    height: 200px;
-   font-size: 24px;
+   font-size: 22px;
    border-radius: 20px;
    -webkit-border-radius: 20px;
    border: 1px solid white;
@@ -365,6 +372,7 @@
  .nav.nav-pills>li.active>a
  {
    background-color: #363a55;
+   border-radius: 0px 5px 5px 0px;
  }
  .nav.nav-pills>li>a:focus
  {
@@ -762,11 +770,13 @@ img {
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #f3f4f5;
   color: black;
+  text-align: left;
 }
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
 
   color: black;
+  text-align: left
 }
 /* .text-center in tables */
 table.text-center td,
@@ -2401,7 +2411,7 @@ body > .header .logo .icon {
   border: 0 !important;
   background-color: #ffffff;
   font-size: 22px;
-
+  width: 90%;
 
 
 }
@@ -3358,7 +3368,7 @@ a.list-group-item-header:hover {
 	right:10px;
 	color:white;
   background-color:#363a55;
-  opacity: 0.78;
+  opacity: 0.85;
 	padding:10px 15px 10px 15px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;

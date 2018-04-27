@@ -36,6 +36,7 @@
 
   <div id="dashboard_page" class="page" style="display:block">
     <section class=content>
+
           <div class="container-fluid containerwrapper">
               <div class="row rowaddress">
                   <div class="col-md-2 addresswrapper">
@@ -131,8 +132,13 @@
                                   <i class="fa fa-circle stakingstatusfontawesomewrappersummarypage"></i>
                                   <span data-18n="forging" class="stakingstatustextwrappersummarypage"></span>
                                 </div>
+                                 <div id="forging_indicator_button">
+                                <button type="button" class="btn btn-default" style="  position: relative; z-index: 2; margin-left: 57%; margin-top: -18%;"><span data-18n="start_participation">Change Status</span>
+                                </button>
+                              </div>
+
                                 <div class="fontawesomesummarywrapper">
-                                  <i class="fa fa-database fontawesomeiconwrapper"></i>
+                                  <i class="fa fa-database fontawesomeiconwrapper" style="margin-top: -30px;"></i>
                                 </div>
                           </div>
                           <!-- <div >
@@ -146,11 +152,12 @@
                       <div class="col-md-4">
                           <div class="statuswrapper" >
                               <div>Account QR Code</div>
-                              <div>
-                                <!-- insert QR Code here -->
-                                <span id=acct_qr_code></span>
+                              <div class="QRcodecontainerwrapper">
+                                             <span id=acct_qr_code></span>
                               </div>
-
+                              <div class="fontawesomesummarywrapper" style="margin-top: -21%;">
+                                  <i class="fa fa-share-alt fontawesomeiconwrapper"></i>
+                                </div>
                           </div>
                       </div>
         </div>

@@ -53,6 +53,7 @@ var NRS = (function(NRS, $, undefined) {
 	NRS.avgBlockTime = 0.0;
 	NRS.acctSumm_height = 0;
 	NRS.lastBlockchainFeederHeight = 0;
+	NRS.autoRefreshState = true;
 
 
 	NRS.database = null;
@@ -561,16 +562,13 @@ var NRS = (function(NRS, $, undefined) {
         NRS.logConsole(msg);
     };
 
-		NRS.refreshLedger = function(){
-			if (NRS.currentPage == "ledger"){
-				NRS.getState(null);
-				NRS.loadPage("ledger");
-				NRS.goToPage("ledger");
-			}
-		}
+
+	
+	NRS.toggleAutoRefresh = function(){
+		NRS.autoRefreshState = !NRS.autoRefreshState;
+	};
 
     NRS.getState = function(callback, msg) {
-
 
 		if (msg) {
 			NRS.logConsole("getState event " + msg);
@@ -578,7 +576,7 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.sendRequest("getBlockchainStatus", {}, function(response) {
 			console.log("connection: " + response.connectionStatus);
 			if (!response.connectionStatus){
-				var msg = "Unable to sync global time. Blockchain processing halted. Please check your internet connection and firewall settings."
+				var msg = "Unable to sync global time. Blockchain processing has been halted. </br> Please check your internet connection and firewall settings."
 				$.growl(msg, {
             "type": "danger",
         });
@@ -638,7 +636,20 @@ var NRS = (function(NRS, $, undefined) {
 				NRS.updateBlockchainDownloadProgress();
 			}
 		});
+
+		if ((NRS.currentPage == "ledger") && (NRS.autoRefreshState|| (msg=="Refreshing Now"))) {
+				NRS.loadPage("ledger");
+				NRS.goToPage("ledger");
+
+			}
+
 	};
+
+	NRS.refreshManual = function(){
+		NRS.getState(null, "Refreshing Now");
+	}
+
+
 
 	$("#logo, .sidebar-menu").on("click", "a", function(e, data) {
 		if ($(this).hasClass("ignore")) {

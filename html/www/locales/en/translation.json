@@ -359,7 +359,7 @@
   "error_forging_blockchain_rescanning": "The blockchain is currently being rescanned, you cannot participate during this time. Please try again in a minute.",
   "error_forging_effective_balance": "Your effective balance is zero, you cannot participate. (Effective balance is your balance after 1440 block confirmations).",
   "error_forging_lease": "Your effective balance is leased out, you cannot participate at the moment.",
-  "error_forging_no_public_key": "You cannot participate because your account has no public key. Please make an outgoing transaction first.",
+  "error_forging_no_public_key": "You cannot participate because your account has yet to secure its public key on the blockchain. You will have to provide your public key to the first account that sends Taels to you to resolve this.",
   "error_form_blockchain_rescanning": "The blockchain is currently being rescanned. Please wait a minute and then try submitting again.",
   "error_fraction_decimals": "Fraction can only have __decimals__ decimals max.",
   "error_fractions": "Fractions are not allowed.",
@@ -412,7 +412,7 @@
   "error_missing_alias_name": "Missing alias name.",
   "error_missing_feedback_message": "Missing feedback message.",
   "error_name_required": "Name is a required field.",
-  "error_new_account": "You have a brand new account, fund it with some coins first.",
+  "error_new_account": "You cannot participate because your account has yet to secure its public key on the blockchain. You will have to provide your public key to the first account that sends Taels to you to resolve this.",
   "error_no_attached_message": "No attached message found.",
   "error_no_contacts_available": "There are no contacts available",
   "error_no_public_key": "Account does not have a public key.",
@@ -1897,10 +1897,12 @@
   "cors_service": "cors_service",
   "send_money": "Send Money",
   "Not Connected": "Not connected to network",
-"forging": "Participating | Stop",
-"not_forging": "Not Participating | Start",
+"forging": "Participating",
+"not_forging": "Not Participating",
 "passphrase_warning_unique": "In order to make your passphrase more secure, do not use a meaningful sentence, especially any phrases that appear in songs, books, or popular culture.",
 "passphrase_warning_disclose": "Do not ever disclose your passphrase. If you lose it, you lose access to your account!",
 "your_passphrase": "Enter Passphrase to Login",
-"Connected": "Connected to network"
+"Connected": "Connected to network",
+"start_participation": "Stop",
+"stop_participation": "Start"
 }

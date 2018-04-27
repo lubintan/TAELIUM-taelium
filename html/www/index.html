@@ -33,7 +33,7 @@
         <!-- cordova script (this will be missing unless deployed as a mobile application) -->
         <script src="cordova.js"></script>
     </head>
-    <body class="lockscreen fixed loading">
+    <body onload="window.resizeTo(800,600);" class="lockscreen fixed loading">
         <div id="progress-container">
             <img src="/img/tael-load-progress-logo-circle.png">
             <div id="progress" style="width: 0%" data-total="45" data-done="0">

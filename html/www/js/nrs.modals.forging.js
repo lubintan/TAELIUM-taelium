@@ -23,6 +23,7 @@ var NRS = (function(NRS, $) {
 		if ("deadline" in response) {
             setForgingIndicatorStatus(NRS.constants.FORGING);
 			forgingIndicator.find("span").html($.t(NRS.constants.FORGING)).attr("data-i18n", "forging");
+            forgingIndicatorButton.find("span").html($.t("start_participation")).attr("data-i18n", "start_participation");
 			NRS.forgingStatus = NRS.constants.FORGING;
             NRS.isAccountForging = true;
 			$.growl($.t("success_start_forging"), {
@@ -51,6 +52,7 @@ var NRS = (function(NRS, $) {
 
 						setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
 						forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "not_forging");
+                        forgingIndicatorButton.find("span").html($.t("stop_participation")).attr("data-i18n", "stop_participation");
 
             $.growl($.t("success_stop_forging"), {
 				type: 'success'
@@ -61,9 +63,9 @@ var NRS = (function(NRS, $) {
 			});
 		}
 	};
-
-	var forgingIndicator = $("#forging_indicator");
-	forgingIndicator.click(function(e) {
+    var forgingIndicator = $("#forging_indicator");
+	var forgingIndicatorButton = $("#forging_indicator_button");
+	forgingIndicatorButton.click(function(e) {
 		e.preventDefault();
 
         if (NRS.state.isLightClient) {
@@ -123,12 +125,28 @@ var NRS = (function(NRS, $) {
         forgingIndicator.removeClass(NRS.constants.NOT_FORGING);
         forgingIndicator.removeClass(NRS.constants.UNKNOWN);
         forgingIndicator.addClass(status);
+
+        var forgingIndicatorButton = $("#forging_indicator_button");
+        forgingIndicatorButton.removeClass("start_participation");
+        forgingIndicatorButton.removeClass("stop_participation");
+        forgingIndicatorButton.removeClass("unknown");
+        
+        if (status==NRS.constants.FORGING){
+            forgingIndicatorButton.addClass("start_participation");
+        }else if (status==NRS.constants.NOT_FORGING){
+            forgingIndicatorButton.addClass("stop_participation");
+        }else{
+            forgingIndicatorButton.addClass("unknown");
+        }
+
     }
 
     NRS.updateForgingStatus = function(secretPhrase) {
         var forgingIndicator = $("#forging_indicator");
+        var forgingIndicatorButton = $("#forging_indicator_button");
         if (!NRS.isForgingSupported()) {
             forgingIndicator.hide();
+            forgingIndicatorButton.hide();
             return;
         }
         var status = NRS.forgingStatus;
@@ -205,14 +223,17 @@ var NRS = (function(NRS, $) {
 				if (NRS.isAccountForging){
 					setForgingIndicatorStatus(NRS.constants.FORGING);
 					forgingIndicator.find("span").html($.t(NRS.constants.FORGING)).attr("data-i18n", "forging");
+                    forgingIndicatorButton.find("span").html($.t("start_participation")).attr("data-i18n", "start_participation");
 				}
 				else{
 					setForgingIndicatorStatus(NRS.constants.NOT_FORGING);
 					forgingIndicator.find("span").html($.t(NRS.constants.NOT_FORGING)).attr("data-i18n", "not_forging");
+                    forgingIndicatorButton.find("span").html($.t("stop_participation")).attr("data-i18n", "stop_participation");
 				}
 
         // forgingIndicator.find("span").html($.t(status)).attr("data-i18n", status);
         forgingIndicator.show();
+        forgingIndicatorButton.show();
         NRS.forgingStatus = status;
         NRS.updateForgingTooltip(tooltip);
     };

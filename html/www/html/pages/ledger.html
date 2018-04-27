@@ -60,11 +60,27 @@
      }
    .titlerowdatetype
     {
-        border-radius: 20px;
-        -webkit-border-radius: 20px;
+        border-radius: 15px;
+        -webkit-border-radius: 15px;
         background-color: #4f7cac;
-        text-align: center;
+        text-align: left;
         color: white;
+    }
+    .titlerownumerictype
+    {
+        border-radius: 15px;
+        -webkit-border-radius: 15px;
+        text-align: left;
+        color: white;
+        background-color: #4f7cac;
+    }
+    .titlerowinfotype
+    {
+        border-radius: 15px;
+        -webkit-border-radius: 15px;
+        text-align: left;
+        color: white;
+        background-color: #4f7cac;
     }
     .titlerow
     {
@@ -99,6 +115,26 @@
     {
         border-bottom: none;
     }
+    .btn.refreshbuttonwrapper
+    {
+        font-size: 16px;
+        margin-top: -8%;
+        margin-left: -47%;
+        margin-bottom: 10%;
+        
+    }
+    .refreshcheckboxwrapper
+    {
+        font-size: 16px;
+        text-align: right;
+        margin-left: 13%;
+        margin-top: 1%;
+    }
+    .fontawesomerefreshbuttonwrapper
+    {
+        margin-left: 8%;
+
+    }
 
 </style>
 </head>
@@ -111,8 +147,29 @@
         </div>
     </section>
 
+
+
     <section class="content">
         <div style="display: none" class="alert alert-info" role="alert" id="account_ledger_message"></div>
+
+       <div class="container-fluid" style="margin-bottom: 0.1%; padding-top: 0.5%;">
+           <div class="row">
+           <div class="col-md-9"></div>
+           <div class="col-md-2">
+
+                <label class="checkbox-inline refreshcheckboxwrapper">
+                    <input type="checkbox"  checked data-toggle="toggle" onClick="NRS.toggleAutoRefresh()"> Auto Refresh
+                </label>
+            </div>
+            <div class="col-md-1">
+                
+                <button type="button" class="btn btn-default refreshbuttonwrapper" onClick="NRS.refreshManual()">
+                    <span>Refresh Now</span><i class="fa fa-refresh fontawesomerefreshbuttonwrapper"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
         <div class="panel panel-default">
             <div class="data-container data-loading panel-body">
                 <table class="table table-striped" id="ledger_table">
@@ -120,12 +177,12 @@
                     <tr>
                         <th class="titlerowdatetype">Local Timestamp</th>
                         <th class="titlerowdatetype">Description</th>
-                        <th class="titlerowdatetype">Amount</th>
-                        <th class="titlerowdatetype">Balance</th>
-                        <th class="titlerowdatetype">Height</th>
-                        <th class="titlerowdatetype">Transaction ID</th>
-                        <th class="titlerowdatetype">Sender</th>
-                        <th class="titlerowdatetype">Recipient</th>
+                        <th class="titlerownumerictype">Amount</th>
+                        <th class="titlerownumerictype">Balance</th>
+                        <th class="titlerowinfotype">Height</th>
+                        <th class="titlerowinfotype">Transaction ID</th>
+                        <th class="titlerowinfotype">Sender</th>
+                        <th class="titlerowinfotype">Recipient</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -144,7 +201,7 @@
       <div class="row">
                 <div class="col-md-12">
                     <div class="box box-primary">
-                        <div class="box-header"><h3 class="box-title">Unconfirmed (Pending?) Transactions</h3></div>
+                        <div class="box-header"><h3 class="box-title">Unconfirmed(Pending) Transactions</h3></div>
                         <div class="box-body no-padding">
                             <div class="data-container data-loading" data-no-padding="true" data-extra="#dashboard_transactions_footer">
                                 <table class="table table-striped" id="dashboard_table">
@@ -162,7 +219,10 @@
                                     </tbody>
                                 </table>
                                 <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                                <div class="data-empty-container"><p data-i18n="no_transactions_yet">No transactions yet.</p></div>
+                                <div class="data-empty-container">
+                                    <p class="tabletextwrapper"><span data-i18n="no_transactions_yet">No transactions yet.</span></p>
+
+                                </div>
                             </div>
                         </div>
 

@@ -563,11 +563,11 @@ var NRS = (function(NRS, $, undefined) {
 		// html += NRS.getTransactionIconHTML(t.type, t.subtype) + '&nbsp; ';
 		// html += '<span style="font-size:11px;display:inline-block;margin-top:5px;">' + transactionType + '</span>';
 		// html += '</td>';
-        html += "<td style='vertical-align:middle;text-align:center;" + amountColor + "'>" + formattedAmount + "</td>";
-        html += "<td style='vertical-align:middle;text-align:center;" + feeColor + "'>" + formattedFee + "</td>";
-				html += "<td style='vertical-align:middle;text-align:center;'>" + t.transaction; + "</td>";
-		html += "<td style='vertical-align:middle;text-align:center;'>" + t.senderRS; + "</td>";
-		html += "<td style='vertical-align:middle;text-align:center;'>" + t.recipientRS; + "</td>";
+        html += "<td style='vertical-align:middle;" + amountColor + "'>" + formattedAmount + "</td>";
+        html += "<td style='vertical-align:middle;" + feeColor + "'>" + formattedFee + "</td>";
+				html += "<td style='vertical-align:middle;'>" + t.transaction; + "</td>";
+		html += "<td style='vertical-align:middle;'>" + t.senderRS; + "</td>";
+		html += "<td style='vertical-align:middle;'>" + t.recipientRS; + "</td>";
 
 		// html += "<i class='fa fa-arrow-circle-right' style='color:#777;'></i> " + t.recipientR + "</td>";
 
@@ -910,22 +910,18 @@ var NRS = (function(NRS, $, undefined) {
 
 			// NRS.displayUnconfirmedTransactions(NRS.account);
 
-			var uTrows = "";
-			// var params = {
-			// 		"account": NRS.account,
-			// 		"firstIndex": 0,
-			// 		"lastIndex": 9
-			// };
-			var unconfirmedTransactions = NRS.unconfirmedTransactions;
-	var decimals = NRS.getTransactionsAmountDecimals(unconfirmedTransactions);
-			if (unconfirmedTransactions) {
-					for (var i = 0; i < unconfirmedTransactions.length; i++) {
-							uTrows += NRS.getTransactionRowHTML(unconfirmedTransactions[i], false, decimals);
-					}
-			}
 
+			NRS.sendRequest("getUnconfirmedTransactions", params, function(response) {
+			var uTrows = "";
+			if (response.unconfirmedTransactions && response.unconfirmedTransactions.length) {
+				var decimals = NRS.getTransactionsAmountDecimals(response.unconfirmedTransactions);
+				for (var i = 0; i < response.unconfirmedTransactions.length; i++) {
+                    uTrows += NRS.getTransactionRowHTML(response.unconfirmedTransactions[i], false, decimals);
+				}
+			}
 			NRS.dataLoadedTaelium(uTrows, true, "dashboard");
-			// NRS.dataLoaded(uTrows);
+		});
+
 
 			console.log('$$$$$$$$ end of ledger');
 	}; //end of nrs.pages.ledger
