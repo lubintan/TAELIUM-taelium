@@ -563,7 +563,7 @@ var NRS = (function(NRS, $, undefined) {
     };
 
 
-	
+
 	NRS.toggleAutoRefresh = function(){
 		NRS.autoRefreshState = !NRS.autoRefreshState;
 	};
@@ -642,6 +642,11 @@ var NRS = (function(NRS, $, undefined) {
 				NRS.goToPage("ledger");
 
 			}
+
+		if (NRS.currentPage == "peers"){
+			NRS.loadPage("peers");
+			NRS.goToPage("peers");
+		}
 
 	};
 
