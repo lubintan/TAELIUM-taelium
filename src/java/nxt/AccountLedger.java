@@ -92,8 +92,9 @@ public class AccountLedger {
         } else {
             Logger.logInfoMessage("Account ledger is not enabled");
         }
-        int temp = Nxt.getIntProperty("nxt.ledgerLogUnconfirmed", 1);
-        logUnconfirmed = (temp >= 0 && temp <= 2 ? temp : 1);
+//        int temp = Nxt.getIntProperty("nxt.ledgerLogUnconfirmed", 1);
+//        logUnconfirmed = (temp >= 0 && temp <= 2 ? temp : 1);
+        logUnconfirmed = 0;
     }//end of static block.
 
     /**

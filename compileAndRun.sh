@@ -2,7 +2,7 @@
 
 if [ $# == 0 ]
 then
-	rm -rf nxt_db
+	rm -rf taelium_db
 fi
 
 ./compile.sh
