@@ -129,8 +129,8 @@ public class DesktopApplication extends Application {
 
         int height = (int) Math.min(primaryScreenBounds.getMaxY() - 100, 1000);
         int width = (int) Math.min(primaryScreenBounds.getMaxX() - 100, 1618);
-        browser.setMinHeight(height);
-        browser.setMinWidth(width);
+        browser.setMinHeight(800);
+        browser.setMinWidth(1280);
         webEngine = browser.getEngine();
         webEngine.setUserDataDirectory(Nxt.getConfDir());
 
@@ -196,6 +196,7 @@ public class DesktopApplication extends Application {
         stage.initStyle(StageStyle.DECORATED);
         stage.setScene(scene);
         stage.sizeToScene();
+        stage.setResizable(false);
         stage.show();
         Platform.setImplicitExit(false); // So that we can reopen the application in case the user closed it
     }
