@@ -1313,7 +1313,7 @@
   "upload_tagged_data": "Upload Data",
   "tagged_data": "Data Cloud",
   "transaction_time": "Transaction Time",
-  "forging_tooltip": "Participation started with balance of __balance__ __symbol__",
+  "forging_tooltip": "Participation started with an effective balance of __balance__ __symbol__",
   "forging_another_account_tooltip": "Participating with account  __accountRS__",
   "forging_more_than_one_tooltip": "Participating with __generators__ accounts on this node.",
   "not_forging_not_started_tooltip": "Participation not started",
