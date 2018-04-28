@@ -37,8 +37,8 @@ public class CalculateReward {
 			BigInteger yesterdaysVolume = CalculateInterestAndG
 				.getTotalPastTxVolumeFromDb(date, blockRewardCalculated);
 							
-			BigDecimal x = new BigDecimal(yesterdaysVolume);
-			x = x.divide(BigDecimal.valueOf(Constants.H), Constants.PRECISION, RoundingMode.HALF_UP);
+			BigDecimal x = new BigDecimal(yesterdaysVolume);			
+			x = x.divide(Constants.H, Constants.PRECISION, RoundingMode.HALF_UP);
 			x = x.divide(BigDecimal.ONE.add(x.abs()), Constants.PRECISION, RoundingMode.HALF_UP);
 			
 			BigDecimal decimalSupplyCurrent = new BigDecimal( CalculateInterestAndG.supplyCurrent);
