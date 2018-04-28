@@ -77,7 +77,7 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
         int currHeight = lastBlock.getHeight();
         
         if (currHeight > (Constants.DAILY_BLOCKS+1)) {
-        		for(int i=currHeight; i>=(currHeight-Constants.DAILY_BLOCKS); i--) {
+        		for(int i=currHeight; i>(currHeight-Constants.DAILY_BLOCKS); i--) {
         			sumAvgBlockTime += Nxt.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
         					Nxt.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
         		}
