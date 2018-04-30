@@ -462,13 +462,22 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.serverConnect = true;
 		NRS.ledgerTrimKeep = response.ledgerTrimKeep;
 		// $("#sidebar_block_link").html(height);
-		$("#rYear").html(NRS.state.rYear);
-		$("#supplyCurrent").html(NRS.state.supplyCurrent);
-		$("#blockReward").html(NRS.state.blockReward);
+		var formattedrYear = Math.floor(NRS.state.rYear*100)/100;
+		formattedrYear = formattedrYear.toFixed(2);
+		var amount = formattedrYear.split('.');
+		formattedrYear = amount[0] + "<span style='font-size:12px'>" + '.' + amount[1] + "</span>";
+
+		$("#rYear").html(formattedrYear);
+		$("#supplyCurrent").html(NRS.formatStyledAmount(NRS.state.supplyCurrent));
+		$("#blockReward").html(NRS.formatStyledAmount(NRS.state.blockReward));
 		$("#date").html(NRS.state.date);
-		$("#totalForgingHoldings").html(NRS.state.totalForgingHoldings);
-		$("#avgBlockTime").html(NRS.state.avgBlockTime);
-		$("#acctSumm_height").html(height);
+		$("#totalForgingHoldings").html(NRS.formatStyledAmount(NRS.state.totalForgingHoldings));
+
+		var formattedAvgBlockTime = NRS.state.avgBlockTime.toFixed(2);
+		amount = formattedAvgBlockTime.split('.');
+		formattedAvgBlockTime = amount[0] + "<span style='font-size:12px'>" + '.' + amount[1] + "</span>";
+		$("#avgBlockTime").html(formattedAvgBlockTime);
+		$("#acctSumm_height").html(height.toLocaleString());
 		// $("#lastBlockchainFeederHeight").html(NRS.state.lastBlockchainFeederHeight);
 
 		if ((NRS.state.lastBlockchainFeederHeight - height) > 0) {

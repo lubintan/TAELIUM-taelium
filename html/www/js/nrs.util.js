@@ -433,7 +433,7 @@ var NRS = (function (NRS, $, undefined) {
 
     NRS.getNumberOfDecimals = function(rows, key, callback) {
         var locale = NRS.getLocale();
-        var decimals = 0;
+        var decimals = 8;
         for (var i=0; i<rows.length; i++) {
             var val = rows[i][key];
             if (callback) {

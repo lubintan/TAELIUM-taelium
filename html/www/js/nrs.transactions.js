@@ -536,9 +536,9 @@ var NRS = (function(NRS, $, undefined) {
 		}
 		var formattedAmount = "";
 		if (amount != "") {
-			formattedAmount = NRS.formatAmount(amount, false, false, decimals.amount);
+			formattedAmount = NRS.formatStyledAmount(amount, false, false, decimals.amount);
 		}
-		var formattedFee = NRS.formatAmount(fee, false, false, decimals.fee);
+		var formattedFee = NRS.formatStyledAmount(fee, false, false, decimals.fee);
 		var amountColor = (sign == 1 ? "color:green;" : (sign == -1 ? "color:red;" : "color:black;"));
 		var hasMessage = false;
 
@@ -641,8 +641,8 @@ var NRS = (function(NRS, $, undefined) {
                 holdingIcon =  "<i class='fa fa-bank'></i> ";
             }, { isAsync: false });
         } else {
-            change = NRS.formatAmount(change, false, false, decimalParams.changeDecimals);
-            balance = NRS.formatAmount(balance, false, false, decimalParams.balanceDecimals);
+            change = NRS.formatStyledAmount(change, false, false, decimalParams.changeDecimals);
+            balance = NRS.formatStyledAmount(balance, false, false, decimalParams.balanceDecimals);
         }
         var sign = "";
 		var color = "";
