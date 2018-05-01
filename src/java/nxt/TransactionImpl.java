@@ -818,8 +818,8 @@ final class TransactionImpl implements Transaction {
                 ecBlockId = buffer.getLong();	    
             }
             
-            Logger.logDebugMessage(" $$$  AMOUNT: " + amountNQT.toString());
-            Logger.logDebugMessage("$$$   FEE: " + feeNQT.toString());
+//            Logger.logDebugMessage(" $$$  AMOUNT: " + amountNQT.toString());
+//            Logger.logDebugMessage("$$$   FEE: " + feeNQT.toString());
             
             
             TransactionType transactionType = TransactionType.findTransactionType(type, subtype);
@@ -1122,7 +1122,7 @@ final class TransactionImpl implements Transaction {
     @Override
     public void validate() throws NxtException.ValidationException {
         
-    		Logger.logDebugMessage("MAX_BALANCE_HAEDS: " + Constants.MAX_BALANCE_HAEDS);
+//    		Logger.logDebugMessage("MAX_BALANCE_HAEDS: " + Constants.MAX_BALANCE_HAEDS);
     	
     		if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
     			(deadline < 1 || feeNQT.compareTo(BigInteger.ZERO) <= 0)

@@ -291,9 +291,6 @@ public class GetAccountLedger extends APIServlet.APIRequestHandler {
         });
         JSONObject response = new JSONObject();
         
-//        Logger.logDebugMessage("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-//        Logger.logDebugMessage("responseEntries: " + responseEntries);
-        
         response.put("entries", responseEntries);
         return response;
     }

@@ -200,9 +200,6 @@ public class GetAccountLedgerEntry extends APIServlet.APIRequestHandler {
         //
         LedgerEntry ledgerEntry = AccountLedger.getEntry(ledgerId);
         if (ledgerEntry == null) {
-         
-        		Logger.logDebugMessage("***************** UNKNOWN ENTRY **************");
-        		Logger.logDebugMessage("Ledger ID: " + ledgerId);
         	
         		return JSONResponses.UNKNOWN_ENTRY;
         

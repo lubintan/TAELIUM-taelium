@@ -284,16 +284,16 @@ public final class Generator implements Comparable<Generator> {
         BigInteger prevTarget = effectiveBaseTarget.multiply(BigInteger.valueOf(elapsedTime - 1));
         BigInteger target = prevTarget.add(effectiveBaseTarget);
 //        
-        Logger.logDebugMessage("--------------------------------");
-        Logger.logDebugMessage("prev block base target: " + previousBlock.getBaseTarget().toString());
-        Logger.logDebugMessage("effBaseTarget: " + effectiveBaseTarget.toString());
-        Logger.logDebugMessage("prevTarget: " + prevTarget.toString());
-        Logger.logDebugMessage("target: " + target.toString());
-        Logger.logDebugMessage("hit: " + hit.toString());
-        Logger.logDebugMessage("elapsedTime: " + elapsedTime);
-        
-        
-        Logger.logDebugMessage("--------------------------------");
+//        Logger.logDebugMessage("--------------------------------");
+//        Logger.logDebugMessage("prev block base target: " + previousBlock.getBaseTarget().toString());
+//        Logger.logDebugMessage("effBaseTarget: " + effectiveBaseTarget.toString());
+//        Logger.logDebugMessage("prevTarget: " + prevTarget.toString());
+//        Logger.logDebugMessage("target: " + target.toString());
+//        Logger.logDebugMessage("hit: " + hit.toString());
+//        Logger.logDebugMessage("elapsedTime: " + elapsedTime);
+//        
+//        
+//        Logger.logDebugMessage("--------------------------------");
         
         return hit.compareTo(target) < 0
                 && (hit.compareTo(prevTarget) >= 0  
@@ -403,11 +403,11 @@ public final class Generator implements Comparable<Generator> {
         byte[] pbKey = Crypto.getPublicKey(secretPhrase);
         long acctId = Account.getId(pbKey);
         
-        Logger.logDebugMessage(Crypto.rsEncode(acctId) + " is forging...");
+//        Logger.logDebugMessage(Crypto.rsEncode(acctId) + " is forging...");
         
         
         if (!verifyHit(hit, effectiveBalance, lastBlock, timestamp)) {
-            Logger.logDebugMessage(this.toString() + " failed to forge at " + timestamp + " height " + lastBlock.getHeight() + " last timestamp " + lastBlock.getTimestamp());
+//            Logger.logDebugMessage(this.toString() + " failed to forge at " + timestamp + " height " + lastBlock.getHeight() + " last timestamp " + lastBlock.getTimestamp());
             return false;
         }
         // means verifyHit returned True!
@@ -534,7 +534,7 @@ public final class Generator implements Comparable<Generator> {
                 return;
             }
             
-            Logger.logDebugMessage("effBalNXT: " + effectiveBalanceNXT.toString());
+//            Logger.logDebugMessage("effBalNXT: " + effectiveBalanceNXT.toString());
 //            BigInteger effectiveBalance = BigInteger.valueOf(effectiveBalanceNXT);
             BigInteger hit = Generator.getHit(publicKey, lastBlock);
             hitTime = Generator.getHitTime(effectiveBalanceNXT, hit, lastBlock);

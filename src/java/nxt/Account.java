@@ -1134,8 +1134,6 @@ public final class Account {
             pstmt.setInt(++i, CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
             		Nxt.getBlockchain().getHeight());
             pstmt.executeUpdate();
-//            Logger.logDebugMessage("ACCOUNT TABLE HEIGHT: " + (CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
-//        		Nxt.getBlockchain().getHeight()));
         }
     }
 
@@ -1233,7 +1231,6 @@ public final class Account {
         Nxt.getBlockchain().readLock();
         try {
         		BigInteger effectiveBalanceNQT = (getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height));
-//            Logger.logDebugMessage("Effective Balance After EFF_BAL_HEIGHT: " + effectiveBalanceNQT);
 	        return effectiveBalanceNQT.compareTo(Constants.MIN_FORGING_BALANCE_HAEDS) < 0 ? BigInteger.ZERO : Constants.haedsToTaels(effectiveBalanceNQT);
         } finally {
             Nxt.getBlockchain().readUnlock();
@@ -1259,9 +1256,6 @@ public final class Account {
         Nxt.getBlockchain().readLock();
         try {
             int height = currentHeight - numberOfConfirmations;
-//            Logger.logDebugMessage("currentHeight: " + currentHeight);
-//            Logger.logDebugMessage("numberOfConfirmations: " + numberOfConfirmations);
-//            Logger.logDebugMessage("minRollbackHeight: " + Nxt.getBlockchainProcessor().getMinRollbackHeight());
             
             if (height + Constants.GUARANTEED_BALANCE_CONFIRMATIONS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
                     || height > Nxt.getBlockchain().getHeight()) {
@@ -1278,18 +1272,10 @@ public final class Account {
                         return balanceNQT;
                     }
                     
-//                    Logger.logDebugMessage("");
-//                    Logger.logDebugMessage("ACCOUNT RS ID: " + Crypto.rsEncode(this.id));
-//                    Logger.logDebugMessage("SELECT SUM (additions) AS additions "
-//                         + "FROM account_guaranteed_balance WHERE account_id = "+this.id+" AND height > "+height+" AND height <= " + currentHeight);
-//                    Logger.logDebugMessage("ADDITIONS: " + rs.getBigDecimal("additions").toBigInteger());
-//                    Logger.logDebugMessage("");
-                    
                     BigDecimal additionsFromDb = rs.getBigDecimal("additions");
                     BigInteger newAdditions = (additionsFromDb==null) ? BigInteger.ZERO: additionsFromDb.toBigInteger();
                     
                     BigInteger guaranteedBalanceHaeds = balanceNQT.subtract(newAdditions);
-                    Logger.logDebugMessage("guaranteedBal: " + guaranteedBalanceHaeds);
                     return guaranteedBalanceHaeds.compareTo(BigInteger.ZERO) < 0 ? BigInteger.ZERO : guaranteedBalanceHaeds;
 //                    return Math.max(Math.subtractExact(balanceNQT, rs.getLong("additions")), 0);
                 }
@@ -1719,16 +1705,12 @@ public final class Account {
         else {
         		addToGuaranteedBalanceNQT(totalAmountNQT, true);
         }
-//        Logger.logDebugMessage("amount: " + String.valueOf(amountNQT));
-//        Logger.logDebugMessage("totalamt: " + String.valueOf(totalAmountNQT));
-//        
+
         checkBalance(this.id, this.balanceNQT, this.unconfirmedBalanceNQT);
         save();
         listeners.notify(this, Event.BALANCE);
         listeners.notify(this, Event.UNCONFIRMED_BALANCE);
-        
-        Logger.logDebugMessage("$$$$$$$$$$$$$$ EVENT: " + event + " " + amountNQT);
-        
+                
         if (event == null) {
             return;
         }
@@ -1739,7 +1721,6 @@ public final class Account {
             }
             if (amountNQT != BigInteger.ZERO) {
             	
-//            		Logger.logDebugMessage("in here");
                 
             		if(newBlock == null) {
             		AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
@@ -1832,10 +1813,6 @@ public final class Account {
                 
                 pstmtUpdate.executeUpdate();
                 
-                Logger.logDebugMessage("------- Acct Guaranteed Balance -------");
-                Logger.logDebugMessage("Account: " + Crypto.rsEncode(this.id));
-                Logger.logDebugMessage("Height: " + blockchainHeight);
-                Logger.logDebugMessage("Additions: " + additions);
                 
                 
             }

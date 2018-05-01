@@ -200,7 +200,6 @@ public class AccountLedger {
         // only logged while processing block
         if (!blockchainProcessor.isProcessingBlock()) {
         	
-//        		Logger.logDebugMessage("This Guy....");
             return false;
         }
         //
@@ -268,13 +267,6 @@ public class AccountLedger {
         int count = 0;
         for (LedgerEntry ledgerEntry : pendingEntries) {
             accountLedgerTable.insert(ledgerEntry);
-            Logger.logDebugMessage("");
-            Logger.logDebugMessage("Inserting to Acct Ledger Table...");
-            Logger.logDebugMessage("Height: " + ledgerEntry.getHeight());
-            Logger.logDebugMessage("Account: " + Crypto.rsEncode(ledgerEntry.getAccountId()));
-            Logger.logDebugMessage("Change: " + ledgerEntry.getChange());
-            Logger.logDebugMessage("Event Type: " + ledgerEntry.getEvent());
-            Logger.logDebugMessage("Balance: " + ledgerEntry.getBalance());
             
             
             listeners.notify(ledgerEntry, Event.ADD_ENTRY);
@@ -367,16 +359,6 @@ public class AccountLedger {
         //
         
         
-        Logger.logDebugMessage("sb: " + sb.toString());
-        
-        Logger.logDebugMessage("accountID: " + accountId);
-        Logger.logDebugMessage("event: " + event);
-        Logger.logDebugMessage("eventId: " + eventId);
-        Logger.logDebugMessage("holding: " + holding);
-        Logger.logDebugMessage("holdingId: " + holdingId);
-        Logger.logDebugMessage("first: " + firstIndex);
-        Logger.logDebugMessage("last: " + lastIndex);
-        
         
         blockchain.readLock();
         try (Connection con = Db.db.getConnection();
@@ -384,7 +366,6 @@ public class AccountLedger {
             int i = 0;
             if (accountId != 0) {
                 pstmt.setLong(++i, accountId);
-                Logger.logDebugMessage("1");
             }
             
             
@@ -392,22 +373,17 @@ public class AccountLedger {
             	
             		
                 pstmt.setByte(++i, (byte)event.getCode());
-                Logger.logDebugMessage("2");
                 if (eventId != 0) {
                     pstmt.setLong(++i, eventId);
-                    Logger.logDebugMessage("3");
                 }
             }
             if (holding != null) {
                 pstmt.setByte(++i, (byte)holding.getCode());
-                Logger.logDebugMessage("4");
                 if (holdingId != 0) {
                     pstmt.setLong(++i, holdingId);
-                    Logger.logDebugMessage("5");
                 }
             }
             DbUtils.setLimits(++i, pstmt, firstIndex, lastIndex);
-            Logger.logDebugMessage("6");
             
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {

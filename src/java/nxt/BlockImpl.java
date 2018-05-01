@@ -527,18 +527,13 @@ final class BlockImpl implements Block {
         if (! hasValidSignature) {
             byte[] data = Arrays.copyOf(bytes(), bytes.length - 64);
             
-            Logger.logDebugMessage("");
-            Logger.logDebugMessage("BLOCK SIG!=NULL: " + (blockSignature != null));
-            Logger.logDebugMessage("CRYPTO VERIFY: " + Crypto.verify(blockSignature, data, getGeneratorPublicKey()));
-            
             hasValidSignature = blockSignature != null && Crypto.verify(blockSignature, data, getGeneratorPublicKey());
         }
         return hasValidSignature;
     }
 
     boolean verifyGenerationSignature() throws BlockchainProcessor.BlockOutOfOrderException {
-    		Logger.logDebugMessage("");
-    		Logger.logDebugMessage("in VERIFY SIGNATURE");
+    		
         try {
 
             BlockImpl previousBlock = BlockchainImpl.getInstance().getBlock(getPreviousBlockId());
@@ -549,7 +544,7 @@ final class BlockImpl implements Block {
             Account account = Account.getAccount(getGeneratorId());
             BigInteger effectiveBalance = account == null ? BigInteger.ZERO : account.getEffectiveBalanceNXT();
             
-            Logger.logDebugMessage("effective balance: " + effectiveBalance);
+         
             
             if (effectiveBalance.compareTo(BigInteger.ZERO) <= 0) {
                 return false;
@@ -559,16 +554,16 @@ final class BlockImpl implements Block {
             digest.update(previousBlock.generationSignature);
             byte[] generationSignatureHash = digest.digest(getGeneratorPublicKey());
             
-            Logger.logDebugMessage(String.valueOf(!Arrays.equals(generationSignature, generationSignatureHash)).toUpperCase());
+          
             
             if (!Arrays.equals(generationSignature, generationSignatureHash)) {
                 return false;
             }
 
             BigInteger hit = new BigInteger(1, new byte[]{generationSignatureHash[7], generationSignatureHash[6], generationSignatureHash[5], generationSignatureHash[4], generationSignatureHash[3], generationSignatureHash[2], generationSignatureHash[1], generationSignatureHash[0]});
-            Logger.logDebugMessage("REACHED HERE!");
             
-            Logger.logDebugMessage(String.valueOf(Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp)));
+            
+            
             return Generator.verifyHit(hit, effectiveBalance, previousBlock, timestamp);
 
         } catch (RuntimeException e) {
@@ -653,10 +648,10 @@ final class BlockImpl implements Block {
         if (blockchainHeight > 2 && blockchainHeight % 2 == 0) {
             BlockImpl block = BlockDb.findBlockAtHeight(blockchainHeight - 2);
             int blocktimeAverage = (this.timestamp - block.timestamp) / 3;
-            Logger.logDebugMessage("-----------------------------------------");
-            Logger.logDebugMessage("this.timestamp: " + this.timestamp + " block-3.timestamp: " + block.timestamp);
-            Logger.logDebugMessage("<><><><><>blocktimeAverage: " + blocktimeAverage);
-            Logger.logDebugMessage("-----------------------------------------");
+//            Logger.logDebugMessage("-----------------------------------------");
+//            Logger.logDebugMessage("this.timestamp: " + this.timestamp + " block-3.timestamp: " + block.timestamp);
+//            Logger.logDebugMessage("<><><><><>blocktimeAverage: " + blocktimeAverage);
+//            Logger.logDebugMessage("-----------------------------------------");
             
             if (blocktimeAverage > Constants.BLOCK_TIME) {
                 baseTarget = prevBaseTarget.multiply(BigInteger.valueOf(Math.min(blocktimeAverage, Constants.MAX_BLOCKTIME_LIMIT))).divide(BigInteger.valueOf(Constants.BLOCK_TIME));
@@ -673,18 +668,13 @@ final class BlockImpl implements Block {
             						
             				);
             		
-            		Logger.logDebugMessage("math max: " + Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT));
-            		Logger.logDebugMessage("prevBTgamma60part: " + prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA).multiply(
-    						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)))).divide(
-    								BigInteger.valueOf(100 * Constants.BLOCK_TIME))
-    								);
+//            		Logger.logDebugMessage("prevBTgamma60part: " + prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA).multiply(
+//    						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)))).divide(
+//    								BigInteger.valueOf(100 * Constants.BLOCK_TIME))
+//    								);
     						
     				
          
-            		
-            		Logger.logDebugMessage("prevBT: " +prevBaseTarget);
-            		
-            		Logger.logDebugMessage("baseTarget DECREASED from " + prevBaseTarget + " to " + baseTarget);
             }
             if (baseTarget.compareTo(BigInteger.ZERO) < 0 || baseTarget.compareTo(Constants.MAX_BASE_TARGET) > 0) {
                 baseTarget = Constants.MAX_BASE_TARGET;
@@ -697,7 +687,6 @@ final class BlockImpl implements Block {
             }
         } else {
             baseTarget = prevBaseTarget;
-//            Logger.logDebugMessage("***BASE TARGET DOES NOT CHANGE***");
         }
         cumulativeDifficulty = previousBlock.cumulativeDifficulty.add(Convert.two64.divide(baseTarget)); 
         //two64 = 2**64.

@@ -196,12 +196,7 @@ public abstract class TransactionType {
         senderAccount.addToUnconfirmedBalanceNQT(getLedgerEvent(), transaction.getId(), amountNQT.negate(), feeNQT.negate());
         if (!applyAttachmentUnconfirmed(transaction, senderAccount)) {
             senderAccount.addToUnconfirmedBalanceNQT(getLedgerEvent(), transaction.getId(), amountNQT, feeNQT);
-            
-            Logger.logDebugMessage("####################################");
-            Logger.logDebugMessage("NOT APPLY ATTACHMENT UNCONFIRMED!!!");
-            Logger.logDebugMessage("####################################");
-
-            
+          
             
             return false;
         }

@@ -70,7 +70,7 @@ class NxtDbVersion extends DbVersion {
                 			+"day BIGINT NOT NULL, date CHAR NOT NULL, total_txed DECIMAL NOT NULL, average_holdings DECIMAL NOT NULL, "
                         + "deltaT DECIMAL NOT NULL, ma_delta_avg_holdings DECIMAL NOT NULL, "
                         + "x FLOAT NOT NULL, f_deltaT FLOAT NOT NULL, "
-                        + "rYear FLOAT NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
+                        + "rYear FLOAT NOT NULL, supply_current DECIMAL NOT NULL)");
            
             case 12:
                 apply("CREATE TABLE IF NOT EXISTS account (db_id IDENTITY, id BIGINT NOT NULL, "

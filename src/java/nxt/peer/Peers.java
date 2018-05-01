@@ -204,9 +204,7 @@ public final class Peers {
             } catch (URISyntaxException | UnknownHostException e) {
                 Logger.logWarningMessage("Your announced address is not valid: " + e.toString());
             }
-        }
-        Logger.logDebugMessage("@@@@ MY ADDRESS:" + myAddress + "  @@@@");
-        
+        }        
         
         myPeerServerPort = Nxt.getIntProperty("nxt.peerServerPort");
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
@@ -259,7 +257,6 @@ public final class Peers {
                 throw new RuntimeException(e.toString(), e);
             }
         }
-        Logger.logDebugMessage("$$$$ another MY ADDRESS:" + myAddress + " $$$$$");
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             json.put("hallmark", Peers.myHallmark);
             servicesList.add(Peer.Service.HALLMARK);
@@ -311,7 +308,6 @@ public final class Peers {
         }
         json.put("services", Long.toUnsignedString(services));
         myServices = Collections.unmodifiableList(servicesList);
-        Logger.logDebugMessage("My peer info:\n" + json.toJSONString());
         myPeerInfo = json;
 
         final List<String> defaultPeers = Constants.isTestnet ? Nxt.getStringListProperty("nxt.defaultTestnetPeers")
@@ -642,10 +638,7 @@ public final class Peers {
                         return;
                     }
                     JSONArray peers = (JSONArray)response.get("peers");
-                    /**/
-//                    Logger.logDebugMessage("===== RESPONSE FROM getPeers =====");
-//                    Logger.logDebugMessage(peers.toJSONString());
-                    /**/
+                    
                     Set<String> addedAddresses = new HashSet<>();
                     if (peers != null) {
                         JSONArray services = (JSONArray)response.get("services");
@@ -914,7 +907,6 @@ public final class Peers {
             InetAddress inetAddress = InetAddress.getByName(host);
             return findOrCreatePeer(inetAddress, addressWithPort(announcedAddress), create);
         } catch (URISyntaxException | UnknownHostException e) {
-            //Logger.logDebugMessage("Invalid peer address: " + announcedAddress + ", " + e.toString());
             return null;
         }
     }
@@ -929,7 +921,6 @@ public final class Peers {
     }
 
     static PeerImpl findOrCreatePeer(final InetAddress inetAddress, final String announcedAddress, final boolean create) {
-//    		Logger.logDebugMessage("||||||Announced Address:" + announcedAddress + " |||||||");
     	
         if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress() || inetAddress.isLinkLocalAddress()) {
             return null;
@@ -1003,20 +994,6 @@ public final class Peers {
     	
     		if (peer.getAnnouncedAddress() == null) {setAnnouncedAddress((PeerImpl)peer, peer.getHost());}
     		
-//        Logger.logDebugMessage("+++++ ADDING PEER +++++");
-//        Logger.logDebugMessage("announced add:" + peer.getAnnouncedAddress());
-//        Logger.logDebugMessage("host:"+peer.getHost());
-//        Logger.logDebugMessage("string:"+peer.toString());
-//        Logger.logDebugMessage("blockchain state:" + peer.getBlockchainState().toString());
-//        Logger.logDebugMessage("shareAddress:"+String.valueOf(peer.shareAddress()));
-//        Logger.logDebugMessage("port:"+String.valueOf(peer.getPort()));
-//        Logger.logDebugMessage("platform:"+peer.getPlatform());
-//        
-//        Logger.logDebugMessage("***** SHOW ALL PEERS (before new peer) *****");
-//        	for (PeerImpl eachPeer: peers.values()) {
-//        		Logger.logDebugMessage(eachPeer.toString() + ": " + eachPeer.getState().toString());
-//        	}
-//    	
     	
     		if (peers.put(peer.getHost(), (PeerImpl) peer) == null) {
             listeners.notify(peer, Event.NEW_PEER);
@@ -1283,9 +1260,6 @@ public final class Peers {
                         		!Constants.isTestnet) ? Peer.BlockchainState.FORK :
                         Peer.BlockchainState.UP_TO_DATE;
         if (state != currentBlockchainState) {
-            Logger.logDebugMessage("----------STATE != CURRENTBLOCKCHAINSTATE---------");
-            Logger.logDebugMessage("state: "+state);
-            Logger.logDebugMessage("currentBCState: " + currentBlockchainState);
         	
         		JSONObject json = new JSONObject(myPeerInfo);
             json.put("blockchainState", state.ordinal());

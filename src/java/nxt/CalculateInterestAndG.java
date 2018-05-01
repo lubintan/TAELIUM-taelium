@@ -70,23 +70,17 @@ public class CalculateInterestAndG {
 	        }
             dayCounter = dayFromDb==0 ? 1: dayFromDb + 1;
 		} catch (SQLException e) {
-			Logger.logDebugMessage("KENA EXCEPTION");
 			Logger.logDebugMessage(e.toString());
 //            throw new RuntimeException(e.toString(), e);
         }
 		
-		Logger.logDebugMessage("");
-		Logger.logDebugMessage("============== UPDATE TO DAY: " + dayCounter + "=================");
 		
 		
 	}
 	
  	private static BigInteger calculateMaDeltaOfHoldings(Date date) {
-//		Logger.logDebugMessage("HEREEEEE!!!!");
  		
- 		Logger.logDebugMessage("Calculating MA of Delta of holdings......");
  		
-// 		int currentHeight = Nxt.getBlockchain().getHeight();
 		List<BigInteger> deltaTList = new ArrayList<>();;
 
 		updateDayCounter();
@@ -98,7 +92,6 @@ public class CalculateInterestAndG {
 		}else {
 			deltaT = calculateTodaysDeltaOfHoldings(date);
 		
-			Logger.logDebugMessage("Delta T: " + deltaT.toString() + " at date: " + NtpTime.toString(date));
 			
 //		deltaT = averageHoldings.subtract(loadAvgHoldings(dayCounter - 1));
 			deltaTList.add(deltaT);
@@ -132,12 +125,11 @@ public class CalculateInterestAndG {
 		
 		BigInteger sumDeltaT = BigInteger.ZERO;
 		
-		Logger.logDebugMessage("size deltaTList: " + deltaTList.size());
 		for (BigInteger eachDeltaT : deltaTList) {
 			sumDeltaT = sumDeltaT.add(eachDeltaT);
 		}
 		
-		Logger.logDebugMessage("MA of Delta Holdings: " +  sumDeltaT.divide(BigInteger.valueOf(deltaTList.size())).toString());
+//		Logger.logDebugMessage("MA of Delta Holdings: " +  sumDeltaT.divide(BigInteger.valueOf(deltaTList.size())).toString());
 		
 		return sumDeltaT.divide(BigInteger.valueOf(deltaTList.size()));	
 	}
@@ -159,8 +151,7 @@ public class CalculateInterestAndG {
 		
 		BigInteger yesterdaysAverageHoldings = loadAvgHoldingsByDate(yesterday);
 		
-		Logger.logDebugMessage("DELTA TODAY = " + averageHoldings.toString() + " - " + yesterdaysAverageHoldings.toString());
-		Logger.logDebugMessage(" = " + averageHoldings.subtract(yesterdaysAverageHoldings).toString());
+	
 		
 		return averageHoldings.subtract(yesterdaysAverageHoldings);
 	}
@@ -208,7 +199,7 @@ public class CalculateInterestAndG {
 		}
 		
 		
-		Logger.logDebugMessage("Get Supply Current:" + supplyCurrent.toString());
+	
 		
 		return supplyCurrent;
 
@@ -217,10 +208,8 @@ public class CalculateInterestAndG {
 	private static BigInteger updateSupplyCurrent() {
 		BigInteger totalSupplyCurrent = BigInteger.ZERO;
 		
-//		BlockchainProcessorImpl.getInstance().printAccountTable("update super currently");
 		
-		Logger.logDebugMessage("");
-		Logger.logDebugMessage("~~~~~~~~~~~~~ UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
+	
 		
 		try (Connection con = Db.db.getConnection();
 	             PreparedStatement pstmt = con.prepareStatement("select * from account where latest=true	")) {
@@ -235,14 +224,11 @@ public class CalculateInterestAndG {
 	                    if (balance.compareTo(BigInteger.ZERO) > 0) {
 	                    	totalSupplyCurrent = totalSupplyCurrent.add(balance);
 	                    	
-//	                    	Logger.logDebugMessage(Crypto.rsEncode(accountId) + " " + balance.equals(thisAcct.getBalanceNQT()));
-//	                    	Logger.logDebugMessage("");
 	                    	
 	                    }
 	                    
                     }
 	            	
-	            			Logger.logDebugMessage("supplyCurrent From Account Table:" + totalSupplyCurrent);
 	                }
 	            }
 	            
@@ -250,8 +236,7 @@ public class CalculateInterestAndG {
 	            throw new RuntimeException(e.toString(), e);
 	        }		
 		
-		Logger.logDebugMessage("~~~~~~~~~~~~~ END UPDATE SUPPLY CURRENT ~~~~~~~~~~~~");
-		Logger.logDebugMessage("");
+	
 				
 
 		
@@ -270,24 +255,21 @@ public class CalculateInterestAndG {
 //	}
 	
 	private static void updateVault(BigInteger change) {
-//		supplyCap = supplyCap + g
-//	    if supplyCap <= (supplyCurrent + BUFFER_BETWEEN_SUPCAP_AND_SUPCUR):
-//	        supplyCap = supplyCurrent + BUFFER_BETWEEN_SUPCAP_AND_SUPCUR
+////		supplyCap = supplyCap + g
+////	    if supplyCap <= (supplyCurrent + BUFFER_BETWEEN_SUPCAP_AND_SUPCUR):
+////	        supplyCap = supplyCurrent + BUFFER_BETWEEN_SUPCAP_AND_SUPCUR
+//		
+//		
+//		vault = loadLatestVault();
+//		
+//		
+//		vault = vault.add(change);
+//		
+//		if (vault.compareTo(supplyCurrent.add(Constants.VAULT_SUPPLY_BUFFER)) < 0 ) {
+//			vault = supplyCurrent.add(Constants.VAULT_SUPPLY_BUFFER);
+//		}
 		
-		Logger.logDebugMessage("---------updateVault-----------");
-		
-		vault = loadLatestVault();
-		
-		Logger.logDebugMessage("load latest vault: " + vault.toString());
-		Logger.logDebugMessage("change: " + change.toString());
-		
-		vault = vault.add(change);
-		
-		if (vault.compareTo(supplyCurrent.add(Constants.VAULT_SUPPLY_BUFFER)) < 0 ) {
-			vault = supplyCurrent.add(Constants.VAULT_SUPPLY_BUFFER);
-		}
-		
-		Logger.logDebugMessage("final vault: " + vault.toString());
+	
 	}
 	
 	public static double getLatestRYear() {
@@ -297,7 +279,6 @@ public class CalculateInterestAndG {
 			rYear = Nxt.getBlockchain().getLastBlock().getLatestRYear();
 		}
 		
-		Logger.logDebugMessage("getLatestRYear: " + rYear);
 		
 		return rYear;
 	}
@@ -305,14 +286,7 @@ public class CalculateInterestAndG {
 	public static BigInteger giveInterest(Block newBlock) {
 		//To be called only when 1440th block is to be generated!
 		rYear = getLatestRYear();
-//		BlockchainProcessorImpl.getInstance().printAccountTable("interesting giving");
-		
-		Logger.logDebugMessage("");
-		Logger.logDebugMessage("**************** *************** *****************");
-		Logger.logDebugMessage("**************** GIVING INTEREST *****************");
-		Logger.logDebugMessage("**************** DATE: " + NtpTime.toString(newBlock.getDate()) + "**************");
-//		int height = Nxt.getBlockchain().getHeight();
-		Logger.logDebugMessage("HEIGHT" + newBlock.getHeight());
+//		
 		BigInteger totalPayout = BigInteger.ZERO;
 		rDay = rYear / Constants.INTEREST_DIVISOR;
 			
@@ -401,7 +375,6 @@ public class CalculateInterestAndG {
 //		                    		}
 		                    	
 		                    	
-		                    		Logger.logDebugMessage("Giving Interest to: " + Crypto.rsEncode(accountId));
 		                    		
 		                    		givingInterest = true;
 		                    		thisAcct.addToBalanceAndUnconfirmedBalanceNQT(LedgerEvent.INTEREST_PAYMENT, newBlock.getDate().getTime(), payment, BigInteger.ZERO, newBlock);
@@ -426,10 +399,8 @@ public class CalculateInterestAndG {
 		                    }
 		            		
 		            			
-		            			Logger.logDebugMessage("totalPayout: " + totalPayout);
-//		            			Logger.logDebugMessage("supplyCurrent:" + supplyCurrent);
+		            	
 		            			
-		            			BlockchainProcessorImpl.getInstance().printAccountTable("  after----------");
 		                }
 		            }
 		            
@@ -440,11 +411,6 @@ public class CalculateInterestAndG {
 		
 		
 		
-		Logger.logDebugMessage("*************END GIVING INTEREST *****************");
-		
-//		Logger.logDebugMessage("**************** *************** *****************");
-		Logger.logDebugMessage("");
-		
 		updateSupplyCurrent();
 		
 		return totalPayout;
@@ -452,27 +418,22 @@ public class CalculateInterestAndG {
 	}
 	
 	private static void calculateG(Date date) {
-		BigDecimal decimalSupplyCurrent = new BigDecimal(supplyCurrent);
-		
-		BigInteger todaysVolume =  getTotalPastTxVolumeFromDb(date, blockGCalculated);
-		
-//		totalTxed = todaysVolume;
-		
-		Date yesterday = subtractOneDayFromDate(date);
-		
-		BigInteger yesterdaysVolume = loadTotalTxedByDate(yesterday);
-		
-		BigInteger rDayXSupplyCurrent = BigDecimal.valueOf(rDay).multiply(decimalSupplyCurrent).toBigInteger();
-		BigInteger todayMinusYesterdayVolume = todaysVolume.subtract(yesterdaysVolume);
-		
-		Logger.logDebugMessage("Calculating G....");
-		Logger.logDebugMessage("todaysVolume: " + todaysVolume.toString());
-		Logger.logDebugMessage("yesterdaysVolume: " + yesterdaysVolume.toString());
-		Logger.logDebugMessage("rDayXSupplyCurrent: " + rDayXSupplyCurrent.toString());
-		Logger.logDebugMessage("todayMinusYesterdayVolume: " + todayMinusYesterdayVolume.toString());
-		Logger.logDebugMessage("G: " + rDayXSupplyCurrent.add(todayMinusYesterdayVolume).toString());
-		
-		g = rDayXSupplyCurrent.add(todayMinusYesterdayVolume);	
+//		BigDecimal decimalSupplyCurrent = new BigDecimal(supplyCurrent);
+//		
+//		BigInteger todaysVolume =  getTotalPastTxVolumeFromDb(date, blockGCalculated);
+//		
+////		totalTxed = todaysVolume;
+//		
+//		Date yesterday = subtractOneDayFromDate(date);
+//		
+//		BigInteger yesterdaysVolume = loadTotalTxedByDate(yesterday);
+//		
+//		BigInteger rDayXSupplyCurrent = BigDecimal.valueOf(rDay).multiply(decimalSupplyCurrent).toBigInteger();
+//		BigInteger todayMinusYesterdayVolume = todaysVolume.subtract(yesterdaysVolume);
+//		
+//	
+//		
+//		g = rDayXSupplyCurrent.add(todayMinusYesterdayVolume);	
 		}
 
 	
@@ -480,26 +441,23 @@ public class CalculateInterestAndG {
 	public static BigInteger getTotalPastTxVolumeFromDb(Date date, int offset) {
 		//start < end.
 		
-		Logger.logDebugMessage("Get TOTAL PAST TX VOLUME FROM DB");
-		Logger.logDebugMessage("DATE: " + NtpTime.toString(date));
+	
 		
 		
 		BigInteger totalTxVolume = BigInteger.ZERO;
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
-		Logger.logDebugMessage("YESTERDATE: " + NtpTime.toString(yesterday));
-		Logger.logDebugMessage("Nxt.Blockchain Height: " + Nxt.getBlockchain().getHeight());
+	
 		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
 		
 		if (nextHeight < 0) {return totalTxVolume;}
 		
 		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 		
-		Logger.logDebugMessage("next height:" + nextHeight);
+		
 		
 		while (nextBlock.getDate().equals(yesterday) && (nextHeight > 0)) {
-//			Logger.logDebugMessage("NEXT HEIGHT:" + nextHeight);
 			
 			BigInteger thisBlocksTxVolume = nextBlock.getTotalAmountNQT();
 			totalTxVolume = totalTxVolume.add(thisBlocksTxVolume);
@@ -508,7 +466,7 @@ public class CalculateInterestAndG {
 			nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
 			
 		}
-		Logger.logDebugMessage("Total Tx Volume:" + totalTxVolume.toString());
+		
 		return totalTxVolume;
 	}
 	
@@ -540,8 +498,8 @@ public class CalculateInterestAndG {
 	}
 	
 	public static void calculateGUpdateVault(Date date) {
-				calculateG(date);
-				updateVault(g);
+//				calculateG(date);
+//				updateVault(g);
 	}
 	
 	public static void init() {
@@ -590,48 +548,44 @@ public class CalculateInterestAndG {
 	}
 	
 	public static BigInteger loadLatestVault() {
-		
-//		BlockchainProcessorImpl.getInstance().printDDTable(" Load Latest Vault ");
-		
-		long dayFromDb = 0;
-		
-		try (Connection con = Db.db.getConnection();
-	             PreparedStatement pstmt = con.prepareStatement("select MAX(DAY) from DAILY_DATA")) {
-	            try(ResultSet rs = pstmt.executeQuery()){
-	            	while (rs.next()) {
-	                    dayFromDb = rs.getLong("MAX(DAY)");
-	            	}
-	        }
-		} catch (SQLException e) {
-			Logger.logDebugMessage(e.toString());
-//            throw new RuntimeException(e.toString(), e);
-        }
-		
-		Logger.logDebugMessage("DAY From DB: " + dayFromDb);
-		
-		BigInteger myVault = Constants.INITIAL_VAULT_HAEDS;
-		try (Connection con = Db.db.getConnection();
-	             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM daily_data where DAY = ?")) {
-			pstmt.setLong(1, dayFromDb);
-	            try (ResultSet rs = pstmt.executeQuery()) {
-	                if (rs.next()) {
-//	                    apply("CREATE TABLE IF NOT EXISTS daily_data (db_id IDENTITY, block_id BIGINT NOT NULL, height BIGINT NOT NULL," 
-//	                			+"day BIGINT NOT NULL, "
-//	                        + "deltaT DECIMAL NOT NULL, maDeltaAvgHoldings DECIMAL NOT NULL, "
-//	                        + "x DECIMAL NOT NULL, f_deltaT DECIMAL NOT NULL, "
-//	                        + "rYear DECIMAL NOT NULL, supply_current DECIMAL NOT NULL, vault DECIMAL NOT NULL, g DECIMAL NOT NULL)");
-				        try {
-				             myVault = rs.getBigDecimal("vault").toBigInteger();
-				        	} catch (SQLException e) {
-				            throw new RuntimeException(e.toString(), e);
-				        		}
-                		}
-	            }
-	        } catch (SQLException e) {
-	            throw new RuntimeException(e.toString(), e);
-        		}
-		
-		return myVault;
+		return null;
+////		BlockchainProcessorImpl.getInstance().printDDTable(" Load Latest Vault ");
+//		
+//		long dayFromDb = 0;
+//		
+//		try (Connection con = Db.db.getConnection();
+//	             PreparedStatement pstmt = con.prepareStatement("select MAX(DAY) from DAILY_DATA")) {
+//	            try(ResultSet rs = pstmt.executeQuery()){
+//	            	while (rs.next()) {
+//	                    dayFromDb = rs.getLong("MAX(DAY)");
+//	            	}
+//	        }
+//		} catch (SQLException e) {
+//			Logger.logDebugMessage(e.toString());
+////            throw new RuntimeException(e.toString(), e);
+//        }
+//		
+////		Logger.logDebugMessage("DAY From DB: " + dayFromDb);
+//		
+//		BigInteger myVault = Constants.INITIAL_VAULT_HAEDS;
+//		try (Connection con = Db.db.getConnection();
+//	             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM daily_data where DAY = ?")) {
+//			pstmt.setLong(1, dayFromDb);
+//	            try (ResultSet rs = pstmt.executeQuery()) {
+//	                if (rs.next()) {
+//
+////				        try {
+////				             myVault = rs.getBigDecimal("vault").toBigInteger();
+////				        	} catch (SQLException e) {
+////				            throw new RuntimeException(e.toString(), e);
+////				        		}
+//                		}
+//	            }
+//	        } catch (SQLException e) {
+//	            throw new RuntimeException(e.toString(), e);
+//        		}
+//		
+//		return myVault;
 	}
 	
 	public static double loadLatestRYear() {
@@ -672,7 +626,7 @@ public class CalculateInterestAndG {
 	            throw new RuntimeException(e.toString(), e);
         		}
 		
-		Logger.logDebugMessage("Load Latest R Year: " + myRYear);
+//		Logger.logDebugMessage("Load Latest R Year: " + myRYear);
 		
 		return myRYear;
 	}
@@ -764,7 +718,6 @@ static BigInteger loadTotalTxedByDate(Date date) {
 	
 	static void saveDailyData(long id, long height, Date date) {
 		
-		Logger.logDebugMessage("^^^    SAVING DD    ^^^");
 		averageHoldings = getTotalPastHoldingsFromDb(date, blockAvgHoldingsSaved + 1);
 		updateDayCounter();
 		getSupplyCurrent();
@@ -784,10 +737,8 @@ static BigInteger loadTotalTxedByDate(Date date) {
             			+ "x,"
                     + "f_deltaT,"
                     + "rYear,"
-                    + "supply_current,"
-                    + "vault,"
-                    + "g) "
-                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)")) {
+                    + "supply_current) "
+                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)")) {
                 int i = 0;
                 pstmt.setLong(++i, id);
                 pstmt.setLong(++i,  height);
@@ -801,24 +752,24 @@ static BigInteger loadTotalTxedByDate(Date date) {
                 pstmt.setDouble(++i, f_deltaT);
                 pstmt.setDouble(++i, rYear);
                 pstmt.setBigDecimal(++i, new BigDecimal(supplyCurrent));
-                pstmt.setBigDecimal(++i, new BigDecimal(vault));
-                pstmt.setBigDecimal(++i, new BigDecimal(g));
+//                pstmt.setBigDecimal(++i, new BigDecimal(vault));
+//                pstmt.setBigDecimal(++i, new BigDecimal(g));
                 pstmt.executeUpdate();
                 
-                Logger.logDebugMessage("id: " + id);
-                Logger.logDebugMessage("height: " + height);
-                Logger.logDebugMessage("dayCounter: " + dayCounter);
-                Logger.logDebugMessage("date: " + NtpTime.toString(date));
-                Logger.logDebugMessage("total Txed: " + new BigDecimal(totalTxed).toString());
-                Logger.logDebugMessage("avg holdings: " + new BigDecimal(averageHoldings).toString());
-                Logger.logDebugMessage("deltaT: " + new BigDecimal(deltaT).toString());
-                Logger.logDebugMessage("maDeltaAvgHoldings: " + new BigDecimal(maDeltaAvgHoldings).toString());
-                Logger.logDebugMessage("x: " + x);
-                Logger.logDebugMessage("f_deltaT: " + f_deltaT);
-                Logger.logDebugMessage("rYear: " + rYear);
-                Logger.logDebugMessage("supplyCurrent: " + new BigDecimal(supplyCurrent).toString());
-                Logger.logDebugMessage("vault: " + new BigDecimal(vault).toString());
-                Logger.logDebugMessage("g: " + new BigDecimal(g).toString());
+//                Logger.logDebugMessage("id: " + id);
+//                Logger.logDebugMessage("height: " + height);
+//                Logger.logDebugMessage("dayCounter: " + dayCounter);
+//                Logger.logDebugMessage("date: " + NtpTime.toString(date));
+//                Logger.logDebugMessage("total Txed: " + new BigDecimal(totalTxed).toString());
+//                Logger.logDebugMessage("avg holdings: " + new BigDecimal(averageHoldings).toString());
+//                Logger.logDebugMessage("deltaT: " + new BigDecimal(deltaT).toString());
+//                Logger.logDebugMessage("maDeltaAvgHoldings: " + new BigDecimal(maDeltaAvgHoldings).toString());
+//                Logger.logDebugMessage("x: " + x);
+//                Logger.logDebugMessage("f_deltaT: " + f_deltaT);
+//                Logger.logDebugMessage("rYear: " + rYear);
+//                Logger.logDebugMessage("supplyCurrent: " + new BigDecimal(supplyCurrent).toString());
+//                Logger.logDebugMessage("vault: " + new BigDecimal(vault).toString());
+//                Logger.logDebugMessage("g: " + new BigDecimal(g).toString());
             }
   
         } catch (SQLException e) {

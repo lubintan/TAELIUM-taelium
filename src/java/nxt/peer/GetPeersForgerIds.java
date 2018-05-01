@@ -53,7 +53,6 @@ final class GetPeersForgerIds extends PeerServlet.PeerRequestHandler {
 	        		allForgerIds.add(eachForgerId);
 	        }
         }
-//        Logger.logDebugMessage("allForgerIds from peer:" + allForgerIds);
         if ((allForgerIds == null) || (allForgerIds.size() <= 0)) {
         		return null;
         }

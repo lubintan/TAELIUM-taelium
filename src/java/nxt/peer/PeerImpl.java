@@ -346,13 +346,7 @@ final class PeerImpl implements Peer {
 
     @Override
     public void blacklist(Exception cause) {
-//    		Logger.logDebugMessage("^^^     ^^^     ^^^     ^^^     ^^^     ^^^");
-//    		Logger.logDebugMessage(this.announcedAddress);
-//        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-//        for (int i = 1; i < elements.length; i++) {
-//             StackTraceElement s = elements[i];
-//             Logger.logDebugMessage("\tat " + s.getClassName() + "." + s.getMethodName() + "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
-//        }
+
     	
         if (cause instanceof NxtException.NotCurrentlyValidException || cause instanceof BlockchainProcessor.BlockOutOfOrderException
                 || cause instanceof SQLException || cause.getCause() instanceof SQLException) {
@@ -375,14 +369,7 @@ final class PeerImpl implements Peer {
 
     @Override
     public void blacklist(String cause) {
-    		Logger.logDebugMessage("");
-    		Logger.logDebugMessage("XXXXXXXXXXXXXX BLACKLISTING XXXXXXXXXXXXXX");
-    		Logger.logDebugMessage("print stack trace, cause: " + cause);
-    		new Exception().printStackTrace();
-    		Logger.logDebugMessage("");
-    		if (cause.contains("nxt.BlockchainProcessor$BlockNotAcceptedException")) {
-    			System.exit(4);
-    		}
+    		
         blacklistingTime = Nxt.getEpochTime();
         blacklistingCause = cause;
         setState(State.NON_CONNECTED);
@@ -661,12 +648,10 @@ final class PeerImpl implements Peer {
             }
             JSONObject response = send(Peers.getMyPeerInfoRequest());
             
-//            Logger.logDebugMessage("Peer: " + newPeer);
             Logger.logDebugMessage((response==null)? "NULL" : response.toJSONString());
             
             if (response != null) {
                 if (response.get("error") != null) {
-                		Logger.logDebugMessage("4444444444444444");
                     setState(State.NON_CONNECTED);
                     return;
                 }
@@ -696,7 +681,6 @@ final class PeerImpl implements Peer {
                                     Logger.logDebugMessage("Connect: old announced address for " + host + " no longer valid");
                                     Peers.setAnnouncedAddress(this, host);
                                 }
-                                Logger.logDebugMessage("000000000000000000");
                                 setState(State.NON_CONNECTED);
                                 return;
                             }
@@ -706,7 +690,6 @@ final class PeerImpl implements Peer {
                                 Peers.setAnnouncedAddress(this, newAnnouncedAddress);
                                 if (getPort() != oldPort) {
                                     // force checking connectivity to new announced port
-                                		Logger.logDebugMessage("1111111111111111111");
                                     setState(State.NON_CONNECTED);
                                     return;
                                 }
@@ -722,7 +705,6 @@ final class PeerImpl implements Peer {
                         Peers.setAnnouncedAddress(this, host);
                         Logger.logDebugMessage("Connected to peer without announced address, setting to " + host);
                     } else {
-                    		Logger.logDebugMessage("222222222222222222");
                     		setState(State.NON_CONNECTED);
                         return;
                     }
