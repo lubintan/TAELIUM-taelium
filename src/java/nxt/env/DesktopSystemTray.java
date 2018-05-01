@@ -46,7 +46,7 @@ public class DesktopSystemTray {
     private JPanel statusPanel;
     private ImageIcon imageIcon;
     private TrayIcon trayIcon;
-    private MenuItem openWalletInBrowser;
+//    private MenuItem openWalletInBrowser;
     private MenuItem viewLog;
     private SystemTrayDataProvider dataProvider;
     private final DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.MEDIUM, Locale.getDefault());
@@ -64,10 +64,10 @@ public class DesktopSystemTray {
         tray = SystemTray.getSystemTray();
 
         MenuItem shutdown = new MenuItem("Shutdown");
-        openWalletInBrowser = new MenuItem("Open Wallet in Browser");
-        if (!Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            openWalletInBrowser.setEnabled(false);
-        }
+//        openWalletInBrowser = new MenuItem("Open Wallet in Browser");
+//        if (!Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+//            openWalletInBrowser.setEnabled(false);
+//        }
         MenuItem showDesktopApplication = new MenuItem("Show Desktop Application");
         MenuItem refreshDesktopApplication = new MenuItem("Refresh Wallet");
         if (!Nxt.isDesktopApplicationEnabled()) {
@@ -78,12 +78,12 @@ public class DesktopSystemTray {
         if (!Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             viewLog.setEnabled(false);
         }
-        MenuItem status = new MenuItem("Status");
+//        MenuItem status = new MenuItem("Status");
 
-        popup.add(status);
-        popup.add(viewLog);
+//        popup.add(status);
+//        popup.add(viewLog);
         popup.addSeparator();
-        popup.add(openWalletInBrowser);
+//        popup.add(openWalletInBrowser);
         popup.add(showDesktopApplication);
         popup.add(refreshDesktopApplication);
         popup.addSeparator();
@@ -99,19 +99,19 @@ public class DesktopSystemTray {
 
         trayIcon.addActionListener(e -> displayStatus());
 
-        openWalletInBrowser.addActionListener(e -> {
-            try {
-                Desktop.getDesktop().browse(dataProvider.getWallet());
-            } catch (IOException ex) {
-                Logger.logInfoMessage("Cannot open wallet in browser", ex);
-            }
-        });
+//        openWalletInBrowser.addActionListener(e -> {
+//            try {
+//                Desktop.getDesktop().browse(dataProvider.getWallet());
+//            } catch (IOException ex) {
+//                Logger.logInfoMessage("Cannot open wallet in browser", ex);
+//            }
+//        });
 
         showDesktopApplication.addActionListener(e -> {
             try {
                 Class.forName("nxtdesktop.DesktopApplication").getMethod("launch").invoke(null);
             } catch (ReflectiveOperationException exception) {
-                Logger.logInfoMessage("nxtdesktop.DesktopApplication failed to launch", exception);
+                Logger.logInfoMessage("desktop.DesktopApplication failed to launch", exception);
             }
         });
 
@@ -119,7 +119,7 @@ public class DesktopSystemTray {
             try {
                 Class.forName("nxtdesktop.DesktopApplication").getMethod("refresh").invoke(null);
             } catch (ReflectiveOperationException exception) {
-                Logger.logInfoMessage("nxtdesktop.DesktopApplication failed to refresh", exception);
+                Logger.logInfoMessage("desktop.DesktopApplication failed to refresh", exception);
             }
         });
 
@@ -131,11 +131,11 @@ public class DesktopSystemTray {
             }
         });
 
-        status.addActionListener(e -> displayStatus());
+//        status.addActionListener(e -> displayStatus());
 
         shutdown.addActionListener(e -> {
             if(JOptionPane.showConfirmDialog (null,
-                    "Sure you want to shutdown " + Nxt.APPLICATION + "?\n\nIf you do, this will stop forging, shufflers and account monitors.\n\n",
+                    "Sure you want to shutdown " + Nxt.APPLICATION + "?\n\nIf you do, this will stop all forging and blockchain synchronization.\n\n",
                     "Shutdown",
                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 Logger.logInfoMessage("Shutdown requested by System Tray");
@@ -260,7 +260,7 @@ public class DesktopSystemTray {
     void setToolTip(final SystemTrayDataProvider dataProvider) {
         SwingUtilities.invokeLater(() -> {
             trayIcon.setToolTip(dataProvider.getToolTip());
-            openWalletInBrowser.setEnabled(dataProvider.getWallet() != null && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE));
+//            openWalletInBrowser.setEnabled(dataProvider.getWallet() != null && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE));
             viewLog.setEnabled(dataProvider.getWallet() != null);
             DesktopSystemTray.this.dataProvider = dataProvider;
         });
