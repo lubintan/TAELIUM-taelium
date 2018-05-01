@@ -490,7 +490,7 @@ public final class Nxt { //only public class in a Java file must also have the m
 //                ExchangeRequest.init();
 //                Shuffling.init();
 //                ShufflingParticipant.init();
-                PrunableMessage.init();
+//                PrunableMessage.init();
                 TaggedData.init();
                 Peers.init();
                 APIProxy.init();
@@ -498,9 +498,9 @@ public final class Nxt { //only public class in a Java file must also have the m
                 AddOns.init();
                 API.init();
                 CalculateInterestAndG.init();
-                DebugTrace.init();
-                DebugScanner.init();
-                DebugDayTimer.init();
+//                DebugTrace.init();
+//                DebugScanner.init();
+//                DebugDayTimer.init();
                 NtpTime.init();
                 
                 

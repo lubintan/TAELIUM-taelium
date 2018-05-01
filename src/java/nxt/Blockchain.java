@@ -92,7 +92,7 @@ public interface Blockchain {
 
     List<? extends Transaction> getExpectedTransactions(Filter<Transaction> filter);
 
-    DbIterator<? extends Transaction> getReferencingTransactions(long transactionId, int from, int to);
+//    DbIterator<? extends Transaction> getReferencingTransactions(long transactionId, int from, int to);
 
 	void setTempHeight(Boolean useTempHeight);
 

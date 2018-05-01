@@ -91,18 +91,18 @@ public final class JSONData {
         return json;
     }
 
-    static JSONObject accountProperty(Account.AccountProperty accountProperty, boolean includeAccount, boolean includeSetter) {
-        JSONObject json = new JSONObject();
-        if (includeAccount) {
-            putAccount(json, "recipient", accountProperty.getRecipientId());
-        }
-        if (includeSetter) {
-            putAccount(json, "setter", accountProperty.getSetterId());
-        }
-        json.put("property", accountProperty.getProperty());
-        json.put("value", accountProperty.getValue());
-        return json;
-    }
+//    static JSONObject accountProperty(Account.AccountProperty accountProperty, boolean includeAccount, boolean includeSetter) {
+//        JSONObject json = new JSONObject();
+//        if (includeAccount) {
+//            putAccount(json, "recipient", accountProperty.getRecipientId());
+//        }
+//        if (includeSetter) {
+//            putAccount(json, "setter", accountProperty.getSetterId());
+//        }
+//        json.put("property", accountProperty.getProperty());
+//        json.put("value", accountProperty.getValue());
+//        return json;
+//    }
 
 //    static JSONObject participant(ShufflingParticipant participant) {
 //        JSONObject json = new JSONObject();

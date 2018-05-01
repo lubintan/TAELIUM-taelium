@@ -80,11 +80,11 @@ public final class GetState extends APIServlet.APIRequestHandler {
 //            response.put("numberOfTags", DigitalGoodsStore.Tag.getCount());
 //            response.put("numberOfPolls", Poll.getCount());
 //            response.put("numberOfVotes", Vote.getCount());
-            response.put("numberOfPrunableMessages", PrunableMessage.getCount());
+//            response.put("numberOfPrunableMessages", PrunableMessage.getCount());
             response.put("numberOfTaggedData", TaggedData.getCount());
             response.put("numberOfDataTags", TaggedData.Tag.getTagCount());
-            response.put("numberOfAccountLeases", Account.getAccountLeaseCount());
-            response.put("numberOfActiveAccountLeases", Account.getActiveLeaseCount());
+//            response.put("numberOfAccountLeases", Account.getAccountLeaseCount());
+//            response.put("numberOfActiveAccountLeases", Account.getActiveLeaseCount());
 //            response.put("numberOfShufflings", Shuffling.getCount());
 //            response.put("numberOfActiveShufflings", Shuffling.getActiveCount());
 //            response.put("numberOfPhasingOnlyAccounts", AccountRestrictions.PhasingOnly.getCount());

@@ -55,17 +55,17 @@ public final class GetAccount extends APIServlet.APIRequestHandler {
             response.put("name", Convert.nullToEmpty(accountInfo.getName()));
             response.put("description", Convert.nullToEmpty(accountInfo.getDescription()));
         }
-        Account.AccountLease accountLease = account.getAccountLease();
-        if (accountLease != null) {
-            JSONData.putAccount(response, "currentLessee", accountLease.getCurrentLesseeId());
-            response.put("currentLeasingHeightFrom", accountLease.getCurrentLeasingHeightFrom());
-            response.put("currentLeasingHeightTo", accountLease.getCurrentLeasingHeightTo());
-            if (accountLease.getNextLesseeId() != 0) {
-                JSONData.putAccount(response, "nextLessee", accountLease.getNextLesseeId());
-                response.put("nextLeasingHeightFrom", accountLease.getNextLeasingHeightFrom());
-                response.put("nextLeasingHeightTo", accountLease.getNextLeasingHeightTo());
-            }
-        }
+//        Account.AccountLease accountLease = account.getAccountLease();
+//        if (accountLease != null) {
+//            JSONData.putAccount(response, "currentLessee", accountLease.getCurrentLesseeId());
+//            response.put("currentLeasingHeightFrom", accountLease.getCurrentLeasingHeightFrom());
+//            response.put("currentLeasingHeightTo", accountLease.getCurrentLeasingHeightTo());
+//            if (accountLease.getNextLesseeId() != 0) {
+//                JSONData.putAccount(response, "nextLessee", accountLease.getNextLesseeId());
+//                response.put("nextLeasingHeightFrom", accountLease.getNextLeasingHeightFrom());
+//                response.put("nextLeasingHeightTo", accountLease.getNextLeasingHeightTo());
+//            }
+//        }
 //
 //        if (!account.getControls().isEmpty()) {
 //            JSONArray accountControlsJson = new JSONArray();

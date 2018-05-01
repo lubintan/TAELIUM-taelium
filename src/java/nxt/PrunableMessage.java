@@ -40,75 +40,80 @@ public final class PrunableMessage {
 
     };
 
-    private static final PrunableDbTable<PrunableMessage> prunableMessageTable = new PrunableDbTable<PrunableMessage>("prunable_message", prunableMessageKeyFactory) {
-
-        @Override
-        protected PrunableMessage load(Connection con, ResultSet rs, DbKey dbKey) throws SQLException {
-            return new PrunableMessage(rs, dbKey);
-        }
-
-        @Override
-        protected void save(Connection con, PrunableMessage prunableMessage) throws SQLException {
-            prunableMessage.save(con);
-        }
-
-        @Override
-        protected String defaultSort() {
-            return " ORDER BY block_timestamp DESC, db_id DESC ";
-        }
-
-    };
+//    private static final PrunableDbTable<PrunableMessage> prunableMessageTable = new PrunableDbTable<PrunableMessage>("prunable_message", prunableMessageKeyFactory) {
+//
+//        @Override
+//        protected PrunableMessage load(Connection con, ResultSet rs, DbKey dbKey) throws SQLException {
+//            return new PrunableMessage(rs, dbKey);
+//        }
+//
+//        @Override
+//        protected void save(Connection con, PrunableMessage prunableMessage) throws SQLException {
+//            prunableMessage.save(con);
+//        }
+//
+//        @Override
+//        protected String defaultSort() {
+//            return " ORDER BY block_timestamp DESC, db_id DESC ";
+//        }
+//
+//    };
 
     public static int getCount() {
-        return prunableMessageTable.getCount();
+//        return prunableMessageTable.getCount();
+    		return 0;
     }
 
     public static DbIterator<PrunableMessage> getAll(int from, int to) {
-        return prunableMessageTable.getAll(from, to);
+//        return prunableMessageTable.getAll(from, to);
+    		return null;
     }
 
     public static PrunableMessage getPrunableMessage(long transactionId) {
-        return prunableMessageTable.get(prunableMessageKeyFactory.newKey(transactionId));
+//        return prunableMessageTable.get(prunableMessageKeyFactory.newKey(transactionId));
+    		return null;
     }
 
     public static DbIterator<PrunableMessage> getPrunableMessages(long accountId, int from, int to) {
-        Connection con = null;
-        try {
-            con = Db.db.getConnection();
-            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM prunable_message WHERE sender_id = ?"
-                    + " UNION ALL SELECT * FROM prunable_message WHERE recipient_id = ? AND sender_id <> ? ORDER BY block_timestamp DESC, db_id DESC "
-                    + DbUtils.limitsClause(from, to));
-            int i = 0;
-            pstmt.setLong(++i, accountId);
-            pstmt.setLong(++i, accountId);
-            pstmt.setLong(++i, accountId);
-            DbUtils.setLimits(++i, pstmt, from, to);
-            return prunableMessageTable.getManyBy(con, pstmt, false);
-        } catch (SQLException e) {
-            DbUtils.close(con);
-            throw new RuntimeException(e.toString(), e);
-        }
+//        Connection con = null;
+//        try {
+//            con = Db.db.getConnection();
+//            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM prunable_message WHERE sender_id = ?"
+//                    + " UNION ALL SELECT * FROM prunable_message WHERE recipient_id = ? AND sender_id <> ? ORDER BY block_timestamp DESC, db_id DESC "
+//                    + DbUtils.limitsClause(from, to));
+//            int i = 0;
+//            pstmt.setLong(++i, accountId);
+//            pstmt.setLong(++i, accountId);
+//            pstmt.setLong(++i, accountId);
+//            DbUtils.setLimits(++i, pstmt, from, to);
+//            return prunableMessageTable.getManyBy(con, pstmt, false);
+//        } catch (SQLException e) {
+//            DbUtils.close(con);
+//            throw new RuntimeException(e.toString(), e);
+//        }
+    		return null;
     }
 
     public static DbIterator<PrunableMessage> getPrunableMessages(long accountId, long otherAccountId, int from, int to) {
-        Connection con = null;
-        try {
-            con = Db.db.getConnection();
-            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM prunable_message WHERE sender_id = ? AND recipient_id = ? "
-                    + "UNION ALL SELECT * FROM prunable_message WHERE sender_id = ? AND recipient_id = ? AND sender_id <> recipient_id "
-                    + "ORDER BY block_timestamp DESC, db_id DESC "
-                    + DbUtils.limitsClause(from, to));
-            int i = 0;
-            pstmt.setLong(++i, accountId);
-            pstmt.setLong(++i, otherAccountId);
-            pstmt.setLong(++i, otherAccountId);
-            pstmt.setLong(++i, accountId);
-            DbUtils.setLimits(++i, pstmt, from, to);
-            return prunableMessageTable.getManyBy(con, pstmt, false);
-        } catch (SQLException e) {
-            DbUtils.close(con);
-            throw new RuntimeException(e.toString(), e);
-        }
+//        Connection con = null;
+//        try {
+//            con = Db.db.getConnection();
+//            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM prunable_message WHERE sender_id = ? AND recipient_id = ? "
+//                    + "UNION ALL SELECT * FROM prunable_message WHERE sender_id = ? AND recipient_id = ? AND sender_id <> recipient_id "
+//                    + "ORDER BY block_timestamp DESC, db_id DESC "
+//                    + DbUtils.limitsClause(from, to));
+//            int i = 0;
+//            pstmt.setLong(++i, accountId);
+//            pstmt.setLong(++i, otherAccountId);
+//            pstmt.setLong(++i, otherAccountId);
+//            pstmt.setLong(++i, accountId);
+//            DbUtils.setLimits(++i, pstmt, from, to);
+//            return prunableMessageTable.getManyBy(con, pstmt, false);
+//        } catch (SQLException e) {
+//            DbUtils.close(con);
+//            throw new RuntimeException(e.toString(), e);
+//        }
+    		return null;
     }
 
     static void init() {}
@@ -168,27 +173,27 @@ public final class PrunableMessage {
     }
 
     private void save(Connection con) throws SQLException {
-        if (message == null && encryptedData == null) {
-            throw new IllegalStateException("Prunable message not fully initialized");
-        }
-        try (PreparedStatement pstmt = con.prepareStatement("MERGE INTO prunable_message (id, sender_id, recipient_id, "
-                + "message, encrypted_message, message_is_text, encrypted_is_text, is_compressed, block_timestamp, transaction_timestamp, height) "
-                + "KEY (id) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
-            int i = 0;
-            pstmt.setLong(++i, this.id);
-            pstmt.setLong(++i, this.senderId);
-            DbUtils.setLongZeroToNull(pstmt, ++i, this.recipientId);
-            DbUtils.setBytes(pstmt, ++i, this.message);
-            DbUtils.setBytes(pstmt, ++i, this.encryptedData == null ? null : this.encryptedData.getBytes());
-            pstmt.setBoolean(++i, this.messageIsText);
-            pstmt.setBoolean(++i, this.encryptedMessageIsText);
-            pstmt.setBoolean(++i, this.isCompressed);
-            pstmt.setInt(++i, this.blockTimestamp);
-            pstmt.setInt(++i, this.transactionTimestamp);
-            pstmt.setInt(++i, this.height);
-            pstmt.executeUpdate();
-        }
+//        if (message == null && encryptedData == null) {
+//            throw new IllegalStateException("Prunable message not fully initialized");
+//        }
+//        try (PreparedStatement pstmt = con.prepareStatement("MERGE INTO prunable_message (id, sender_id, recipient_id, "
+//                + "message, encrypted_message, message_is_text, encrypted_is_text, is_compressed, block_timestamp, transaction_timestamp, height) "
+//                + "KEY (id) "
+//                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+//            int i = 0;
+//            pstmt.setLong(++i, this.id);
+//            pstmt.setLong(++i, this.senderId);
+//            DbUtils.setLongZeroToNull(pstmt, ++i, this.recipientId);
+//            DbUtils.setBytes(pstmt, ++i, this.message);
+//            DbUtils.setBytes(pstmt, ++i, this.encryptedData == null ? null : this.encryptedData.getBytes());
+//            pstmt.setBoolean(++i, this.messageIsText);
+//            pstmt.setBoolean(++i, this.encryptedMessageIsText);
+//            pstmt.setBoolean(++i, this.isCompressed);
+//            pstmt.setInt(++i, this.blockTimestamp);
+//            pstmt.setInt(++i, this.transactionTimestamp);
+//            pstmt.setInt(++i, this.height);
+//            pstmt.executeUpdate();
+//        }
     }
 
     public byte[] getMessage() {
@@ -236,23 +241,25 @@ public final class PrunableMessage {
     }
 
     public byte[] decrypt(String secretPhrase) {
-        if (encryptedData == null) {
-            return null;
-        }
-        byte[] publicKey = senderId == Account.getId(Crypto.getPublicKey(secretPhrase))
-                ? Account.getPublicKey(recipientId) : Account.getPublicKey(senderId);
-        return Account.decryptFrom(publicKey, encryptedData, secretPhrase, isCompressed);
+//        if (encryptedData == null) {
+//            return null;
+//        }
+//        byte[] publicKey = senderId == Account.getId(Crypto.getPublicKey(secretPhrase))
+//                ? Account.getPublicKey(recipientId) : Account.getPublicKey(senderId);
+//        return Account.decryptFrom(publicKey, encryptedData, secretPhrase, isCompressed);
+    		return null;
     }
 
     public byte[] decrypt(byte[] sharedKey) {
-        if (encryptedData == null) {
-            return null;
-        }
-        byte[] data = Crypto.aesDecrypt(encryptedData.getData(), sharedKey);
-        if (isCompressed) {
-            data = Convert.uncompress(data);
-        }
-        return data;
+//        if (encryptedData == null) {
+//            return null;
+//        }
+//        byte[] data = Crypto.aesDecrypt(encryptedData.getData(), sharedKey);
+//        if (isCompressed) {
+//            data = Convert.uncompress(data);
+//        }
+//        return data;
+    		return null;
     }
 
     static void add(TransactionImpl transaction, Appendix.PrunablePlainMessage appendix) {
@@ -260,18 +267,18 @@ public final class PrunableMessage {
     }
 
     static void add(TransactionImpl transaction, Appendix.PrunablePlainMessage appendix, int blockTimestamp, int height) {
-        if (appendix.getMessage() != null) {
-            PrunableMessage prunableMessage = prunableMessageTable.get(transaction.getDbKey());
-            if (prunableMessage == null) {
-                prunableMessage = new PrunableMessage(transaction, blockTimestamp, height);
-            } else if (prunableMessage.height != height) {
-                throw new RuntimeException("Attempt to modify prunable message from height " + prunableMessage.height + " at height " + height);
-            }
-            if (prunableMessage.getMessage() == null) {
-                prunableMessage.setPlain(appendix);
-                prunableMessageTable.insert(prunableMessage);
-            }
-        }
+//        if (appendix.getMessage() != null) {
+//            PrunableMessage prunableMessage = prunableMessageTable.get(transaction.getDbKey());
+//            if (prunableMessage == null) {
+//                prunableMessage = new PrunableMessage(transaction, blockTimestamp, height);
+//            } else if (prunableMessage.height != height) {
+//                throw new RuntimeException("Attempt to modify prunable message from height " + prunableMessage.height + " at height " + height);
+//            }
+//            if (prunableMessage.getMessage() == null) {
+//                prunableMessage.setPlain(appendix);
+//                prunableMessageTable.insert(prunableMessage);
+//            }
+//        }
     }
 
     static void add(TransactionImpl transaction, Appendix.PrunableEncryptedMessage appendix) {
@@ -279,35 +286,36 @@ public final class PrunableMessage {
     }
 
     static void add(TransactionImpl transaction, Appendix.PrunableEncryptedMessage appendix, int blockTimestamp, int height) {
-        if (appendix.getEncryptedData() != null) {
-                PrunableMessage prunableMessage = prunableMessageTable.get(transaction.getDbKey());
-            if (prunableMessage == null) {
-                prunableMessage = new PrunableMessage(transaction, blockTimestamp, height);
-            } else if (prunableMessage.height != height) {
-                throw new RuntimeException("Attempt to modify prunable message from height " + prunableMessage.height + " at height " + height);
-            }
-            if (prunableMessage.getEncryptedData() == null) {
-                prunableMessage.setEncrypted(appendix);
-                prunableMessageTable.insert(prunableMessage);
-            }
-        }
+//        if (appendix.getEncryptedData() != null) {
+//                PrunableMessage prunableMessage = prunableMessageTable.get(transaction.getDbKey());
+//            if (prunableMessage == null) {
+//                prunableMessage = new PrunableMessage(transaction, blockTimestamp, height);
+//            } else if (prunableMessage.height != height) {
+//                throw new RuntimeException("Attempt to modify prunable message from height " + prunableMessage.height + " at height " + height);
+//            }
+//            if (prunableMessage.getEncryptedData() == null) {
+//                prunableMessage.setEncrypted(appendix);
+//                prunableMessageTable.insert(prunableMessage);
+//            }
+//        }
     }
 
     static boolean isPruned(long transactionId, boolean hasPrunablePlainMessage, boolean hasPrunableEncryptedMessage) {
-        if (!hasPrunablePlainMessage && !hasPrunableEncryptedMessage) {
-            return false;
-        }
-        try (Connection con = Db.db.getConnection();
-                PreparedStatement pstmt = con.prepareStatement("SELECT message, encrypted_message FROM prunable_message WHERE id = ?")) {
-            pstmt.setLong(1, transactionId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return !rs.next()
-                        || (hasPrunablePlainMessage && rs.getBytes("message") == null)
-                        || (hasPrunableEncryptedMessage && rs.getBytes("encrypted_message") == null);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e.toString(), e);
-        }
+//        if (!hasPrunablePlainMessage && !hasPrunableEncryptedMessage) {
+//            return false;
+//        }
+//        try (Connection con = Db.db.getConnection();
+//                PreparedStatement pstmt = con.prepareStatement("SELECT message, encrypted_message FROM prunable_message WHERE id = ?")) {
+//            pstmt.setLong(1, transactionId);
+//            try (ResultSet rs = pstmt.executeQuery()) {
+//                return !rs.next()
+//                        || (hasPrunablePlainMessage && rs.getBytes("message") == null)
+//                        || (hasPrunableEncryptedMessage && rs.getBytes("encrypted_message") == null);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e.toString(), e);
+//        }
+    		return false;
     }
 
 }

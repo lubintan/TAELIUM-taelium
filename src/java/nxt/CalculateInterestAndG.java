@@ -524,7 +524,7 @@ public class CalculateInterestAndG {
 				f_deltaT = 0.15 * x / (1 + Math.abs(x));
 				
 				//for first day, r = default value.
-				if (dayCounter < 3) {
+				if (dayCounter < 2) {
 					rYear = Constants.INITIAL_R_YEAR;
 				}else {
 					rYear = loadLatestRYear() - f_deltaT;

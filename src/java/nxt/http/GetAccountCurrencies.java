@@ -26,39 +26,39 @@ import org.json.simple.JSONStreamAware;
 
 import javax.servlet.http.HttpServletRequest;
 
-public final class GetAccountCurrencies extends APIServlet.APIRequestHandler {
-
-    static final GetAccountCurrencies instance = new GetAccountCurrencies();
-
-    private GetAccountCurrencies() {
-        super(new APITag[] {APITag.ACCOUNTS, APITag.MS}, "account", "currency", "height", "includeCurrencyInfo");
-    }
-
-    @Override
-    protected JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
-
-        long accountId = ParameterParser.getAccountId(req, true);
-        int height = ParameterParser.getHeight(req);
-        long currencyId = ParameterParser.getUnsignedLong(req, "currency", false);
-        boolean includeCurrencyInfo = "true".equalsIgnoreCase(req.getParameter("includeCurrencyInfo"));
-
-        if (currencyId == 0) {
-            JSONObject response = new JSONObject();
-            try (DbIterator<Account.AccountCurrency> accountCurrencies = Account.getAccountCurrencies(accountId, height, 0, -1)) {
-                JSONArray currencyJSON = new JSONArray();
-                while (accountCurrencies.hasNext()) {
-                    currencyJSON.add(JSONData.accountCurrency(accountCurrencies.next(), false, includeCurrencyInfo));
-                }
-                response.put("accountCurrencies", currencyJSON);
-                return response;
-            }
-        } else {
-            Account.AccountCurrency accountCurrency = Account.getAccountCurrency(accountId, currencyId, height);
-            if (accountCurrency != null) {
-                return JSONData.accountCurrency(accountCurrency, false, includeCurrencyInfo);
-            }
-            return JSON.emptyJSON;
-        }
-    }
-
-}
+//public final class GetAccountCurrencies extends APIServlet.APIRequestHandler {
+//
+//    static final GetAccountCurrencies instance = new GetAccountCurrencies();
+//
+//    private GetAccountCurrencies() {
+//        super(new APITag[] {APITag.ACCOUNTS, APITag.MS}, "account", "currency", "height", "includeCurrencyInfo");
+//    }
+//
+//    @Override
+//    protected JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
+//
+//        long accountId = ParameterParser.getAccountId(req, true);
+//        int height = ParameterParser.getHeight(req);
+//        long currencyId = ParameterParser.getUnsignedLong(req, "currency", false);
+//        boolean includeCurrencyInfo = "true".equalsIgnoreCase(req.getParameter("includeCurrencyInfo"));
+//
+//        if (currencyId == 0) {
+//            JSONObject response = new JSONObject();
+//            try (DbIterator<Account.AccountCurrency> accountCurrencies = Account.getAccountCurrencies(accountId, height, 0, -1)) {
+//                JSONArray currencyJSON = new JSONArray();
+//                while (accountCurrencies.hasNext()) {
+//                    currencyJSON.add(JSONData.accountCurrency(accountCurrencies.next(), false, includeCurrencyInfo));
+//                }
+//                response.put("accountCurrencies", currencyJSON);
+//                return response;
+//            }
+//        } else {
+//            Account.AccountCurrency accountCurrency = Account.getAccountCurrency(accountId, currencyId, height);
+//            if (accountCurrency != null) {
+//                return JSONData.accountCurrency(accountCurrency, false, includeCurrencyInfo);
+//            }
+//            return JSON.emptyJSON;
+//        }
+//    }
+//
+//}

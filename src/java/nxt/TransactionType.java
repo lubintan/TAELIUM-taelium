@@ -1297,147 +1297,147 @@ public abstract class TransactionType {
 
         };
 //
-        public static final Messaging ACCOUNT_PROPERTY = new Messaging() {
+//        public static final Messaging ACCOUNT_PROPERTY = new Messaging() {
+//
+//            private final Fee ACCOUNT_PROPERTY_FEE = new Fee.SizeBasedFee(Constants.ONE_TAEL, Constants.ONE_TAEL, 32) {
+//                @Override
+//                public int getSize(TransactionImpl transaction, Appendix appendage) {
+//                    Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty) transaction.getAttachment();
+//                    return attachment.getValue().length();
+//                }
+//            };
+//
+//            @Override
+//            public byte getSubtype() {
+//                return TransactionType.SUBTYPE_MESSAGING_ACCOUNT_PROPERTY;
+//            }
+//
+//            @Override
+//            public LedgerEvent getLedgerEvent() {
+//                return LedgerEvent.ACCOUNT_PROPERTY;
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return "AccountProperty";
+//            }
+//
+//            @Override
+//            Fee getBaselineFee(Transaction transaction) {
+//                return ACCOUNT_PROPERTY_FEE;
+//            }
+//
+//            @Override
+//            Attachment.MessagingAccountProperty parseAttachment(ByteBuffer buffer) throws NxtException.NotValidException {
+//                return new Attachment.MessagingAccountProperty(buffer);
+//            }
+//
+//            @Override
+//            Attachment.MessagingAccountProperty parseAttachment(JSONObject attachmentData) throws NxtException.NotValidException {
+//                return new Attachment.MessagingAccountProperty(attachmentData);
+//            }
+//
+//            @Override
+//            void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+//                Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty)transaction.getAttachment();
+//                if (attachment.getProperty().length() > Constants.MAX_ACCOUNT_PROPERTY_NAME_LENGTH
+//                        || attachment.getProperty().length() == 0
+//                        || attachment.getValue().length() > Constants.MAX_ACCOUNT_PROPERTY_VALUE_LENGTH) {
+//                    throw new NxtException.NotValidException("Invalid account property: " + attachment.getJSONObject());
+//                }
+//                if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) != 0) {
+//                    throw new NxtException.NotValidException("Account property transaction cannot be used to send " + Constants.COIN_SYMBOL);
+//                }
+//                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
+//                    throw new NxtException.NotValidException("Setting Genesis account properties not allowed");
+//                }
+//            }
+//
+//            @Override
+//            void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
+//                Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty) transaction.getAttachment();
+////                recipientAccount.setProperty(transaction, senderAccount, attachment.getProperty(), attachment.getValue());
+//            }
+//
+//            @Override
+//            public boolean canHaveRecipient() {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isPhasingSafe() {
+//                return true;
+//            }
+//
+//        };
 
-            private final Fee ACCOUNT_PROPERTY_FEE = new Fee.SizeBasedFee(Constants.ONE_TAEL, Constants.ONE_TAEL, 32) {
-                @Override
-                public int getSize(TransactionImpl transaction, Appendix appendage) {
-                    Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty) transaction.getAttachment();
-                    return attachment.getValue().length();
-                }
-            };
-
-            @Override
-            public byte getSubtype() {
-                return TransactionType.SUBTYPE_MESSAGING_ACCOUNT_PROPERTY;
-            }
-
-            @Override
-            public LedgerEvent getLedgerEvent() {
-                return LedgerEvent.ACCOUNT_PROPERTY;
-            }
-
-            @Override
-            public String getName() {
-                return "AccountProperty";
-            }
-
-            @Override
-            Fee getBaselineFee(Transaction transaction) {
-                return ACCOUNT_PROPERTY_FEE;
-            }
-
-            @Override
-            Attachment.MessagingAccountProperty parseAttachment(ByteBuffer buffer) throws NxtException.NotValidException {
-                return new Attachment.MessagingAccountProperty(buffer);
-            }
-
-            @Override
-            Attachment.MessagingAccountProperty parseAttachment(JSONObject attachmentData) throws NxtException.NotValidException {
-                return new Attachment.MessagingAccountProperty(attachmentData);
-            }
-
-            @Override
-            void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty)transaction.getAttachment();
-                if (attachment.getProperty().length() > Constants.MAX_ACCOUNT_PROPERTY_NAME_LENGTH
-                        || attachment.getProperty().length() == 0
-                        || attachment.getValue().length() > Constants.MAX_ACCOUNT_PROPERTY_VALUE_LENGTH) {
-                    throw new NxtException.NotValidException("Invalid account property: " + attachment.getJSONObject());
-                }
-                if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) != 0) {
-                    throw new NxtException.NotValidException("Account property transaction cannot be used to send " + Constants.COIN_SYMBOL);
-                }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
-                    throw new NxtException.NotValidException("Setting Genesis account properties not allowed");
-                }
-            }
-
-            @Override
-            void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
-                Attachment.MessagingAccountProperty attachment = (Attachment.MessagingAccountProperty) transaction.getAttachment();
-                recipientAccount.setProperty(transaction, senderAccount, attachment.getProperty(), attachment.getValue());
-            }
-
-            @Override
-            public boolean canHaveRecipient() {
-                return true;
-            }
-
-            @Override
-            public boolean isPhasingSafe() {
-                return true;
-            }
-
-        };
-
-        public static final Messaging ACCOUNT_PROPERTY_DELETE = new Messaging() {
-
-            @Override
-            public byte getSubtype() {
-                return TransactionType.SUBTYPE_MESSAGING_ACCOUNT_PROPERTY_DELETE;
-            }
-
-            @Override
-            public LedgerEvent getLedgerEvent() {
-                return LedgerEvent.ACCOUNT_PROPERTY_DELETE;
-            }
-
-            @Override
-            public String getName() {
-                return "AccountPropertyDelete";
-            }
-
-            @Override
-            Attachment.MessagingAccountPropertyDelete parseAttachment(ByteBuffer buffer) throws NxtException.NotValidException {
-                return new Attachment.MessagingAccountPropertyDelete(buffer);
-            }
-
-            @Override
-            Attachment.MessagingAccountPropertyDelete parseAttachment(JSONObject attachmentData) throws NxtException.NotValidException {
-                return new Attachment.MessagingAccountPropertyDelete(attachmentData);
-            }
-
-            @Override
-            void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
-                Attachment.MessagingAccountPropertyDelete attachment = (Attachment.MessagingAccountPropertyDelete)transaction.getAttachment();
-                Account.AccountProperty accountProperty = Account.getProperty(attachment.getPropertyId());
-                if (accountProperty == null) {
-                    throw new NxtException.NotCurrentlyValidException("No such property " + Long.toUnsignedString(attachment.getPropertyId()));
-                }
-                if (accountProperty.getRecipientId() != transaction.getSenderId() && accountProperty.getSetterId() != transaction.getSenderId()) {
-                    throw new NxtException.NotValidException("Account " + Long.toUnsignedString(transaction.getSenderId())
-                            + " cannot delete property " + Long.toUnsignedString(attachment.getPropertyId()));
-                }
-                if (accountProperty.getRecipientId() != transaction.getRecipientId()) {
-                    throw new NxtException.NotValidException("Account property " + Long.toUnsignedString(attachment.getPropertyId())
-                            + " does not belong to " + Long.toUnsignedString(transaction.getRecipientId()));
-                }
-                if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) != 0) {
-                    throw new NxtException.NotValidException("Account property transaction cannot be used to send " + Constants.COIN_SYMBOL);
-                }
-                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
-                    throw new NxtException.NotValidException("Deleting Genesis account properties not allowed");
-                }
-            }
-
-            @Override
-            void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
-                Attachment.MessagingAccountPropertyDelete attachment = (Attachment.MessagingAccountPropertyDelete) transaction.getAttachment();
-                senderAccount.deleteProperty(attachment.getPropertyId());
-            }
-
-            @Override
-            public boolean canHaveRecipient() {
-                return true;
-            }
-
-            @Override
-            public boolean isPhasingSafe() {
-                return true;
-            }
-
-        };
+//        public static final Messaging ACCOUNT_PROPERTY_DELETE = new Messaging() {
+//
+//            @Override
+//            public byte getSubtype() {
+//                return TransactionType.SUBTYPE_MESSAGING_ACCOUNT_PROPERTY_DELETE;
+//            }
+//
+//            @Override
+//            public LedgerEvent getLedgerEvent() {
+//                return LedgerEvent.ACCOUNT_PROPERTY_DELETE;
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return "AccountPropertyDelete";
+//            }
+//
+//            @Override
+//            Attachment.MessagingAccountPropertyDelete parseAttachment(ByteBuffer buffer) throws NxtException.NotValidException {
+//                return new Attachment.MessagingAccountPropertyDelete(buffer);
+//            }
+//
+//            @Override
+//            Attachment.MessagingAccountPropertyDelete parseAttachment(JSONObject attachmentData) throws NxtException.NotValidException {
+//                return new Attachment.MessagingAccountPropertyDelete(attachmentData);
+//            }
+//
+//            @Override
+//            void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
+//                Attachment.MessagingAccountPropertyDelete attachment = (Attachment.MessagingAccountPropertyDelete)transaction.getAttachment();
+//                Account.AccountProperty accountProperty = Account.getProperty(attachment.getPropertyId());
+//                if (accountProperty == null) {
+//                    throw new NxtException.NotCurrentlyValidException("No such property " + Long.toUnsignedString(attachment.getPropertyId()));
+//                }
+//                if (accountProperty.getRecipientId() != transaction.getSenderId() && accountProperty.getSetterId() != transaction.getSenderId()) {
+//                    throw new NxtException.NotValidException("Account " + Long.toUnsignedString(transaction.getSenderId())
+//                            + " cannot delete property " + Long.toUnsignedString(attachment.getPropertyId()));
+//                }
+//                if (accountProperty.getRecipientId() != transaction.getRecipientId()) {
+//                    throw new NxtException.NotValidException("Account property " + Long.toUnsignedString(attachment.getPropertyId())
+//                            + " does not belong to " + Long.toUnsignedString(transaction.getRecipientId()));
+//                }
+//                if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) != 0) {
+//                    throw new NxtException.NotValidException("Account property transaction cannot be used to send " + Constants.COIN_SYMBOL);
+//                }
+//                if (transaction.getRecipientId() == Genesis.CREATOR_ID) {
+//                    throw new NxtException.NotValidException("Deleting Genesis account properties not allowed");
+//                }
+//            }
+//
+//            @Override
+//            void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
+//                Attachment.MessagingAccountPropertyDelete attachment = (Attachment.MessagingAccountPropertyDelete) transaction.getAttachment();
+//                senderAccount.deleteProperty(attachment.getPropertyId());
+//            }
+//
+//            @Override
+//            public boolean canHaveRecipient() {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isPhasingSafe() {
+//                return true;
+//            }
+//
+//        };
 
     }
 
