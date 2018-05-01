@@ -16,14 +16,14 @@
 
   <script type="text/javascript">
     function calculate(){
+      const fee = Big(0.001);
+      var result = document.getElementById('total');
     try{
-    var result = document.getElementById('total');
-    var amount = document.getElementById('send_money_amount');
-    const fee = Big(0.001);
-    var amountVal = amount.value;
-    // console.log(amountVal);
-    var total = fee;
-    var numAmount = Big(amountVal);
+      var amount = document.getElementById('send_money_amount');
+      var amountVal = amount.value;
+      // console.log(amountVal);
+      var total = fee;
+      var numAmount = Big(amountVal);
 
       if (!numAmount.isNaN && numAmount.gte(Big(0))){
       total = numAmount.plus(fee);
@@ -33,9 +33,8 @@
       total = fee;
       }
     }catch(error){
-      total = fee;
-      result.value = total.toString(10);
-      console.log(error);
+      result.value = fee.toString(10);
+      // console.log(error);
     }finally{
 
       result.value = total.toString(10);

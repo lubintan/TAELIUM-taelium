@@ -482,7 +482,6 @@ var NRS = (function(NRS, $, undefined) {
 
 		if ((NRS.state.lastBlockchainFeederHeight - height) > 0) {
 
-			console.log("HERE");
 
 			var percentageTotal = 0;
 			var blocksLeft;
@@ -493,7 +492,6 @@ var NRS = (function(NRS, $, undefined) {
 				// if (blocksLeft <= lastNumBlocks && NRS.state.lastBlockchainFeederHeight > lastNumBlocks) {
 				// 	percentageLast = parseInt(Math.round(((lastNumBlocks - blocksLeft) / lastNumBlocks) * 100), 10);
 				// }
-				// console.log("••••••••••••••••••••••");
 				downloadingBlockchain.show();
 				downloadingBlockchain.find(".db_halted").hide();
 				downloadingBlockchain.find(".db_active").show();
@@ -509,7 +507,6 @@ var NRS = (function(NRS, $, undefined) {
 
 
 		}else{
-			console.log("THERE");
 			downloadingBlockchain.hide();
 			// downloadingBlockchain.find(".db_halted").hide();
 			// downloadingBlockchain.find(".db_active").hide();
@@ -729,10 +726,7 @@ var NRS = (function(NRS, $, undefined) {
 		NRS.currentSubPage = "";
 		NRS.pageNumber = 1;
 		NRS.showPageNumbers = false;
-		// console.log("******  PAGE: "+  page + "  *************");
 		// console.trace();
-		console.log('********************');
-		console.log(NRS.pages);
 
 		if (NRS.pages[page]) {
 			NRS.pageLoading();
@@ -921,7 +915,7 @@ var NRS = (function(NRS, $, undefined) {
 		});
 		// NRS.loadContacts();
 		NRS.getSettings(true);
-		NRS.updateNotifications();
+		// NRS.updateNotifications();
 		NRS.setUnconfirmedNotifications();
 		NRS.setPhasingNotifications();
         NRS.setShufflingNotifications();
@@ -1436,14 +1430,12 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
     NRS.updateDashboardMessage = function() {
-			console.log("NEW ACCOUNT");
 
         if (NRS.accountInfo.errorCode) {
             if (NRS.accountInfo.errorCode == 5) {
                 if (NRS.downloadingBlockchain && !(NRS.state && NRS.state.apiProxy) && !NRS.state.isLightClient) {
                     if (NRS.newlyCreatedAccount) {
 
-												console.log("NEWLY CREATED ACCouNT");
 
                         $("#dashboard_message").addClass("alert-success").removeClass("alert-danger").html($.t("status_new_account", {
                                 "account_id": NRS.escapeRespStr(NRS.accountRS),
@@ -1459,7 +1451,6 @@ var NRS = (function(NRS, $, undefined) {
                     if (NRS.publicKey == "") {
 
 
-												console.log("NO PUBLIC KEY");
                         // message = $.t("status_new_account_no_pk_v2", {
                         //     "account_id": NRS.escapeRespStr(NRS.accountRS)
 												message = $.t("status_new_account", {
@@ -1472,7 +1463,6 @@ var NRS = (function(NRS, $, undefined) {
                         }
                     } else {
 
-												console.log("ELSEEEEEEEEE");
                         message = $.t("status_new_account", {
                             "account_id": NRS.escapeRespStr(NRS.accountRS),
                             "public_key": NRS.escapeRespStr(NRS.publicKey)
@@ -1763,17 +1753,14 @@ var NRS = (function(NRS, $, undefined) {
         downloadingBlockchain.find('.last_num_blocks').html($.t('last_num_blocks', { "blocks": lastNumBlocks }));
 
 		if (NRS.state.isLightClient) {
-			console.log("A");
 			// downloadingBlockchain.find(".db_active").hide();
 			// downloadingBlockchain.find(".db_halted").hide();
 			// downloadingBlockchain.find(".db_light").show();
 		} else if (!NRS.serverConnect || !NRS.peerConnect) {
-			console.log("B");
 			// downloadingBlockchain.find(".db_active").hide();
 			// downloadingBlockchain.find(".db_halted").show();
 			// downloadingBlockchain.find(".db_light").hide();
 		} else {
-			console.log("C");
 			// downloadingBlockchain.find(".db_halted").hide();
 			// downloadingBlockchain.find(".db_active").show();
 			// downloadingBlockchain.find(".db_light").hide();
@@ -1789,10 +1776,8 @@ var NRS = (function(NRS, $, undefined) {
 				}
 			}
 			if (!blocksLeft || blocksLeft < parseInt(lastNumBlocks / 2)) {
-				console.log("D");
 				// downloadingBlockchain.find(".db_progress_total").hide();
 			} else {
-				console.log("E");
 				// downloadingBlockchain.find(".db_progress_total").show();
 				// downloadingBlockchain.find(".db_progress_total .progress-bar").css("width", percentageTotal + "%");
 				// downloadingBlockchain.find(".db_progress_total .sr-only").html($.t("percent_complete", {
@@ -1800,10 +1785,8 @@ var NRS = (function(NRS, $, undefined) {
 				// }));
 			}
 			if (!blocksLeft || blocksLeft >= (lastNumBlocks * 2) || NRS.state.lastBlockchainFeederHeight <= lastNumBlocks) {
-				console.log("F");
 				// downloadingBlockchain.find(".db_progress_last").hide();
 			} else {
-				console.log("G");
 				// downloadingBlockchain.find(".db_progress_last").show();
 				// downloadingBlockchain.find(".db_progress_last .progress-bar").css("width", percentageLast + "%");
 				// downloadingBlockchain.find(".db_progress_last .sr-only").html($.t("percent_complete", {
@@ -1811,7 +1794,6 @@ var NRS = (function(NRS, $, undefined) {
 				// }));
 			}
 			if (blocksLeft) {
-				console.log("H");
 				// downloadingBlockchain.find(".blocks_left_outer").show();
 				// downloadingBlockchain.find(".blocks_left").html($.t("blocks_left", { "numBlocks": blocksLeft }));
 			}
@@ -1893,7 +1875,6 @@ var NRS = (function(NRS, $, undefined) {
 				});
 				return;
 			}
-			console.log("g");
 			NRS.sendRequest("getTransaction", {
 				"transaction": id
 			}, function(response, input) {

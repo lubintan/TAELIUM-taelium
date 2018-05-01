@@ -597,10 +597,7 @@ var NRS = (function(NRS, $, undefined) {
 		// 	html += "</td>";
 		// }
 		html += "</tr>";
-		//
-		// console.log("*******************************************");
-		// console.log(html);
-		// console.log("*******************************************");
+
 
 		return html;
 	}; //getTransactionRowHTML
@@ -699,9 +696,7 @@ var NRS = (function(NRS, $, undefined) {
 				html += "<td style='vertical-align:middle;'>" + defaultString + "</td>";
 				html += "<td style='vertical-align:middle;'>" + defaultString + "</td>";
 		}
-				// console.log("∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑");
-				// console.log(html);
-				// console.log("∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑∑");
+
 
 		return html;
 	};// get Ledget Entry Row
@@ -879,7 +874,6 @@ var NRS = (function(NRS, $, undefined) {
 	};
 
     NRS.pages.ledger = function() {
-			console.log('$$$$$$$$: in LEDGER');
 		var rows = "";
         var params = {
             "account": NRS.account,
@@ -923,11 +917,9 @@ var NRS = (function(NRS, $, undefined) {
 		});
 
 
-			console.log('$$$$$$$$ end of ledger');
 	}; //end of nrs.pages.ledger
 
 	NRS.pages.transactions = function(callback, subpage) {
-				console.log('$$$$$$$$: in TRANSACTIONS');
 
         var typeNavi = $('#transactions_type_navi');
         if (typeNavi.children().length == 0) {

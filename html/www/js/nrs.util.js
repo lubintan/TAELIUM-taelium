@@ -747,24 +747,19 @@ var NRS = (function (NRS, $, undefined) {
   NRS.dataLoadedTaelium = function(data, noPageLoad, tableName) {
     var $el = $("#" + NRS.currentPage + "_contents");
 
-    console.log("#" + NRS.currentPage + "_contents");
 
 		if ($el.length) {
 
-      console.log("∆∆∆∆∆∆∆∆∆ EMPTINESS ∆∆∆∆∆∆∆");
 
 			$el.empty().append(data);
 		} else {
       tableName == null ? $el = $("#" + NRS.currentPage + "_table"):
         $el = $("#" + tableName + "_table");
 
-      console.log($el.find("tbody"));
 
 			$el.find("tbody").empty().append(data);
             // $el.find('[data-toggle="tooltip"]').tooltip();
 		}
-    console.log('tttttt');
-    console.log($el.find("tbody"));
 
 		NRS.dataLoadFinished($el);
 

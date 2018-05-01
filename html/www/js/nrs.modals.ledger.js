@@ -41,9 +41,7 @@ var NRS = (function(NRS, $) {
             NRS.modalStack.pop(); // The current modal
         }
 
-        // console.log("$$$$$$$$$ ACCOUNT LEDGER $$$$$$$$");
-        // console.log(change);
-        // console.log(balance);
+        
 
         NRS.sendRequest("getAccountLedgerEntry+", { ledgerId: ledgerId }, function(response) {
 			NRS.showLedgerEntryModal(response, change, balance);
@@ -56,7 +54,7 @@ var NRS = (function(NRS, $) {
     		NRS.modalStack.push({ class: "show_ledger_modal_action", key: "entry", value: { entry: entry.ledgerId, change: change, balance: balance }});
             $("#ledger_info_modal_entry").html(entry.ledgerId);
             var entryDetails = $.extend({}, entry);
-						
+
             // entryDetails.eventType = $.t(entryDetails.eventType.toLowerCase());
 						delete entryDetails.eventType;
             // entryDetails.holdingType = $.t(entryDetails.holdingType.toLowerCase());

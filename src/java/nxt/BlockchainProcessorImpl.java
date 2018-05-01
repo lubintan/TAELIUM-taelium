@@ -1438,13 +1438,13 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 Logger.logDebugMessage("****** BLOCK SUMMARY *******");
                 Logger.logDebugMessage("id: " + block.getId());
                 Logger.logDebugMessage("height: " + block.getHeight());
-                Logger.logDebugMessage("date: " + NtpTime.toString(block.getDate()));
-                Logger.logDebugMessage("total forging: " + block.getTotalForgingHoldings().toString());
-                Logger.logDebugMessage("supply current from block: " + block.getSupplyCurrent().toString());
-                Logger.logDebugMessage("supply current from accounts: " + CalculateInterestAndG.getSupplyCurrent().toString());
-                Logger.logDebugMessage("r year: " + block.getLatestRYear());
-                Logger.logDebugMessage("reward: " + block.getBlockReward().toString());
-                Logger.logDebugMessage("FirstBlockOfDay? " + block.getFirstBlockOfDay());
+//                Logger.logDebugMessage("date: " + NtpTime.toString(block.getDate()));
+//                Logger.logDebugMessage("total forging: " + block.getTotalForgingHoldings().toString());
+//                Logger.logDebugMessage("supply current from block: " + block.getSupplyCurrent().toString());
+//                Logger.logDebugMessage("supply current from accounts: " + CalculateInterestAndG.getSupplyCurrent().toString());
+//                Logger.logDebugMessage("r year: " + block.getLatestRYear());
+//                Logger.logDebugMessage("reward: " + block.getBlockReward().toString());
+//                Logger.logDebugMessage("FirstBlockOfDay? " + block.getFirstBlockOfDay());
                 Logger.logDebugMessage("****** END BLOCK SUMMARY *******");
                 Logger.logDebugMessage("");
                 

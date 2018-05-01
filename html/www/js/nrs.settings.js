@@ -588,10 +588,8 @@ var NRS = (function(NRS, $) {
 			var $dashboard_dates = $("#dashboard_table").find("a[data-timestamp]");
 			$.each($dashboard_dates, function() {
 				// $(this).html(NRS.formatTimestamp($(this).data("timestamp")));
-				console.log("*** Ludawgger ***");
-				console.log("data: " + $(this).data);
-				console.log("data: " + $(this).data("timestamp"));
-				
+
+
 				$(this).html($(this).data("timestamp"));
 			});
 		}

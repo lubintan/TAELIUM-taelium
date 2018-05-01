@@ -632,24 +632,24 @@ public final class Account {
 
     };
 
-    private static final VersionedEntityDbTable<AccountCurrency> accountCurrencyTable = new VersionedEntityDbTable<AccountCurrency>("account_currency", accountCurrencyDbKeyFactory) {
-
-        @Override
-        protected AccountCurrency load(Connection con, ResultSet rs, DbKey dbKey) throws SQLException {
-            return new AccountCurrency(rs, dbKey);
-        }
-
-        @Override
-        protected void save(Connection con, AccountCurrency accountCurrency) throws SQLException {
-            accountCurrency.save(con);
-        }
-
-        @Override
-        protected String defaultSort() {
-            return " ORDER BY units DESC, account_id, currency_id ";
-        }
-
-    };
+//    private static final VersionedEntityDbTable<AccountCurrency> accountCurrencyTable = new VersionedEntityDbTable<AccountCurrency>("account_currency", accountCurrencyDbKeyFactory) {
+//
+//        @Override
+//        protected AccountCurrency load(Connection con, ResultSet rs, DbKey dbKey) throws SQLException {
+//            return new AccountCurrency(rs, dbKey);
+//        }
+//
+//        @Override
+//        protected void save(Connection con, AccountCurrency accountCurrency) throws SQLException {
+//            accountCurrency.save(con);
+//        }
+//
+//        @Override
+//        protected String defaultSort() {
+//            return " ORDER BY units DESC, account_id, currency_id ";
+//        }
+//
+//    };
 
     private static final DerivedDbTable accountGuaranteedBalanceTable = new DerivedDbTable("account_guaranteed_balance") {
 

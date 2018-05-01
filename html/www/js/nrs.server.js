@@ -375,7 +375,9 @@ var NRS = (function (NRS, $, undefined) {
             url = NRS.getRequestPath(options.noProxy);
         }
         url += "?requestType=" + requestType;
-        NRS.logConsole("Send request " + requestType + " to url " + url);
+        // NRS.logConsole("Send request " + requestType + " to url " + url);
+        NRS.logConsole("Send request " + requestType);
+
 
         $.ajax({
             url: url,

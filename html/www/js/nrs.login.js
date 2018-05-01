@@ -339,10 +339,7 @@ var NRS = (function(NRS, $, undefined) {
 			NRS.sendRequest(accountRequest, requestVariable, function(response, data) {
 				console.log(accountRequest + " response received");
 
-				console.log('***************')
-				for (x in response){
-					console.log(x);
-				}
+			
 
 				if (!response.errorCode) {
 					NRS.account = NRS.escapeRespStr(response.account);
