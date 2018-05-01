@@ -78,7 +78,7 @@ import java.util.concurrent.TimeoutException;
 
 public final class Peers {
 
-    private static final int DEFAULT_PEER_PORT = 12343;
+    private static final int DEFAULT_PEER_PORT = Nxt.getIntProperty("nxt.peerServerPort");
 
 	
     public enum Event {
