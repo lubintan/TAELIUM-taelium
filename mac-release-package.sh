@@ -20,7 +20,7 @@ FILES="changelogs conf html lib resource contrib"
 FILES="${FILES} nxt.exe nxtservice.exe"
 FILES="${FILES} 3RD-PARTY-LICENSES.txt AUTHORS.txt LICENSE.txt"
 FILES="${FILES} DEVELOPERS-GUIDE.md OPERATORS-GUIDE.md README.md README.txt USERS-GUIDE.md"
-FILES="${FILES} mint.bat mint.sh run.bat run.sh run-tor.sh run-desktop.sh start.sh stop.sh compact.sh compact.bat sign.sh"
+FILES="${FILES} mint.bat mint.sh run.bat run.sh run-tor.sh run-desktop.sh start.sh stop.sh compact.sh compact.bat sign.sh sign.bat"
 FILES="${FILES} nxt.policy nxtdesktop.policy NXT_Wallet.url Dockerfile"
 
 echo compile
@@ -34,13 +34,13 @@ mkdir -p nxt/
 mkdir -p nxt/logs
 mkdir -p nxt/addons/src
 
-if [ "${OBFUSCATE}" = "obfuscate" ]; 
+if [ "${OBFUSCATE}" = "obfuscate" ];
 then
 echo obfuscate
-~/proguard/proguard5.2.1/bin/proguard.sh @nxt.pro
+~/proguard/proguard5.3.3/bin/proguard.sh @nxt.pro
 mv ../nxt.map ../nxt.map.${VERSION}
 else
-FILES="${FILES} classes src COPYING.txt"
+FILES="${FILES} classes src"
 FILES="${FILES} compile.sh javadoc.sh jar.sh package.sh"
 FILES="${FILES} win-compile.sh win-javadoc.sh win-package.sh"
 echo javadoc
@@ -68,5 +68,5 @@ echo package installer Jar
 cd -
 rm -rf nxt
 
-echo bundle a dmg file	
-/Library/Java/JavaVirtualMachines/jdk1.8.0_66.jdk/Contents/Home/bin/javapackager -deploy -outdir . -outfile nxt-client -name nxt-installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.nxt.client.installer -Bmac.CFBundleName=Nxt-Installer -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns -Bmac.signing-key-developer-id-app="Developer ID Application: Stichting NXT (YU63QW5EFW)" > installer/javapackager.log 2>&1
+echo bundle a dmg file
+/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javapackager -deploy -outdir . -outfile nxt-client -name nxt-installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.nxt.client.installer -Bmac.CFBundleName=Nxt-Installer -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns -Bmac.signing-key-developer-id-app="Developer ID Application: Stichting NXT (YU63QW5EFW)" > installer/javapackager.log 2>&1

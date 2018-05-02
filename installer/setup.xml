@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"  ?>
 <installation version="5.0">
     <properties>
-        <property file="conf/nxt-default.properties" prefix="runtime"/>
+        <property file="../conf/nxt-default.properties" prefix="runtime"/>
     </properties>
     <info>
         <appname>NXT</appname>
@@ -55,7 +55,7 @@
 
     <locale>
         <langpack iso3="eng"/>
-        <langpack iso3="fra"/>
+        <!-- <langpack iso3="fra"/>
         <langpack iso3="deu"/>
         <langpack iso3="ita"/>
         <langpack iso3="jpn"/>
@@ -79,13 +79,13 @@
         <langpack iso3="srp"/>
         <langpack iso3="ces"/>
         <langpack iso3="kor"/>
-        <langpack iso3="glg"/>
+        <langpack iso3="glg"/> -->
     </locale>
 
     <resources>
-        <res id="InfoPanel.info" src="changelogs/nxt-client-@{runtime.nxt.version}.changelog.txt" parse="yes"/>
-        <res id="LicencePanel.licence" src="LICENSE.txt"/>
-        <res id="Installer.image" src="html/www/img/installer_left_pane.png"/>
+        <res id="InfoPanel.info" src="../changelogs/nxt-client-1.0.3.changelog.txt" parse="yes"/>
+        <res id="LicencePanel.licence" src="../LICENSE.txt"/>
+        <res id="Installer.image" src="../html/www/img/installer_left_pane.png"/>
         <res id="shortcutSpec.xml" src="../installer/shortcutSpec.xml"/>
         <res id="Unix_shortcutSpec.xml" src="../installer/Unix_shortcutSpec.xml"/>
         <res id="RegistrySpec.xml" src="../installer/RegistrySpec.xml"/>
@@ -110,31 +110,31 @@
     <packs>
         <pack name="server" required="yes">
             <description>Common Server Files</description>
-            <file src="nxt.jar" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="README.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="NXT_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="3RD-PARTY-LICENSES.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="AUTHORS.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="COPYING.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="LICENSE.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="DEVELOPERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="OPERATORS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="README.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="USERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxt.policy" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxtdesktop.policy" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="conf/nxt-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
-            <file src="conf/logging-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
-            <file src="conf/fxt.json" targetdir="${INSTALL_PATH}/conf" override="true"/>
-            <file src="conf/fxt-testnet.json" targetdir="${INSTALL_PATH}/conf" override="true"/>
-            <fileset dir="lib" targetdir="${INSTALL_PATH}/lib" override="true" excludes=".gitignore"/>
-            <fileset dir="changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/>
-            <fileset dir="classes" targetdir="${INSTALL_PATH}/classes" override="true" excludes=".gitignore"/>
-            <fileset dir="html" targetdir="${INSTALL_PATH}/html" override="true" excludes=".gitignore"/>
-            <fileset dir="src" targetdir="${INSTALL_PATH}/src" override="true" excludes=".gitignore nxt-private.iml"/>
-            <fileset dir="contrib" targetdir="${INSTALL_PATH}/contrib" override="true" excludes=".gitignore"/>
-            <fileset dir="logs" targetdir="${INSTALL_PATH}/logs" override="true" excludes=".gitignore"/>
-            <fileset dir="addons" targetdir="${INSTALL_PATH}/addons" override="true" excludes=".gitignore"/>
+            <file src="../nxt.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../README.txt" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../NXT_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../3RD-PARTY-LICENSES.txt" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../AUTHORS.txt" targetdir="${INSTALL_PATH}" override="true"/>
+            <!-- <file src="COPYING.txt" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <file src="../LICENSE.txt" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../DEVELOPERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../OPERATORS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../README.md" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../USERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../nxt.policy" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../nxtdesktop.policy" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../conf/nxt-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
+            <file src="../conf/logging-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
+            <!-- <file src="conf/fxt.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
+            <!-- <file src="conf/fxt-testnet.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
+            <fileset dir="../lib" targetdir="${INSTALL_PATH}/lib" override="true" excludes=".gitignore"/>
+            <fileset dir="../changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/>
+            <fileset dir="../classes" targetdir="${INSTALL_PATH}/classes" override="true" excludes=".gitignore"/>
+            <fileset dir="../html" targetdir="${INSTALL_PATH}/html" override="true" excludes=".gitignore"/>
+            <fileset dir="../src" targetdir="${INSTALL_PATH}/src" override="true" excludes=".gitignore nxt-private.iml"/>
+            <fileset dir="../contrib" targetdir="${INSTALL_PATH}/contrib" override="true" excludes=".gitignore"/>
+            <fileset dir="../logs" targetdir="${INSTALL_PATH}/logs" override="true" excludes=".gitignore"/>
+            <fileset dir="../addons" targetdir="${INSTALL_PATH}/addons" override="true" excludes=".gitignore"/>
             <updatecheck>
                 <include name="*.desktop" />
                 <include name="lib/**" />
@@ -147,42 +147,42 @@
         <pack name="server.windows" os="windows" required="yes">
             <description>Windows Specific Resources</description>
             <os family="windows"/>
-            <file src="nxt.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxtservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="nxtservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="run.bat" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="mint.bat" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="compact.bat" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../nxt.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../nxtservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../nxtservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../run.bat" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../mint.bat" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../compact.bat" targetdir="${INSTALL_PATH}" override="true"/>
             <parsable targetfile="${INSTALL_PATH}/run.bat"/>
-            <singlefile src="resource/nxt.properties" target="${INSTALL_PATH}/resource/nxt.properties" override="true"/>
-            <singlefile src="resource/nxtservice.properties" target="${INSTALL_PATH}/resource/nxtservice.properties" override="true"/>
+            <singlefile src="../resource/nxt.properties" target="${INSTALL_PATH}/resource/nxt.properties" override="true"/>
+            <singlefile src="../resource/nxtservice.properties" target="${INSTALL_PATH}/resource/nxtservice.properties" override="true"/>
         </pack>
 
         <pack name="server.unix" os="unix" required="yes">
             <description>Unix Specific Resources</description>
-            <file src="run.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../run.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/run.sh"/>
-            <file src="run-tor.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../run-tor.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/run-tor.sh"/>
-            <file src="run-desktop.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../run-desktop.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/run-desktop.sh"/>
-            <file src="start.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../start.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/start.sh"/>
-            <file src="stop.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../stop.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/stop.sh"/>
-            <file src="mint.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../mint.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/mint.sh"/>
-            <file src="compile.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../compile.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/compile.sh"/>
-            <file src="jar.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../jar.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/jar.sh"/>
-            <file src="javadoc.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../javadoc.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/javadoc.sh"/>
-            <file src="package.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../package.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/package.sh"/>
-            <file src="compact.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../compact.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/compact.sh"/>
-            <file src="sign.sh" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../sign.sh" targetdir="${INSTALL_PATH}" override="true"/>
             <executable targetfile="${INSTALL_PATH}/sign.sh"/>
         </pack>
 
@@ -193,9 +193,9 @@
 
         <pack name="server.mac" os="mac_osx" required="yes" uninstall="false">
             <description>Mac Specific Resources</description>
-            <fileset dir="resource/mac/Contents" targetdir="${INSTALL_PATH}/Contents" override="true"/>		
+            <fileset dir="../resource/mac/Contents" targetdir="${INSTALL_PATH}/Contents" override="true"/>
 			<parsable targetfile="${INSTALL_PATH}/Contents/MacOS/nxt"/>
-			<executable targetfile="${INSTALL_PATH}/Contents/MacOS/nxt"/>		
+			<executable targetfile="${INSTALL_PATH}/Contents/MacOS/nxt"/>
 		</pack>
 
         <pack name="jre.mac" os="mac_osx" required="yes" uninstall="false">
