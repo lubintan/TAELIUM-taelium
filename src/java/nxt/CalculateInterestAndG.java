@@ -33,7 +33,7 @@ public class CalculateInterestAndG {
 	private CalculateInterestAndG() {};
 	
 	static Boolean givingInterest = false;
-	static double rDay = Constants.INITIAL_R_YEAR/Constants.INTEREST_DIVISOR;
+	static double rDay = 0.0/Constants.INTEREST_DIVISOR;
 //	static BigInteger currentBlockHoldings;
 	static BigInteger supplyCurrent = Constants.INITIAL_BALANCE_HAEDS;
 	static BigInteger vault = Constants.INITIAL_VAULT_HAEDS;
@@ -48,7 +48,7 @@ public class CalculateInterestAndG {
 //	static BigInteger totalTxed = BigInteger.ZERO;
 	static double x = 0;
 	static double f_deltaT = 0;
-	static double rYear = Constants.INITIAL_R_YEAR;
+	static double rYear = 0.0;
 	static long dayCounter = 1; //starts from 1, 0 means null.
 	
 	private static int blockGCalculated = 2;
@@ -274,7 +274,7 @@ public class CalculateInterestAndG {
 	
 	public static double getLatestRYear() {
 		if (Nxt.getBlockchain().getHeight() < (1)) {
-			rYear = Constants.INITIAL_R_YEAR;
+			rYear = 0.0;
 		}else {
 			rYear = Nxt.getBlockchain().getLastBlock().getLatestRYear();
 		}
@@ -301,8 +301,8 @@ public class CalculateInterestAndG {
 		             PreparedStatement pstmt = con.prepareStatement("select * from account where latest=true	")) {
 		            try(ResultSet rs = pstmt.executeQuery()){
 		            
-		            	Logger.logDebugMessage("rYear: " + rYear + "    rDay: " + rDay);
-		            	Logger.logDebugMessage("");
+//		            	Logger.logDebugMessage("rYear: " + rYear + "    rDay: " + rDay);
+//		            	Logger.logDebugMessage("");
 		            	
 //		            	//remove transactions that will bring balance below zero after giving out interest.
 //		                Iterator<UnconfirmedTransaction> unconfirmedTxIterator = 
@@ -481,8 +481,10 @@ public class CalculateInterestAndG {
 				
 				f_deltaT = 0.15 * x / (1 + Math.abs(x));
 				
-				//for first day, r = default value.
-				if (dayCounter < 2) {
+				if (date.before(Constants.blockchainStartDate)) {
+					rYear = 0.0;
+				}
+				else if (date.before(Constants.interestRewardsTxFeesKickInDate)) {
 					rYear = Constants.INITIAL_R_YEAR;
 				}else {
 					rYear = loadLatestRYear() - f_deltaT;

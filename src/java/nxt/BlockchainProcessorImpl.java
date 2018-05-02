@@ -2171,7 +2171,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	        		block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
 	                        payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
 	                        secretPhrase, today, currentForgingBalance,
-	                        CalculateInterestAndG.getLatestRYear(), currentSupplyCurrent, CalculateReward.getBlockReward(), false);
+	                        CalculateInterestAndG.getLatestRYear(), currentSupplyCurrent, CalculateReward.getBlockReward(today), false);
     		
 	        }
 	        	else if (!isFirstBlockOfNewDay) {
@@ -2181,7 +2181,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 	            block = new BlockImpl(getBlockVersion(previousBlock.getHeight()), blockTimestamp, previousBlock.getId(), totalAmountNQT, totalFeeNQT, payloadLength,
                         payloadHash, publicKey, generationSignature, previousBlockHash, blockTransactions, 
                         secretPhrase, today, GetAllForgersBalances.getSumAllForgersBalances(),
-                        CalculateInterestAndG.getLatestRYear(), CalculateInterestAndG.getSupplyCurrent(), CalculateReward.getBlockReward(), false);
+                        CalculateInterestAndG.getLatestRYear(), CalculateInterestAndG.getSupplyCurrent(), CalculateReward.getBlockReward(today), false);
     		
 	        }
 	            

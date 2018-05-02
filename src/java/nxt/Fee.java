@@ -17,15 +17,30 @@
 package nxt;
 
 import java.math.BigInteger;
+import java.util.Date;
+
 
 //seen.
 public interface Fee {
 
     BigInteger getFee(TransactionImpl transaction, Appendix appendage);
 
-    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.STD_FEE);
+    static Fee returnFee() {
+    		return new Fee.ConstantFee(calculateFee());
+    }
 
-    Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
+    
+
+	Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
+    
+    static BigInteger calculateFee() {
+    		Date today = NtpTime.getCurrentDate();
+    		if (today.before(Constants.blockchainStartDate)) {
+    			return BigInteger.ZERO;
+    		}else {
+    			return Constants.STD_FEE;
+    		}
+    }
 
     final class ConstantFee implements Fee {
 
@@ -37,7 +52,7 @@ public interface Fee {
 
         @Override
         public BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
-            return fee;
+            return calculateFee();
         }
 
     }
@@ -65,12 +80,13 @@ public interface Fee {
         // the first size unit is free if constantFee is 0
         @Override
         public final BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
-            int size = getSize(transaction, appendage) - 1;
-            if (size < 0) {
-                return constantFee;
-            }
-            return constantFee.add(feePerSize.multiply(BigInteger.valueOf((long)(size/unitSize))));
-//            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
+//            int size = getSize(transaction, appendage) - 1;
+//            if (size < 0) {
+//                return constantFee;
+//            }
+//            return constantFee.add(feePerSize.multiply(BigInteger.valueOf((long)(size/unitSize))));
+////            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
+        		return calculateFee();
         }
 
         public abstract int getSize(TransactionImpl transaction, Appendix appendage);

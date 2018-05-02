@@ -1644,11 +1644,11 @@ public final class Account {
         save();
         listeners.notify(this, Event.BALANCE);
         if (AccountLedger.mustLogEntry(this.id, false)) {
-            if (feeNQT != BigInteger.ZERO) {
+            if (feeNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(LedgerEvent.TRANSACTION_FEE, eventId, this.id,
                         LedgerHolding.NXT_BALANCE, null, feeNQT, this.balanceNQT.subtract(amountNQT)));
             }
-            if (amountNQT != BigInteger.ZERO) {
+            if (amountNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
                         LedgerHolding.NXT_BALANCE, null, amountNQT, this.balanceNQT));
             }
@@ -1673,11 +1673,11 @@ public final class Account {
             return;
         }
         if (AccountLedger.mustLogEntry(this.id, true)) {
-            if (feeNQT != BigInteger.ZERO) {
+            if (feeNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(LedgerEvent.TRANSACTION_FEE, eventId, this.id,
                         LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, feeNQT, this.unconfirmedBalanceNQT.subtract(amountNQT)));
             }
-            if (amountNQT != BigInteger.ZERO) {
+            if (amountNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,
                         LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, amountNQT, this.unconfirmedBalanceNQT));
             }
@@ -1715,11 +1715,11 @@ public final class Account {
             return;
         }
         if (AccountLedger.mustLogEntry(this.id, true)) {
-            if (feeNQT != BigInteger.ZERO) {
+            if (feeNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(LedgerEvent.TRANSACTION_FEE, eventId, this.id,
                         LedgerHolding.UNCONFIRMED_NXT_BALANCE, null, feeNQT, this.unconfirmedBalanceNQT.subtract(amountNQT)));
             }
-            if (amountNQT != BigInteger.ZERO) {
+            if (amountNQT.compareTo(BigInteger.ZERO) != 0) {
             	
                 
             		if(newBlock == null) {
@@ -1734,11 +1734,11 @@ public final class Account {
             
         }
         if (AccountLedger.mustLogEntry(this.id, false)) {
-            if (feeNQT != BigInteger.ZERO) {
+            if (feeNQT.compareTo(BigInteger.ZERO) != 0) {
                 AccountLedger.logEntry(new LedgerEntry(LedgerEvent.TRANSACTION_FEE, eventId, this.id,
                         LedgerHolding.NXT_BALANCE, null, feeNQT, this.balanceNQT.subtract(amountNQT)));
             }
-            if (amountNQT != BigInteger.ZERO) {
+            if (amountNQT.compareTo(BigInteger.ZERO) != 0) {
             	
             		if (newBlock == null) {
             			AccountLedger.logEntry(new LedgerEntry(event, eventId, this.id,

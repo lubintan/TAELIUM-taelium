@@ -30,8 +30,16 @@ public class CalculateReward {
 	
 	public static BigInteger calculateReward(Date date) {		
 		CalculateInterestAndG.updateDayCounter();
-		if (Nxt.getBlockchain().getHeight() < 0) {blockReward = BigInteger.ZERO;}
-		else if (CalculateInterestAndG.dayCounter < 2) { blockReward = Constants.INITIAL_REWARD;}
+		
+		if (Nxt.getBlockchain().getHeight() < 0) {
+			blockReward = BigInteger.ZERO;
+			}
+		else if (date.before(Constants.blockchainStartDate)) {
+			blockReward = BigInteger.ZERO;
+			}
+		else if (date.before(Constants.interestRewardsTxFeesKickInDate)) { 
+			blockReward = Constants.INITIAL_REWARD;
+			}
 		else {
 	
 			BigInteger yesterdaysVolume = CalculateInterestAndG
@@ -55,9 +63,14 @@ public class CalculateReward {
 
 	}
 	
-	public static BigInteger getBlockReward() {
-		CalculateInterestAndG.updateDayCounter();
-		if (CalculateInterestAndG.dayCounter < 3) { blockReward = Constants.INITIAL_REWARD;}
+	public static BigInteger getBlockReward(Date date) {
+//		CalculateInterestAndG.updateDayCounter();
+		if (date.before(Constants.blockchainStartDate)) {
+			blockReward = BigInteger.ZERO;
+			}
+		else if (date.before(Constants.interestRewardsTxFeesKickInDate)) { 
+			blockReward = Constants.INITIAL_REWARD;
+			}
 		else {blockReward = Nxt.getBlockchain().getLastBlock().getBlockReward();}
 		
 		return blockReward;

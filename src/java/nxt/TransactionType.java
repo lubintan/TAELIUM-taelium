@@ -288,7 +288,7 @@ public abstract class TransactionType {
     }
 
     Fee getBaselineFee(Transaction transaction) {
-        return Fee.DEFAULT_FEE;
+        return Fee.returnFee();
     }
 
     Fee getNextFee(Transaction transaction) {

@@ -18,6 +18,9 @@ package nxt;
 import java.math.BigDecimal;
 //seen.
 import java.math.BigInteger;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public final class Constants {
 
@@ -34,6 +37,10 @@ public final class Constants {
     public static final int MAX_PAYLOAD_LENGTH = MAX_NUMBER_OF_TRANSACTIONS * MIN_TRANSACTION_SIZE;
     
     public static final String dateFormat = "dd-MMM-yyyy";
+    
+    public static final Date blockchainStartDate = NtpTime.toDate("04-MAY-2018");
+    
+    public static final Date interestRewardsTxFeesKickInDate = NtpTime.addDays(blockchainStartDate, 1);
     
     public static final int BLOCK_TIME = 60; // should be 60. reducing it for testing purposes. 
     public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.

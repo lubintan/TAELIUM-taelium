@@ -1125,7 +1125,12 @@ final class TransactionImpl implements Transaction {
 //    		Logger.logDebugMessage("MAX_BALANCE_HAEDS: " + Constants.MAX_BALANCE_HAEDS);
     	
     		if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
-    			(deadline < 1 || feeNQT.compareTo(BigInteger.ZERO) <= 0)
+    			(deadline < 1 || 
+    					(
+    							(feeNQT.compareTo(BigInteger.ZERO) <= 0) && 
+    							(!NtpTime.getCurrentDate().before(Constants.blockchainStartDate)) 
+    					)
+				)
                 || feeNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0
                 || amountNQT.compareTo(BigInteger.ZERO) < 0
                 || amountNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0 

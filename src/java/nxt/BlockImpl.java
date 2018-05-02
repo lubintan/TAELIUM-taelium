@@ -72,7 +72,7 @@ final class BlockImpl implements Block {
     BlockImpl(byte[] generatorPublicKey, byte[] generationSignature) { 
         this(-1, 0, 0, BigInteger.ZERO, BigInteger.ZERO, 0, new byte[32], generatorPublicKey, generationSignature, new byte[64],
                 new byte[32], Collections.emptyList(), new Date(Genesis.EPOCH_BEGINNING), BigInteger.ZERO, 
-                Constants.INITIAL_R_YEAR, Constants.INITIAL_BALANCE_HAEDS, BigInteger.ZERO, false);
+                0.0, Constants.INITIAL_BALANCE_HAEDS, BigInteger.ZERO, false);
         this.height = 0;
     }
     

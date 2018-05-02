@@ -175,6 +175,19 @@ public class NtpTime {
 		date = calendar.getTime();
 		return date;
 	}
+    
+    public static Date addDays(Date date, int days) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+		cal.setTime(date);
+		cal.add(Calendar.DATE, days);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
+		
+    }
     	 
     private static boolean requestTime(String host, int timeout, boolean retrieved) {
         DatagramSocket socket = null;
