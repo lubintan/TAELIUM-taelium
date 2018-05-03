@@ -148,7 +148,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         }
         Appendix.PublicKeyAnnouncement publicKeyAnnouncement = null;
         String recipientPublicKey = Convert.emptyToNull(req.getParameter("recipientPublicKey"));
-        if (recipientPublicKey != null) {
+
+        if (recipientPublicKey != null) {           	
+	        	if (Account.getId(Convert.parseHexString(recipientPublicKey)) != recipientId ) {
+	        		throw new ParameterException(INCORRECT_PUBLIC_KEY);
+	        }
             publicKeyAnnouncement = new Appendix.PublicKeyAnnouncement(Convert.parseHexString(recipientPublicKey));
         }
 
