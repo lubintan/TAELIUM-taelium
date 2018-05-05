@@ -1127,8 +1127,10 @@ final class TransactionImpl implements Transaction {
     		if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
     			(deadline < 1 || 
     					(
+    							
+    							
     							(feeNQT.compareTo(BigInteger.ZERO) <= 0) && 
-    							(!NtpTime.getCurrentDate().before(Constants.blockchainStartDate)) 
+    							(!Nxt.getBlockchain().getLastBlock().getDate().before(Constants.blockchainStartDate)) 
     					)
 				)
                 || feeNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0
@@ -1267,7 +1269,7 @@ final class TransactionImpl implements Transaction {
                 return BigInteger.ZERO; // No need to validate fees before baseline block
             }
             Fee fee = blockchainHeight >= appendage.getNextFeeHeight() ? appendage.getNextFee(this) : appendage.getBaselineFee(this);
-            totalFee = totalFee.add(fee.getFee(this, appendage));
+            totalFee = totalFee.add(fee.getFee(this, appendage, blockchainHeight));
             //            totalFee = Math.addExact(totalFee, fee.getFee(this, appendage));
         }
         if (referencedTransactionFullHash != null) {

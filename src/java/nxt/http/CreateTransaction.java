@@ -179,7 +179,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         }
 
 //        BigInteger feeNQT = ParameterParser.getFeeNQT(req);
-        BigInteger feeNQT = NtpTime.getCurrentDate().before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE;
+        BigInteger feeNQT = Nxt.getBlockchain().getLastBlock().getDate().before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE;
         int ecBlockHeight = ParameterParser.getInt(req, "ecBlockHeight", 0, Integer.MAX_VALUE, false);
         long ecBlockId = Convert.parseUnsignedLong(req.getParameter("ecBlockId"));
         if (ecBlockId != 0 && ecBlockId != Nxt.getBlockchain().getBlockIdAtHeight(ecBlockHeight)) {

@@ -288,7 +288,8 @@ public abstract class TransactionType {
     }
 
     Fee getBaselineFee(Transaction transaction) {
-        return Fee.returnFee();
+//        return Fee.returnFee(transaction.getBlock().getHeight());
+		return Fee.NONE;
     }
 
     Fee getNextFee(Transaction transaction) {
