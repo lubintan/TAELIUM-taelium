@@ -465,17 +465,17 @@ var NRS = (function(NRS, $, undefined) {
 		var formattedrYear = Math.floor(NRS.state.rYear*100)/100;
 		formattedrYear = formattedrYear.toFixed(2);
 		var amount = formattedrYear.split('.');
-		formattedrYear = amount[0] + "<span style='font-size:12px'>" + '.' + amount[1] + "</span>";
+		formattedrYear = amount[0] + "<span style='font-size:18px'>" + '.' + amount[1] + "</span>";
 
 		$("#rYear").html(formattedrYear);
-		$("#supplyCurrent").html(NRS.formatStyledAmount(NRS.state.supplyCurrent));
-		$("#blockReward").html(NRS.formatStyledAmount(NRS.state.blockReward));
+		$("#supplyCurrent").html(NRS.formatStyledAmount_Info(NRS.state.supplyCurrent));
+		$("#blockReward").html(NRS.formatStyledAmount_Info(NRS.state.blockReward));
 		$("#date").html(NRS.state.date);
-		$("#totalForgingHoldings").html(NRS.formatStyledAmount(NRS.state.totalForgingHoldings));
+		$("#totalForgingHoldings").html(NRS.formatStyledAmount_Info(NRS.state.totalForgingHoldings));
 
 		var formattedAvgBlockTime = NRS.state.avgBlockTime.toFixed(2);
 		amount = formattedAvgBlockTime.split('.');
-		formattedAvgBlockTime = amount[0] + "<span style='font-size:12px'>" + '.' + amount[1] + "</span>";
+		formattedAvgBlockTime = amount[0] + "<span style='font-size:18px'>" + '.' + amount[1] + "</span>";
 		$("#avgBlockTime").html(formattedAvgBlockTime);
 		$("#acctSumm_height").html(height.toLocaleString());
 		// $("#lastBlockchainFeederHeight").html(NRS.state.lastBlockchainFeederHeight);
@@ -1223,8 +1223,8 @@ var NRS = (function(NRS, $, undefined) {
 					NRS.accountRS = NRS.accountInfo.accountRS;
 				}
                 NRS.updateDashboardMessage();
-                $("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount(response.unconfirmedBalanceNQT));
-                $("#account_confirmed_balance_sidebar").html(NRS.formatStyledAmount(response.balanceNQT));
+                $("#account_balance, #account_balance_sidebar").html(NRS.formatStyledAmount_Info(response.unconfirmedBalanceNQT));
+                $("#account_confirmed_balance_sidebar").html(NRS.formatStyledAmount_Info(response.balanceNQT));
 								$("#account_forged_balance").html(NRS.formatStyledAmount(response.forgedBalanceNQT));
 
                 if (NRS.isDisplayOptionalDashboardTiles()) {
