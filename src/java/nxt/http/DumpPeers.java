@@ -17,6 +17,7 @@
 package nxt.http;
 
 import nxt.Constants;
+import nxt.Nxt;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import nxt.util.Convert;
@@ -49,7 +50,7 @@ public final class DumpPeers extends APIServlet.APIRequestHandler {
         String version = Convert.nullToEmpty(req.getParameter("version"));
         
         
-        BigInteger weight = ParameterParser.getBigInt(req, "weight", BigInteger.ZERO, Constants.MAX_BALANCE_TAELS, false);
+        BigInteger weight = ParameterParser.getBigInt(req, "weight", BigInteger.ZERO, Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()), false);
         boolean connect = "true".equalsIgnoreCase(req.getParameter("connect")) && API.checkPassword(req);
         if (connect) {
             List<Callable<Object>> connects = new ArrayList<>();

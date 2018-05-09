@@ -18,6 +18,7 @@ package nxt.peer;
 //seen.
 import nxt.Account;
 import nxt.Constants;
+import nxt.Nxt;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
 
@@ -91,8 +92,8 @@ public final class Hallmark {
         if (host.length() == 0 || host.length() > 100) {
             throw new IllegalArgumentException("Hostname length should be between 1 and 100");
         }
-        if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.MAX_BALANCE_TAELS) > 0) {
-            throw new IllegalArgumentException("Weight should be between 1 and " + Constants.MAX_BALANCE_TAELS);
+        if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent())) > 0) {
+            throw new IllegalArgumentException("Weight should be between 1 and " + Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()));
         }
 
         byte[] publicKey = Crypto.getPublicKey(secretPhrase);
@@ -152,7 +153,7 @@ public final class Hallmark {
         System.arraycopy(hallmarkBytes, 0, data, 0, data.length);
 
         boolean isValid = host.length() < 100 && weight.compareTo(BigInteger.ZERO) > 0 && 
-        		weight.compareTo(Constants.MAX_BALANCE_TAELS) <= 0
+        		weight.compareTo(Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent())) <= 0
                 && Crypto.verify(signature, data, publicKey);
         try {
             return new Hallmark(hallmarkString, publicKey, signature, host, weight, date, isValid);

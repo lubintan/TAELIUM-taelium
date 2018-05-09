@@ -653,10 +653,13 @@ final class BlockImpl implements Block {
 //            Logger.logDebugMessage("<><><><><>blocktimeAverage: " + blocktimeAverage);
 //            Logger.logDebugMessage("-----------------------------------------");
             
+            
+//            Logger.logDebugMessage("************** Block Time Average: " + blocktimeAverage);
+            
             if (blocktimeAverage > Constants.BLOCK_TIME) {
                 baseTarget = prevBaseTarget.multiply(BigInteger.valueOf(Math.min(blocktimeAverage, Constants.MAX_BLOCKTIME_LIMIT))).divide(BigInteger.valueOf(Constants.BLOCK_TIME));
                 
-                Logger.logDebugMessage("baseTarget INCREASED from " + prevBaseTarget + " to " + baseTarget);
+//                Logger.logDebugMessage("base target increased from " + prevBaseTarget + " to " + baseTarget);
             } else {
 //                baseTarget = prevBaseTarget - prevBaseTarget * Constants.BASE_TARGET_GAMMA
 //                        * (Constants.BLOCK_TIME - Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)) / (100 * Constants.BLOCK_TIME);
@@ -667,7 +670,7 @@ final class BlockImpl implements Block {
             								)
             						
             				);
-            		
+//            		Logger.logDebugMessage("base target decreased from " + prevBaseTarget + " to " + baseTarget);
 //            		Logger.logDebugMessage("prevBTgamma60part: " + prevBaseTarget.multiply(BigInteger.valueOf(Constants.BASE_TARGET_GAMMA).multiply(
 //    						BigInteger.valueOf(Constants.BLOCK_TIME- Math.max(blocktimeAverage, Constants.MIN_BLOCKTIME_LIMIT)))).divide(
 //    								BigInteger.valueOf(100 * Constants.BLOCK_TIME))

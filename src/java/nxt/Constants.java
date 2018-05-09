@@ -46,12 +46,12 @@ public final class Constants {
     public static final int DAILY_BLOCKS = 1440; //blocks. Ie. one day's worth of blocks.
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(1000).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
-    public static final BigInteger INITIAL_BALANCE_TAELS = INITIAL_BALANCE_HAEDS.divide(ONE_TAEL);
+    public static final BigInteger INITIAL_BALANCE_TAELS = haedsToTaels(INITIAL_BALANCE_HAEDS);
     public static BigInteger MAX_BALANCE_HAEDS = Nxt.getBlockchain().getHeight() > 0 ? Nxt.getBlockchain().getLastBlock().getSupplyCurrent():
     														INITIAL_BALANCE_HAEDS; // make this non-final
     
-    public static BigInteger MAX_BALANCE_TAELS = Nxt.getBlockchain().getHeight() > 0 ? Nxt.getBlockchain().getLastBlock().getSupplyCurrent():
-														INITIAL_BALANCE_HAEDS.divide(ONE_TAEL); // make this non-final
+    public static BigInteger MAX_BALANCE_TAELS = Nxt.getBlockchain().getHeight() > 0 ? haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()):
+														INITIAL_BALANCE_TAELS; // make this non-final
     
     
     public static final BigInteger INITIAL_VAULT_HAEDS = INITIAL_BALANCE_HAEDS;
@@ -202,7 +202,7 @@ public final class Constants {
     }
     
     public static void updateMaxBal(BigInteger currentSupply) {
-    		MAX_BALANCE_HAEDS = currentSupply;
-    		MAX_BALANCE_TAELS = haedsToTaels(currentSupply);
+//    		MAX_BALANCE_HAEDS = currentSupply;
+//    		MAX_BALANCE_TAELS = haedsToTaels(currentSupply);
     }
 }

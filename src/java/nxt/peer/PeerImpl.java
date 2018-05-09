@@ -335,7 +335,7 @@ final class PeerImpl implements Peer {
             hallmarkBalance = account == null ? BigInteger.ZERO : account.getBalanceNQT();
             hallmarkBalanceHeight = Nxt.getBlockchain().getHeight();
         }
-        return adjustedWeight.multiply(hallmarkBalance.divide(Constants.ONE_TAEL).divide(Constants.MAX_BALANCE_TAELS));
+        return adjustedWeight.multiply(hallmarkBalance.divide(Constants.ONE_TAEL).divide(Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent())));
     }
 
     @Override
@@ -814,7 +814,7 @@ final class PeerImpl implements Peer {
             }
 
             for (PeerImpl peer : groupedPeers) {
-                peer.adjustedWeight = Constants.MAX_BALANCE_TAELS.multiply(peer.getHallmarkWeight(mostRecentDate).divide(totalWeight));
+                peer.adjustedWeight = Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()).multiply(peer.getHallmarkWeight(mostRecentDate).divide(totalWeight));
                 Peers.notifyListeners(peer, Peers.Event.WEIGHT);
             }
 

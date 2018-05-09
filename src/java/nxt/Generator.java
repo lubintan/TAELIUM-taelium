@@ -111,7 +111,7 @@ public final class Generator implements Comparable<Generator> {
                                 if (generator.getHitTime() - generationLimit > 60) {
                                     break;
                                 }
-                                Logger.logDebugMessage(generator.toString());
+//                                Logger.logDebugMessage(generator.toString());
                                 logged = true;
                             }
                         }
@@ -371,7 +371,7 @@ public final class Generator implements Comparable<Generator> {
 
     @Override
     public String toString() {
-        return "Forger " + Crypto.rsEncode(accountId) + " deadline " + getDeadline() + " hit " + hitTime;
+        return "Forger " + Crypto.rsEncode(accountId);
     }
 
     private void setLastBlock(Block lastBlock) {

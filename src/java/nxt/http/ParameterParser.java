@@ -261,11 +261,11 @@ public final class ParameterParser {
 //    }
 
     public static BigInteger getAmountNQT(HttpServletRequest req) throws ParameterException {
-        return getBigInt(req, "amountNQT", BigInteger.ONE, Constants.MAX_BALANCE_HAEDS, true);
+        return getBigInt(req, "amountNQT", BigInteger.ONE, Nxt.getBlockchain().getLastBlock().getSupplyCurrent(), true);
     }
 
     public static BigInteger getFeeNQT(HttpServletRequest req) throws ParameterException {
-        return getBigInt(req, "feeNQT", BigInteger.ZERO, Constants.MAX_BALANCE_HAEDS, true);
+        return getBigInt(req, "feeNQT", BigInteger.ZERO, Nxt.getBlockchain().getLastBlock().getSupplyCurrent(), true);
     }
 //
 //    public static long getPriceNQT(HttpServletRequest req) throws ParameterException {
@@ -329,7 +329,7 @@ public final class ParameterParser {
     }
 
     public static BigInteger getAmountNQTPerQNT(HttpServletRequest req) throws ParameterException {
-        return getBigInt(req, "amountNQTPerQNT", BigInteger.ONE, Constants.MAX_BALANCE_HAEDS, true);
+        return getBigInt(req, "amountNQTPerQNT", BigInteger.ONE, Nxt.getBlockchain().getLastBlock().getSupplyCurrent(), true);
     }
 //
 //    public static DigitalGoodsStore.Goods getGoods(HttpServletRequest req) throws ParameterException {

@@ -17,6 +17,7 @@
 package nxt.http;
 
 import nxt.Constants;
+import nxt.Nxt;
 import nxt.peer.Hallmark;
 import nxt.util.Convert;
 import org.json.simple.JSONObject;
@@ -65,7 +66,7 @@ public final class MarkHost extends APIServlet.APIRequestHandler {
         try {
 //            weight = Integer.parseInt(weightValue);
         		weight = new BigInteger(weightValue);
-            if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.MAX_BALANCE_TAELS) > 0) {
+            if (weight.compareTo(BigInteger.ZERO) <= 0 || weight.compareTo(Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent())) > 0) {
                 return INCORRECT_WEIGHT;
             }
         } catch (NumberFormatException e) {

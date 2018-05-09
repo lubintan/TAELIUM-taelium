@@ -1133,9 +1133,9 @@ final class TransactionImpl implements Transaction {
     							(!Nxt.getBlockchain().getLastBlock().getDate().before(Constants.blockchainStartDate)) 
     					)
 				)
-                || feeNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0
+                || feeNQT.compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) > 0
                 || amountNQT.compareTo(BigInteger.ZERO) < 0
-                || amountNQT.compareTo(Constants.MAX_BALANCE_HAEDS) > 0 
+                || amountNQT.compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) > 0 
                 || type == null) {
             throw new NxtException.NotValidException("Invalid transaction parameters:\n type: " + type + ", timestamp: " + timestamp
                     + ", deadline: " + deadline + ", fee: " + feeNQT + ", amount: " + amountNQT);
