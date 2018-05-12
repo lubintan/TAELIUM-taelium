@@ -166,10 +166,47 @@
                     <span>Refresh Now</span><i class="fa fa-refresh fontawesomerefreshbuttonwrapper"></i>
                 </button>
             </div>
+            <div class="row">
+                    <div class="box box-primary">
+                        <div class="box-header"><h3 class="box-title">Unconfirmed(Pending) Transactions</h3></div>
+                        <div class="box-body no-padding">
+                            <div class="data-container data-loading" data-no-padding="true" data-extra="#dashboard_transactions_footer">
+                                <table class="table table-striped" id="dashboard_table">
+                                    <thead>
+                                    <tr>
+                                      <th class="titlerowdatetype">Amount</th>
+                                      <th class="titlerowdatetype">Fee</th>
+                                      <th class="titlerowdatetype">Transaction ID</th>
+                                      <th class="titlerowdatetype">Sender</th>
+                                      <th class="titlerowdatetype">Recipient</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
+                                <div class="data-empty-container" style="height: 75px;">
+                                    <p class="tabletextwrapper"><span data-i18n="no_transactions_yet">No transactions yet.</span></p>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
         </div>
     </div>
 
-        <div class="panel panel-default">
+        
+    </section>
+
+    <section class="content">
+      <div class="row">
+      	<div class="box box-primary">
+      			<div class="box-header"><h3 class="box-title">Confirmed Transactions</h3></div>
+                <div class="panel panel-default">
             <div class="data-container data-loading panel-body">
                 <table class="table table-striped" id="ledger_table">
                     <thead>
@@ -194,42 +231,12 @@
             </div>
         </div>
         <div class="data-pagination"></div>
-    </section>
-
-    <section class="content">
-      <div class="row">
-                <div class="col-md-12">
-                    <div class="box box-primary">
-                        <div class="box-header"><h3 class="box-title">Unconfirmed(Pending) Transactions</h3></div>
-                        <div class="box-body no-padding">
-                            <div class="data-container data-loading" data-no-padding="true" data-extra="#dashboard_transactions_footer">
-                                <table class="table table-striped" id="dashboard_table">
-                                    <thead>
-                                    <tr>
-                                      <th class="titlerowdatetype">Amount</th>
-                                      <th class="titlerowdatetype">Fee</th>
-                                      <th class="titlerowdatetype">Transaction ID</th>
-                                      <th class="titlerowdatetype">Sender</th>
-                                      <th class="titlerowdatetype">Recipient</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                                <div class="data-loading-container"><img src="img/loading_indicator.gif" alt="Loading..." width="32" height="32" /></div>
-                                <div class="data-empty-container">
-                                    <p class="tabletextwrapper"><span data-i18n="no_transactions_yet">No transactions yet.</span></p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
+    	</div>
+    </div>
   </section>
 
 </div>
 
 </div>
+
+
