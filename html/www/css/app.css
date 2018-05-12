@@ -293,7 +293,16 @@
  {
    text-align: right;
    margin-top: -15%;
-   margin-left: 20%;
+   margin-left: 0%;
+   font-size: 26px;
+   position: relative;
+   z-index: 1;
+ }
+  .boxtextwrapperSupplyandStaked
+ {
+   text-align: right;
+   margin-top: -15%;
+   margin-left: 0%;
    font-size: 26px;
    position: relative;
    z-index: 1;
@@ -314,7 +323,7 @@
  {
    text-align: right;
    margin-top: -80px;
-   margin-left: 15%;
+   margin-left: 0%;
 
 
  }
