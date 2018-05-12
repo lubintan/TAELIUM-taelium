@@ -17,7 +17,7 @@
 package nxt.db;
 //seen.
 import nxt.Db;
-import nxt.Nxt;
+import nxt.Taelium;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,7 +32,7 @@ public abstract class DerivedDbTable {
 
     protected DerivedDbTable(String table) {
         this.table = table;
-        Nxt.getBlockchainProcessor().registerDerivedTable(this);
+        Taelium.getBlockchainProcessor().registerDerivedTable(this);
     }
 
     public void rollback(int height) {

@@ -18,7 +18,7 @@ package nxt.http;
 
 import nxt.Account;
 import nxt.Generator;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.crypto.Crypto;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,7 +42,7 @@ public final class GetForging extends APIServlet.APIRequestHandler {
     protected JSONStreamAware processRequest(HttpServletRequest req) throws ParameterException {
 
         String secretPhrase = ParameterParser.getSecretPhrase(req, false);
-        int elapsedTime = Nxt.getEpochTime() - Nxt.getBlockchain().getLastBlock().getTimestamp();
+        int elapsedTime = Taelium.getEpochTime() - Taelium.getBlockchain().getLastBlock().getTimestamp();
         if (secretPhrase != null) {
             Account account = Account.getAccount(Crypto.getPublicKey(secretPhrase));
             if (account == null) {

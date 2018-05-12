@@ -16,13 +16,13 @@
 
 package nxt.env;
 
-import nxt.Nxt;
+import nxt.Taelium;
 
 import java.nio.file.Paths;
 
 public class WindowsUserDirProvider extends DesktopUserDirProvider {
 
-    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "AppData", "Roaming", Nxt.APPLICATION.toUpperCase()).toString();
+    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "AppData", "Roaming", Taelium.APPLICATION.toUpperCase()).toString();
 
     @Override
     public String getUserHomeDir() {

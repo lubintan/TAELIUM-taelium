@@ -31,7 +31,7 @@ public class CalculateReward {
 	public static BigInteger calculateReward(Date date) {		
 		CalculateInterestAndG.updateDayCounter();
 		
-		if (Nxt.getBlockchain().getHeight() < 0) {
+		if (Taelium.getBlockchain().getHeight() < 0) {
 			blockReward = BigInteger.ZERO;
 			}
 		else if (date.before(Constants.blockchainStartDate)) {
@@ -71,7 +71,7 @@ public class CalculateReward {
 		else if (date.before(Constants.interestRewardsTxFeesKickInDate)) { 
 			blockReward = Constants.INITIAL_REWARD;
 			}
-		else {blockReward = Nxt.getBlockchain().getLastBlock().getBlockReward();}
+		else {blockReward = Taelium.getBlockchain().getLastBlock().getBlockReward();}
 		
 		return blockReward;
 	}

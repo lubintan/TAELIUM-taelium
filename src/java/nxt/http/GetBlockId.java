@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -50,7 +50,7 @@ public final class GetBlockId extends APIServlet.APIRequestHandler {
 
         try {
             JSONObject response = new JSONObject();
-            response.put("block", Long.toUnsignedString(Nxt.getBlockchain().getBlockIdAtHeight(height)));
+            response.put("block", Long.toUnsignedString(Taelium.getBlockchain().getBlockIdAtHeight(height)));
             return response;
         } catch (RuntimeException e) {
             return INCORRECT_HEIGHT;

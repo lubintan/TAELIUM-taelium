@@ -35,7 +35,7 @@ public interface Fee {
     
     static BigInteger calculateFee(int height) {
 //    		Date today = NtpTime.getCurrentDate();
-    		Date today = Nxt.getBlockchain().getBlockAtHeight(height-1).getDate();
+    		Date today = Taelium.getBlockchain().getBlockAtHeight(height-1).getDate();
     		
     		if (today.before(Constants.blockchainStartDate)) {
     			return BigInteger.ZERO;

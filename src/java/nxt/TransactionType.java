@@ -382,7 +382,7 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) <= 0 || 
-                		transaction.getAmountNQT().compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
+                		transaction.getAmountNQT().compareTo(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
                     throw new NxtException.NotValidException("Invalid ordinary reward");
                 }
             }
@@ -459,7 +459,7 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) <= 0 || 
-                		transaction.getAmountNQT().compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
+                		transaction.getAmountNQT().compareTo(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
                     throw new NxtException.NotValidException("Invalid ordinary payment");
                 }
             }
@@ -1509,7 +1509,7 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 Attachment.TaggedDataUpload attachment = (Attachment.TaggedDataUpload) transaction.getAttachment();
-                if (attachment.getData() == null && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
+                if (attachment.getData() == null && Taelium.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");
                 }
                 if (attachment.getData() != null) {
@@ -1580,10 +1580,10 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 Attachment.TaggedDataExtend attachment = (Attachment.TaggedDataExtend) transaction.getAttachment();
-                if ((attachment.jsonIsPruned() || attachment.getData() == null) && Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
+                if ((attachment.jsonIsPruned() || attachment.getData() == null) && Taelium.getEpochTime() - transaction.getTimestamp() < Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data has been pruned prematurely");
                 }
-                TransactionImpl uploadTransaction = TransactionDb.findTransaction(attachment.getTaggedDataId(), Nxt.getBlockchain().getHeight());
+                TransactionImpl uploadTransaction = TransactionDb.findTransaction(attachment.getTaggedDataId(), Taelium.getBlockchain().getHeight());
                 if (uploadTransaction == null) {
                     throw new NxtException.NotCurrentlyValidException("No such tagged data upload " + Long.toUnsignedString(attachment.getTaggedDataId()));
                 }
@@ -1599,7 +1599,7 @@ public abstract class TransactionType {
                     }
                 }
                 TaggedData taggedData = TaggedData.getData(attachment.getTaggedDataId());
-                if (taggedData != null && taggedData.getTransactionTimestamp() > Nxt.getEpochTime() + 6 * Constants.MIN_PRUNABLE_LIFETIME) {
+                if (taggedData != null && taggedData.getTransactionTimestamp() > Taelium.getEpochTime() + 6 * Constants.MIN_PRUNABLE_LIFETIME) {
                     throw new NxtException.NotCurrentlyValidException("Data already extended, timestamp is " + taggedData.getTransactionTimestamp());
                 }
             }

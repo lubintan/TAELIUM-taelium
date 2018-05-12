@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,7 +37,7 @@ public final class GetAllWaitingTransactions extends APIServlet.APIRequestHandle
         JSONObject response = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         response.put("transactions", jsonArray);
-        Transaction[] transactions = Nxt.getTransactionProcessor().getAllWaitingTransactions();
+        Transaction[] transactions = Taelium.getTransactionProcessor().getAllWaitingTransactions();
         for (Transaction transaction : transactions) {
             jsonArray.add(JSONData.unconfirmedTransaction(transaction));
         }

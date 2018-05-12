@@ -23,17 +23,17 @@ public final class Db {
 
     public static final String PREFIX = Constants.isTestnet ? "tael.testDb" : "tael.db";
     public static final TransactionalDb db = new TransactionalDb(new BasicDb.DbProperties()
-            .maxCacheSize(Nxt.getIntProperty("tael.dbCacheKB"))
-            .dbUrl(Nxt.getStringProperty(PREFIX + "Url"))
-            .dbType(Nxt.getStringProperty(PREFIX + "Type"))
-            .dbDir(Nxt.getStringProperty(PREFIX + "Dir"))
-            .dbParams(Nxt.getStringProperty(PREFIX + "Params"))
-            .dbUsername(Nxt.getStringProperty(PREFIX + "Username"))
-            .dbPassword(Nxt.getStringProperty(PREFIX + "Password", null, true))
-            .maxConnections(Nxt.getIntProperty("tael.maxDbConnections"))
-            .loginTimeout(Nxt.getIntProperty("tael.dbLoginTimeout"))
-            .defaultLockTimeout(Nxt.getIntProperty("tael.dbDefaultLockTimeout") * 1000)
-            .maxMemoryRows(Nxt.getIntProperty("tael.dbMaxMemoryRows"))
+            .maxCacheSize(Taelium.getIntProperty("tael.dbCacheKB"))
+            .dbUrl(Taelium.getStringProperty(PREFIX + "Url"))
+            .dbType(Taelium.getStringProperty(PREFIX + "Type"))
+            .dbDir(Taelium.getStringProperty(PREFIX + "Dir"))
+            .dbParams(Taelium.getStringProperty(PREFIX + "Params"))
+            .dbUsername(Taelium.getStringProperty(PREFIX + "Username"))
+            .dbPassword(Taelium.getStringProperty(PREFIX + "Password", null, true))
+            .maxConnections(Taelium.getIntProperty("tael.maxDbConnections"))
+            .loginTimeout(Taelium.getIntProperty("tael.dbLoginTimeout"))
+            .defaultLockTimeout(Taelium.getIntProperty("tael.dbDefaultLockTimeout") * 1000)
+            .maxMemoryRows(Taelium.getIntProperty("tael.dbMaxMemoryRows"))
     );
 
     public static void init() {

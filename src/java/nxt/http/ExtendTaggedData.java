@@ -18,7 +18,7 @@ package nxt.http;
 
 import nxt.Account;
 import nxt.Attachment;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.TaggedData;
 import nxt.Transaction;
@@ -45,7 +45,7 @@ public final class ExtendTaggedData extends CreateTransaction {
         long transactionId = ParameterParser.getUnsignedLong(req, "transaction", true);
         TaggedData taggedData = TaggedData.getData(transactionId);
         if (taggedData == null) {
-            Transaction transaction = Nxt.getBlockchain().getTransaction(transactionId);
+            Transaction transaction = Taelium.getBlockchain().getTransaction(transactionId);
             if (transaction == null || transaction.getType() != TransactionType.Data.TAGGED_DATA_UPLOAD) {
                 return UNKNOWN_TRANSACTION;
             }

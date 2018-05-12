@@ -16,7 +16,7 @@
 
 package nxt.peer;
 //seen.
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.util.JSON;
 import org.json.simple.JSONObject;
@@ -33,7 +33,7 @@ final class ProcessTransactions extends PeerServlet.PeerRequestHandler {
     JSONStreamAware processRequest(JSONObject request, Peer peer) {
 
         try {
-            Nxt.getTransactionProcessor().processPeerTransactions(request);
+            Taelium.getTransactionProcessor().processPeerTransactions(request);
             return JSON.emptyJSON;
         } catch (RuntimeException | NxtException.ValidationException e) {
             peer.blacklist(e);

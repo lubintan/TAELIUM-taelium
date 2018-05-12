@@ -16,7 +16,7 @@
 
 package nxt.db;
 //seen.
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 import org.h2.jdbcx.JdbcConnectionPool;
 
@@ -116,7 +116,7 @@ public class BasicDb {
         }
         String dbUrl = dbProperties.dbUrl;
         if (dbUrl == null) {
-            String dbDir = Nxt.getDbDir(dbProperties.dbDir);
+            String dbDir = Taelium.getDbDir(dbProperties.dbDir);
             dbUrl = String.format("jdbc:%s:%s;%s", dbProperties.dbType, dbDir, dbProperties.dbParams);
         }
         if (!dbUrl.contains("MV_STORE=")) {

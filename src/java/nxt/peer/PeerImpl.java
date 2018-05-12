@@ -19,7 +19,7 @@ package nxt.peer;
 import nxt.Account;
 import nxt.BlockchainProcessor;
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.http.API;
 import nxt.http.APIEnum;
@@ -168,7 +168,7 @@ final class PeerImpl implements Peer {
         boolean versionChanged = version == null || !version.equals(this.version);
         this.version = version;
         isOldVersion = false;
-        if (Nxt.APPLICATION.equals(application)) {
+        if (Taelium.APPLICATION.equals(application)) {
             isOldVersion = Peers.isOldVersion(version, Constants.MIN_VERSION);
             if (isOldVersion) {
                 if (versionChanged) {
@@ -329,13 +329,13 @@ final class PeerImpl implements Peer {
         if (hallmark == null) {
             return BigInteger.ZERO;
         }
-        if (hallmarkBalance.compareTo(BigInteger.valueOf(-1)) == 0 || hallmarkBalanceHeight < Nxt.getBlockchain().getHeight() - 60) {
+        if (hallmarkBalance.compareTo(BigInteger.valueOf(-1)) == 0 || hallmarkBalanceHeight < Taelium.getBlockchain().getHeight() - 60) {
             long accountId = hallmark.getAccountId();
             Account account = Account.getAccount(accountId);
             hallmarkBalance = account == null ? BigInteger.ZERO : account.getBalanceNQT();
-            hallmarkBalanceHeight = Nxt.getBlockchain().getHeight();
+            hallmarkBalanceHeight = Taelium.getBlockchain().getHeight();
         }
-        return adjustedWeight.multiply(hallmarkBalance.divide(Constants.ONE_TAEL).divide(Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent())));
+        return adjustedWeight.multiply(hallmarkBalance.divide(Constants.ONE_TAEL).divide(Constants.haedsToTaels(Taelium.getBlockchain().getLastBlock().getSupplyCurrent())));
     }
 
     @Override
@@ -370,7 +370,7 @@ final class PeerImpl implements Peer {
     @Override
     public void blacklist(String cause) {
     		
-        blacklistingTime = Nxt.getEpochTime();
+        blacklistingTime = Taelium.getEpochTime();
         blacklistingCause = cause;
         setState(State.NON_CONNECTED);
         lastInboundRequest = 0;
@@ -624,7 +624,7 @@ final class PeerImpl implements Peer {
     }
 
     void connect() {
-        lastConnectAttempt = Nxt.getEpochTime();
+        lastConnectAttempt = Taelium.getEpochTime();
         try {
             if (!Peers.ignorePeerAnnouncedAddress && announcedAddress != null) {
                 try {
@@ -814,7 +814,7 @@ final class PeerImpl implements Peer {
             }
 
             for (PeerImpl peer : groupedPeers) {
-                peer.adjustedWeight = Constants.haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()).multiply(peer.getHallmarkWeight(mostRecentDate).divide(totalWeight));
+                peer.adjustedWeight = Constants.haedsToTaels(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()).multiply(peer.getHallmarkWeight(mostRecentDate).divide(totalWeight));
                 Peers.notifyListeners(peer, Peers.Event.WEIGHT);
             }
 

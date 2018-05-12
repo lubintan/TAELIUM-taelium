@@ -17,7 +17,7 @@
 package nxt.db;
 //seen.
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 
 import java.sql.Connection;
@@ -62,15 +62,15 @@ public abstract class EntityDbTable<T> extends DerivedDbTable {
 
     public void checkAvailable(int height) {
         if (multiversion) {
-            int minRollBackHeight = isPersistent() && Nxt.getBlockchainProcessor().isScanning() ?
-                    Math.max(Nxt.getBlockchainProcessor().getInitialScanHeight() - Constants.MAX_ROLLBACK, 0)
-                    : Nxt.getBlockchainProcessor().getMinRollbackHeight();
+            int minRollBackHeight = isPersistent() && Taelium.getBlockchainProcessor().isScanning() ?
+                    Math.max(Taelium.getBlockchainProcessor().getInitialScanHeight() - Constants.MAX_ROLLBACK, 0)
+                    : Taelium.getBlockchainProcessor().getMinRollbackHeight();
             if (height < minRollBackHeight) {
                 throw new IllegalArgumentException("Historical data as of height " + height + " not available.");
             }
         }
-        if (height > Nxt.getBlockchain().getHeight()) {
-            throw new IllegalArgumentException("Height " + height + " exceeds blockchain height " + Nxt.getBlockchain().getHeight());
+        if (height > Taelium.getBlockchain().getHeight()) {
+            throw new IllegalArgumentException("Height " + height + " exceeds blockchain height " + Taelium.getBlockchain().getHeight());
         }
     }
 
@@ -461,7 +461,7 @@ public abstract class EntityDbTable<T> extends DerivedDbTable {
     }
 
     private boolean doesNotExceed(int height) {
-        return Nxt.getBlockchain().getHeight() <= height && ! (isPersistent() && Nxt.getBlockchainProcessor().isScanning());
+        return Taelium.getBlockchain().getHeight() <= height && ! (isPersistent() && Taelium.getBlockchainProcessor().isScanning());
     }
 
 }

@@ -18,7 +18,7 @@ package nxt.peer;
 //seen.
 import nxt.Blockchain;
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -41,7 +41,7 @@ public class GetTransactions extends PeerServlet.PeerRequestHandler {
         JSONObject response = new JSONObject();
         JSONArray transactionArray = new JSONArray();
         JSONArray transactionIds = (JSONArray)request.get("transactionIds");
-        Blockchain blockchain = Nxt.getBlockchain();
+        Blockchain blockchain = Taelium.getBlockchain();
         //
         // Return the transactions to the caller
         //

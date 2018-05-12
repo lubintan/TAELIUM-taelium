@@ -16,7 +16,7 @@
 
 package nxt.tools;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import nxt.util.Convert;
 
@@ -61,7 +61,7 @@ public final class SignTransactions {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     byte[] transactionBytes = Convert.parseHexString(line);
-                    Transaction.Builder builder = Nxt.newTransactionBuilder(transactionBytes);
+                    Transaction.Builder builder = Taelium.newTransactionBuilder(transactionBytes);
                     Transaction transaction = builder.build(secretPhrase);
                     writer.write(Convert.toHexString(transaction.getBytes()));
                     writer.newLine();

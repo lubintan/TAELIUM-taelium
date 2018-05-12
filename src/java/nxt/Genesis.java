@@ -113,7 +113,7 @@ public final class Genesis {
             }//initial account balances distributed here.
         }
         if (total.compareTo(Constants.INITIAL_BALANCE_HAEDS) > 0) {
-            throw new RuntimeException("Total balance " + total + " exceeds maximum allowed " + Nxt.getBlockchain().getLastBlock().getSupplyCurrent());
+            throw new RuntimeException("Total balance " + total + " exceeds maximum allowed " + Taelium.getBlockchain().getLastBlock().getSupplyCurrent());
         }
         Logger.logDebugMessage("Total balance %s %s", Constants.haedsToTaels(total).toString(), Constants.COIN_SYMBOL);
         Account creatorAccount = Account.addOrGetAccount(Genesis.CREATOR_ID);

@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -34,7 +34,7 @@ public final class FullReset extends APIServlet.APIRequestHandler {
     protected JSONStreamAware processRequest(HttpServletRequest req) {
         JSONObject response = new JSONObject();
         try {
-            Nxt.getBlockchainProcessor().fullReset();
+            Taelium.getBlockchainProcessor().fullReset();
             response.put("done", true);
         } catch (RuntimeException e) {
             JSONData.putException(response, e);

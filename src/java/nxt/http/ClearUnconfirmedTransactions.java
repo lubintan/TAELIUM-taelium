@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -34,7 +34,7 @@ public final class ClearUnconfirmedTransactions extends APIServlet.APIRequestHan
     protected JSONStreamAware processRequest(HttpServletRequest req) {
         JSONObject response = new JSONObject();
         try {
-            Nxt.getTransactionProcessor().clearUnconfirmedTransactions();
+            Taelium.getTransactionProcessor().clearUnconfirmedTransactions();
             response.put("done", true);
         } catch (RuntimeException e) {
             JSONData.putException(response, e);

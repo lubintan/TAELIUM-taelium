@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import org.json.simple.JSONStreamAware;
 
@@ -36,11 +36,11 @@ public class RetrievePrunedTransaction extends APIServlet.APIRequestHandler {
     @Override
     protected JSONStreamAware processRequest(HttpServletRequest req) throws ParameterException {
         long transactionId = ParameterParser.getUnsignedLong(req, "transaction", true);
-        Transaction transaction = Nxt.getBlockchain().getTransaction(transactionId);
+        Transaction transaction = Taelium.getBlockchain().getTransaction(transactionId);
         if (transaction == null) {
             return UNKNOWN_TRANSACTION;
         }
-        transaction = Nxt.getBlockchainProcessor().restorePrunedTransaction(transactionId);
+        transaction = Taelium.getBlockchainProcessor().restorePrunedTransaction(transactionId);
         if (transaction == null) {
             return PRUNED_TRANSACTION;
         }

@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import nxt.util.Logger;
@@ -39,9 +39,9 @@ public class APIProxy {
     private static final APIProxy instance = new APIProxy();
 
     static final boolean enableAPIProxy = Constants.isLightClient ||
-            (Nxt.getBooleanProperty("tael.enableAPIProxy") && ! API.isOpenAPI);
-    private static final int blacklistingPeriod = Nxt.getIntProperty("tael.apiProxyBlacklistingPeriod") / 1000;
-    static final String forcedServerURL = Nxt.getStringProperty("tael.forceAPIProxyServerURL", "");
+            (Taelium.getBooleanProperty("tael.enableAPIProxy") && ! API.isOpenAPI);
+    private static final int blacklistingPeriod = Taelium.getIntProperty("tael.apiProxyBlacklistingPeriod") / 1000;
+    static final String forcedServerURL = Taelium.getStringProperty("tael.forceAPIProxyServerURL", "");
 
     private volatile String forcedPeerHost;
     private volatile List<String> peersHosts = Collections.emptyList();
@@ -67,7 +67,7 @@ public class APIProxy {
     }
 
     private static final Runnable peersUpdateThread = () -> {
-        int curTime = Nxt.getEpochTime();
+        int curTime = Taelium.getEpochTime();
         instance.blacklistedPeers.entrySet().removeIf((entry) -> {
             if (entry.getValue() < curTime) {
                 Logger.logDebugMessage("Unblacklisting API peer " + entry.getKey());
@@ -180,7 +180,7 @@ public class APIProxy {
     }
 
     static boolean isActivated() {
-        return Constants.isLightClient || (enableAPIProxy && Nxt.getBlockchainProcessor().isDownloading());
+        return Constants.isLightClient || (enableAPIProxy && Taelium.getBlockchainProcessor().isDownloading());
     }
 
     boolean blacklistHost(String host) {
@@ -188,7 +188,7 @@ public class APIProxy {
             Logger.logInfoMessage("Too many blacklisted peers");
             return false;
         }
-        blacklistedPeers.put(host, Nxt.getEpochTime() + blacklistingPeriod);
+        blacklistedPeers.put(host, Taelium.getEpochTime() + blacklistingPeriod);
         if (peersHosts.contains(host)) {
             peersHosts = Collections.emptyList();
             getServingPeer(null);

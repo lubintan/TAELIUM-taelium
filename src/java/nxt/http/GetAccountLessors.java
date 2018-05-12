@@ -18,7 +18,7 @@ package nxt.http;
 
 import nxt.Account;
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.db.DbIterator;
 import org.json.simple.JSONArray;
@@ -41,7 +41,7 @@ public final class GetAccountLessors extends APIServlet.APIRequestHandler {
         Account account = ParameterParser.getAccount(req);
         int height = ParameterParser.getHeight(req);
         if (height < 0) {
-            height = Nxt.getBlockchain().getHeight();
+            height = Taelium.getBlockchain().getHeight();
         }
 
         JSONObject response = new JSONObject();

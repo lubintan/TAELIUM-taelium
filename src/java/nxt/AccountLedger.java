@@ -61,10 +61,10 @@ public class AccountLedger {
 //    		Nxt.getIntProperty("tael.ledgerTrimKeep", 30000);
 
     /** Blockchain */
-    private static final Blockchain blockchain = Nxt.getBlockchain();
+    private static final Blockchain blockchain = Taelium.getBlockchain();
 
     /** Blockchain processor */
-    private static final BlockchainProcessor blockchainProcessor = Nxt.getBlockchainProcessor();
+    private static final BlockchainProcessor blockchainProcessor = Taelium.getBlockchainProcessor();
 
     /** Pending ledger entries */
     private static final List<LedgerEntry> pendingEntries = new ArrayList<>();
@@ -73,7 +73,7 @@ public class AccountLedger {
      * Process tael.ledgerAccounts
      */
     static {
-        List<String> ledgerAccounts = Nxt.getStringListProperty("tael.ledgerAccounts");
+        List<String> ledgerAccounts = Taelium.getStringListProperty("tael.ledgerAccounts");
         ledgerEnabled = !ledgerAccounts.isEmpty();
         trackAllAccounts = ledgerAccounts.contains("*");
         if (ledgerEnabled) {

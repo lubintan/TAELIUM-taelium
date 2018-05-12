@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
@@ -50,9 +50,9 @@ public final class GetTransaction extends APIServlet.APIRequestHandler {
         try {
             if (transactionIdString != null) {
                 transactionId = Convert.parseUnsignedLong(transactionIdString);
-                transaction = Nxt.getBlockchain().getTransaction(transactionId);
+                transaction = Taelium.getBlockchain().getTransaction(transactionId);
             } else {
-                transaction = Nxt.getBlockchain().getTransactionByFullHash(transactionFullHash);
+                transaction = Taelium.getBlockchain().getTransactionByFullHash(transactionFullHash);
                 if (transaction == null) {
                     return UNKNOWN_TRANSACTION;
                 }
@@ -62,7 +62,7 @@ public final class GetTransaction extends APIServlet.APIRequestHandler {
         }
 
         if (transaction == null) {
-            transaction = Nxt.getTransactionProcessor().getUnconfirmedTransaction(transactionId);
+            transaction = Taelium.getTransactionProcessor().getUnconfirmedTransaction(transactionId);
             if (transaction == null) {
                 return UNKNOWN_TRANSACTION;
             }

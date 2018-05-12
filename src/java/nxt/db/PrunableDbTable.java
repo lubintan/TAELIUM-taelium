@@ -17,7 +17,7 @@
 package nxt.db;
 
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 
 import java.sql.Connection;
@@ -48,7 +48,7 @@ public abstract class PrunableDbTable<T> extends PersistentDbTable<T> {
         if (Constants.ENABLE_PRUNING) {
             try (Connection con = db.getConnection();
                  PreparedStatement pstmt = con.prepareStatement("DELETE FROM " + table + " WHERE transaction_timestamp < ? LIMIT " + Constants.BATCH_COMMIT_SIZE)) {
-                pstmt.setInt(1, Nxt.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME);
+                pstmt.setInt(1, Taelium.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME);
                 int deleted;
                 do {
                     deleted = pstmt.executeUpdate();

@@ -85,7 +85,7 @@ public class TransactionScheduler {
     }
 
     private boolean processEvent(Transaction unconfirmedTransaction) {
-        if (transaction.getExpiration() < Nxt.getEpochTime()) {
+        if (transaction.getExpiration() < Taelium.getEpochTime()) {
             Logger.logInfoMessage("Expired transaction in transaction scheduler " + transaction.getSenderId());
             return true;
         }

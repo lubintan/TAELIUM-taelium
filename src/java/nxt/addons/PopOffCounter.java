@@ -17,7 +17,7 @@
 package nxt.addons;
 
 import nxt.BlockchainProcessor;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.http.APIServlet;
 import nxt.http.APITag;
@@ -32,7 +32,7 @@ public final class PopOffCounter implements AddOn {
 
     @Override
     public void init() {
-        Nxt.getBlockchainProcessor().addListener(block -> numberOfPopOffs += 1, BlockchainProcessor.Event.BLOCK_POPPED);
+        Taelium.getBlockchainProcessor().addListener(block -> numberOfPopOffs += 1, BlockchainProcessor.Event.BLOCK_POPPED);
     }
 
     @Override

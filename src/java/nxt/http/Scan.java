@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -45,16 +45,16 @@ public final class Scan extends APIServlet.APIRequestHandler {
             } catch (NumberFormatException ignore) {}
             long start = System.currentTimeMillis();
             try {
-                Nxt.getBlockchainProcessor().setGetMoreBlocks(false);
+                Taelium.getBlockchainProcessor().setGetMoreBlocks(false);
                 if (numBlocks > 0) {
-                    Nxt.getBlockchainProcessor().scan(Nxt.getBlockchain().getHeight() - numBlocks + 1, validate);
+                    Taelium.getBlockchainProcessor().scan(Taelium.getBlockchain().getHeight() - numBlocks + 1, validate);
                 } else if (height >= 0) {
-                    Nxt.getBlockchainProcessor().scan(height, validate);
+                    Taelium.getBlockchainProcessor().scan(height, validate);
                 } else {
                     return JSONResponses.missing("numBlocks", "height");
                 }
             } finally {
-                Nxt.getBlockchainProcessor().setGetMoreBlocks(true);
+                Taelium.getBlockchainProcessor().setGetMoreBlocks(true);
             }
             long end = System.currentTimeMillis();
             response.put("done", true);

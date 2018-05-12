@@ -87,10 +87,10 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
     private final ExecutorService networkService = Executors.newCachedThreadPool();
     private final List<DerivedDbTable> derivedTables = new CopyOnWriteArrayList<>();
-    private final boolean trimDerivedTables = Nxt.getBooleanProperty("tael.trimDerivedTables");
-    private final int defaultNumberOfForkConfirmations = Nxt.getIntProperty(Constants.isTestnet
+    private final boolean trimDerivedTables = Taelium.getBooleanProperty("tael.trimDerivedTables");
+    private final int defaultNumberOfForkConfirmations = Taelium.getIntProperty(Constants.isTestnet
             ? "tael.testnetNumberOfForkConfirmations" : "tael.numberOfForkConfirmations");
-    private final boolean simulateEndlessDownload = Nxt.getBooleanProperty("nxt.simulateEndlessDownload");
+    private final boolean simulateEndlessDownload = Taelium.getBooleanProperty("nxt.simulateEndlessDownload");
 
     private int initialScanHeight;
     private volatile int lastTrimHeight;
@@ -149,7 +149,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 //
                 // Restore prunable data
                 //
-                int now = Nxt.getEpochTime();
+                int now = Taelium.getEpochTime();
                 if (!isRestoring && !prunableTransactions.isEmpty() && now - lastRestoreTime > 60 * 60) {
                     isRestoring = true;
                     lastRestoreTime = now;
@@ -928,7 +928,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                     if (transactions == null || transactions.isEmpty()) {
                         return;
                     }
-                    List<Transaction> processed = Nxt.getTransactionProcessor().restorePrunableData(transactions);
+                    List<Transaction> processed = Taelium.getTransactionProcessor().restorePrunableData(transactions);
                     //
                     // Remove transactions that have been successfully processed
                     //
@@ -958,7 +958,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     };
     //***** CONSTRUCTOR *****//
     private BlockchainProcessorImpl() {
-        final int trimFrequency = Nxt.getIntProperty("tael.trimFrequency");
+        final int trimFrequency = Taelium.getIntProperty("tael.trimFrequency");
         blockListeners.addListener(block -> {
             if (block.getHeight() % 5000 == 0) {
                 Logger.logMessage("processed block " + block.getHeight());
@@ -991,8 +991,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         ThreadPool.runBeforeStart(() -> {
             alreadyInitialized = true;
             addGenesisBlock();
-            if (Nxt.getBooleanProperty("tael.forceScan")) {
-                scan(0, Nxt.getBooleanProperty("tael.forceValidate"));
+            if (Taelium.getBooleanProperty("tael.forceScan")) {
+                scan(0, Taelium.getBooleanProperty("tael.forceValidate"));
             } else {
                 boolean rescan;
                 boolean validate;
@@ -1182,7 +1182,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     public int restorePrunedData() {
         Db.db.beginTransaction();
         try (Connection con = Db.db.getConnection()) {
-            int now = Nxt.getEpochTime();
+            int now = Taelium.getEpochTime();
             int minTimestamp = Math.max(1, now - Constants.MAX_PRUNABLE_LIFETIME);
             int maxTimestamp = Math.max(minTimestamp, now - Constants.MIN_PRUNABLE_LIFETIME) - 1;
             List<TransactionDb.PrunableTransaction> transactionList =
@@ -1255,7 +1255,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 continue;
             }
             try {
-                List<Transaction> processed = Nxt.getTransactionProcessor().restorePrunableData(transactions);
+                List<Transaction> processed = Taelium.getTransactionProcessor().restorePrunableData(transactions);
                 if (processed.isEmpty()) {
                     continue;
                 }
@@ -1322,7 +1322,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     
     private void pushBlock(final BlockImpl block, boolean givenInterest) throws BlockNotAcceptedException {
     		// adds the block to the db.
-        int curTime = Nxt.getEpochTime();
+        int curTime = Taelium.getEpochTime();
 
         blockchain.writeLock();
         try {
@@ -1354,7 +1354,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 validateTransactions(block, previousLastBlock, curTime, duplicates, previousLastBlock.getHeight() >= Constants.LAST_CHECKSUM_BLOCK);
                 block.setPrevious(previousLastBlock);
                
-                  Boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight() > -1) && !CalculateInterestAndG.checkIfDateInDailyData(block.getDate()) &&
+                  Boolean isFirstBlockOfNewDay = (Taelium.getBlockchain().getHeight() > -1) && !CalculateInterestAndG.checkIfDateInDailyData(block.getDate()) &&
                 		  block.getDate().after(previousLastBlock.getDate());
              
                   if (isFirstBlockOfNewDay) {
@@ -1663,7 +1663,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
             block.apply();
 //            validPhasedTransactions.forEach(transaction -> transaction.getPhasing().countVotes(transaction));
 //            invalidPhasedTransactions.forEach(transaction -> transaction.getPhasing().reject(transaction));
-            int fromTimestamp = Nxt.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME;
+            int fromTimestamp = Taelium.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME;
             for (TransactionImpl transaction : block.getTransactions()) {
                 try {
                     transaction.apply();
@@ -2046,7 +2046,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
         BlockImpl previousBlock = blockchain.getLastBlock();
         
-        Boolean isFirstBlockOfNewDay = (Nxt.getBlockchain().getHeight() > -1) && 
+        Boolean isFirstBlockOfNewDay = (Taelium.getBlockchain().getHeight() > -1) && 
         		(!CalculateInterestAndG.checkIfDateInDailyData(today)) &&
 	      		  today.after(previousBlock.getDate());
         
@@ -2371,7 +2371,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                                     List<TransactionImpl> invalidPhasedTransactions = new ArrayList<>();
 //                                    validatePhasedTransactions(blockchain.getHeight(), validPhasedTransactions, invalidPhasedTransactions, duplicates);
                                     if (validate && currentBlock.getHeight() > 0) {
-                                        int curTime = Nxt.getEpochTime();
+                                        int curTime = Taelium.getEpochTime();
                                         validate(currentBlock, blockchain.getLastBlock(), curTime);
                                         byte[] blockBytes = currentBlock.bytes();
                                         JSONObject blockJSON = (JSONObject) JSONValue.parse(currentBlock.getJSONObject().toJSONString());

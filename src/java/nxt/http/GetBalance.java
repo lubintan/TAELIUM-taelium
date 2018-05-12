@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Account;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import org.json.simple.JSONStreamAware;
 
@@ -37,7 +37,7 @@ public final class GetBalance extends APIServlet.APIRequestHandler {
         long accountId = ParameterParser.getAccountId(req, true);
         int height = ParameterParser.getHeight(req);
         if (height < 0) {
-            height = Nxt.getBlockchain().getHeight();
+            height = Taelium.getBlockchain().getHeight();
         }
         Account account = Account.getAccount(accountId, height);
         return JSONData.accountBalance(account, includeEffectiveBalance, height);

@@ -16,7 +16,7 @@
 
 package nxt.env.service;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.env.LookAndFeel;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class NxtService_ServiceManagement {
         LookAndFeel.init();
         new Thread(() -> {
             String[] args = {};
-            Nxt.main(args);
+            Taelium.main(args);
         }).start();
         return true;
     }
@@ -36,8 +36,8 @@ public class NxtService_ServiceManagement {
     // Invoked when registering the service
     public static String[] serviceGetInfo() {
         return new String[]{
-                Nxt.APPLICATION + " Server", // Long name
-                "Manages the " + Nxt.APPLICATION + " cryptographic currency protocol", // Description
+                Taelium.APPLICATION + " Server", // Long name
+                "Manages the " + Taelium.APPLICATION + " cryptographic currency protocol", // Description
                 "true", // IsAutomatic
                 "true", // IsAcceptStop
                 "", // failure exe
@@ -52,7 +52,7 @@ public class NxtService_ServiceManagement {
     }
 
     public static boolean serviceIsCreate() {
-        return JOptionPane.showConfirmDialog(null, "Do you want to install the " + Nxt.APPLICATION + " service ?", "Create Service", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+        return JOptionPane.showConfirmDialog(null, "Do you want to install the " + Taelium.APPLICATION + " service ?", "Create Service", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
     public static boolean serviceIsLaunch() {
@@ -60,7 +60,7 @@ public class NxtService_ServiceManagement {
     }
 
     public static boolean serviceIsDelete() {
-        return JOptionPane.showConfirmDialog(null, "This " + Nxt.APPLICATION + " service is already installed. Do you want to delete it ?", "Delete Service", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+        return JOptionPane.showConfirmDialog(null, "This " + Taelium.APPLICATION + " service is already installed. Do you want to delete it ?", "Delete Service", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
     public static boolean serviceControl_Pause() {

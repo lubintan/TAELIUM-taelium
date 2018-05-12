@@ -21,7 +21,7 @@ import nxt.AccountLedger.LedgerEntry;
 import nxt.Block;
 import nxt.BlockchainProcessor;
 import nxt.Db;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import nxt.TransactionProcessor;
 import nxt.db.TransactionalDb;
@@ -65,16 +65,16 @@ import java.util.concurrent.locks.ReentrantLock;
 class EventListener implements Runnable, AsyncListener, TransactionalDb.TransactionCallback {
 
     /** Maximum event users */
-    static final int maxEventUsers = Nxt.getIntProperty("tael.apiMaxEventUsers");
+    static final int maxEventUsers = Taelium.getIntProperty("tael.apiMaxEventUsers");
 
     /** Event registration timeout (seconds) */
-    static final int eventTimeout = Math.max(Nxt.getIntProperty("tael.apiEventTimeout"), 15);
+    static final int eventTimeout = Math.max(Taelium.getIntProperty("tael.apiEventTimeout"), 15);
 
     /** Blockchain processor */
-    static final BlockchainProcessor blockchainProcessor = Nxt.getBlockchainProcessor();
+    static final BlockchainProcessor blockchainProcessor = Taelium.getBlockchainProcessor();
 
     /** Transaction processor */
-    static final TransactionProcessor transactionProcessor = Nxt.getTransactionProcessor();
+    static final TransactionProcessor transactionProcessor = Taelium.getTransactionProcessor();
 
     /** Active event users */
     static final Map<String, EventListener> eventListeners = new ConcurrentHashMap<>();

@@ -16,7 +16,7 @@
 
 package nxt.crypto;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import nxt.util.Logger;
 import org.bouncycastle.crypto.CipherParameters;

@@ -17,7 +17,7 @@
 package nxt.peer;
 //seen.
 import nxt.Block;
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -33,7 +33,7 @@ final class GetCumulativeDifficulty extends PeerServlet.PeerRequestHandler {
 
         JSONObject response = new JSONObject();
 
-        Block lastBlock = Nxt.getBlockchain().getLastBlock();
+        Block lastBlock = Taelium.getBlockchain().getLastBlock();
         response.put("cumulativeDifficulty", lastBlock.getCumulativeDifficulty().toString());
         response.put("blockchainHeight", lastBlock.getHeight());
         return response;

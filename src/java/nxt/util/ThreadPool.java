@@ -16,7 +16,7 @@
 
 package nxt.util;
 
-import nxt.Nxt;
+import nxt.Taelium;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public final class ThreadPool {
         if (scheduledThreadPool != null) {
             throw new IllegalStateException("Executor service already started, no new jobs accepted");
         }
-        if (! Nxt.getBooleanProperty("nxt.disable" + name + "Thread")) {
+        if (! Taelium.getBooleanProperty("nxt.disable" + name + "Thread")) {
             backgroundJobs.put(runnable, timeUnit.toMillis(delay));
         } else {
             Logger.logMessage("Will not run " + name + " thread");

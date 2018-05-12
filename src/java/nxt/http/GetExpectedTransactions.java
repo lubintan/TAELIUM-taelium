@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.Transaction;
 import nxt.util.Convert;
@@ -44,7 +44,7 @@ public final class GetExpectedTransactions extends APIServlet.APIRequestHandler 
         Filter<Transaction> filter = accountIds.isEmpty() ? transaction -> true :
                 transaction -> accountIds.contains(transaction.getSenderId()) || accountIds.contains(transaction.getRecipientId());
 
-        List<? extends Transaction> transactions = Nxt.getBlockchain().getExpectedTransactions(filter);
+        List<? extends Transaction> transactions = Taelium.getBlockchain().getExpectedTransactions(filter);
 
         JSONObject response = new JSONObject();
         JSONArray jsonArray = new JSONArray();

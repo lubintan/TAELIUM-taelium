@@ -27,7 +27,7 @@ import nxt.Constants;
 //import nxt.CurrencyType;
 import nxt.Generator;
 //import nxt.HoldingType;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.PrunableMessage;
 //import nxt.Shuffler;
 //import nxt.Shuffling;
@@ -52,7 +52,7 @@ import java.util.Map;
 public final class JSONData {
 
     static JSONObject accountBalance(Account account, boolean includeEffectiveBalance) {
-        return accountBalance(account, includeEffectiveBalance, Nxt.getBlockchain().getHeight());
+        return accountBalance(account, includeEffectiveBalance, Taelium.getBlockchain().getHeight());
     }
 
     static JSONObject accountBalance(Account account, boolean includeEffectiveBalance, int height) {
@@ -309,7 +309,7 @@ public final class JSONData {
     static JSONObject transaction(Transaction transaction, Filter<Appendix> filter) {
         JSONObject json = unconfirmedTransaction(transaction, filter);
         json.put("block", Long.toUnsignedString(transaction.getBlockId()));
-        json.put("confirmations", Nxt.getBlockchain().getHeight() - transaction.getHeight());
+        json.put("confirmations", Taelium.getBlockchain().getHeight() - transaction.getHeight());
         json.put("blockTimestamp", transaction.getBlockTimestamp());
         json.put("transactionIndex", transaction.getIndex());
         return json;
@@ -431,12 +431,12 @@ public final class JSONData {
     }
 
     private static void putExpectedTransaction(JSONObject json, Transaction transaction) {
-        json.put("height", Nxt.getBlockchain().getHeight() + 1);
+        json.put("height", Taelium.getBlockchain().getHeight() + 1);
 //        json.put("phased", transaction.getPhasing() != null);
         json.put("phased", false);
         if (transaction.getBlockId() != 0) { // those values may be wrong for unconfirmed transactions
             json.put("transactionHeight", transaction.getHeight());
-            json.put("confirmations", Nxt.getBlockchain().getHeight() - transaction.getHeight());
+            json.put("confirmations", Taelium.getBlockchain().getHeight() - transaction.getHeight());
         }
     }
 
@@ -474,7 +474,7 @@ public final class JSONData {
             }
         }
         if (includeTransactions && entry.getEvent().isTransaction()) {
-            Transaction transaction = Nxt.getBlockchain().getTransaction(entry.getEventId());
+            Transaction transaction = Taelium.getBlockchain().getTransaction(entry.getEventId());
             json.put("transaction", JSONData.transaction(transaction));
         }
     }

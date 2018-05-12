@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -36,7 +36,7 @@ public final class GetAccountBlockCount extends APIServlet.APIRequestHandler {
 
         long accountId = ParameterParser.getAccountId(req, true);
         JSONObject response = new JSONObject();
-        response.put("numberOfBlocks", Nxt.getBlockchain().getBlockCount(accountId));
+        response.put("numberOfBlocks", Taelium.getBlockchain().getBlockCount(accountId));
 
         return response;
     }

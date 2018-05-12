@@ -70,7 +70,7 @@ public class TaggedData {
                 try (Connection con = db.getConnection();
                      PreparedStatement pstmtSelect = con.prepareStatement("SELECT parsed_tags "
                              + "FROM tagged_data WHERE transaction_timestamp < ? AND latest = TRUE ")) {
-                    int expiration = Nxt.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME;
+                    int expiration = Taelium.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME;
                     pstmtSelect.setInt(1, expiration);
                     Map<String,Integer> expiredTags = new HashMap<>();
                     try (ResultSet rs = pstmtSelect.executeQuery()) {
@@ -116,7 +116,7 @@ public class TaggedData {
                 int i = 0;
                 pstmt.setLong(++i, this.id);
                 pstmt.setInt(++i, this.timestamp);
-                pstmt.setInt(++i, Nxt.getBlockchain().getHeight());
+                pstmt.setInt(++i, Taelium.getBlockchain().getHeight());
                 pstmt.executeUpdate();
             }
         }
@@ -195,7 +195,7 @@ public class TaggedData {
             for (String tagValue : taggedData.getParsedTags()) {
                 Tag tag = tagTable.get(tagDbKeyFactory.newKey(tagValue));
                 if (tag == null) {
-                    tag = new Tag(tagValue, Nxt.getBlockchain().getHeight());
+                    tag = new Tag(tagValue, Taelium.getBlockchain().getHeight());
                 }
                 tag.count += 1;
                 tagTable.insert(tag);
@@ -301,7 +301,7 @@ public class TaggedData {
                 int i = 0;
                 pstmt.setLong(++i, taggedDataId);
                 pstmt.setLong(++i, extendId);
-                pstmt.setInt(++i, Nxt.getBlockchain().getHeight());
+                pstmt.setInt(++i, Taelium.getBlockchain().getHeight());
                 pstmt.executeUpdate();
             }
         }
@@ -369,7 +369,7 @@ public class TaggedData {
     private int height;
 
     public TaggedData(Transaction transaction, Attachment.TaggedDataAttachment attachment) {
-        this(transaction, attachment, Nxt.getBlockchain().getLastBlockTimestamp(), Nxt.getBlockchain().getHeight());
+        this(transaction, attachment, Taelium.getBlockchain().getLastBlockTimestamp(), Taelium.getBlockchain().getHeight());
     }
 
     private TaggedData(Transaction transaction, Attachment.TaggedDataAttachment attachment, int blockTimestamp, int height) {
@@ -484,7 +484,7 @@ public class TaggedData {
     }
 
     static void add(TransactionImpl transaction, Attachment.TaggedDataUpload attachment) {
-        if (Nxt.getEpochTime() - transaction.getTimestamp() < Constants.MAX_PRUNABLE_LIFETIME && attachment.getData() != null) {
+        if (Taelium.getEpochTime() - transaction.getTimestamp() < Constants.MAX_PRUNABLE_LIFETIME && attachment.getData() != null) {
             TaggedData taggedData = taggedDataTable.get(transaction.getDbKey());
             if (taggedData == null) {
                 taggedData = new TaggedData(transaction, attachment);
@@ -509,7 +509,7 @@ public class TaggedData {
         List<Long> extendTransactionIds = extendTable.get(dbKey);
         extendTransactionIds.add(transaction.getId());
         extendTable.insert(taggedDataId, extendTransactionIds);
-        if (Nxt.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME < timestamp.timestamp) {
+        if (Taelium.getEpochTime() - Constants.MAX_PRUNABLE_LIFETIME < timestamp.timestamp) {
             TaggedData taggedData = taggedDataTable.get(dbKey);
             if (taggedData == null && attachment.getData() != null) {
                 TransactionImpl uploadTransaction = TransactionDb.findTransaction(taggedDataId);
@@ -518,8 +518,8 @@ public class TaggedData {
             }
             if (taggedData != null) {
                 taggedData.transactionTimestamp = timestamp.timestamp;
-                taggedData.blockTimestamp = Nxt.getBlockchain().getLastBlockTimestamp();
-                taggedData.height = Nxt.getBlockchain().getHeight();
+                taggedData.blockTimestamp = Taelium.getBlockchain().getLastBlockTimestamp();
+                taggedData.height = Taelium.getBlockchain().getHeight();
                 taggedDataTable.insert(taggedData);
             }
         }

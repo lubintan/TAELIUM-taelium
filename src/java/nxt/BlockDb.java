@@ -43,9 +43,9 @@ final class BlockDb {
     static final Map<Long, BlockImpl> blockCache = new HashMap<>();
     static final SortedMap<Integer, BlockImpl> heightMap = new TreeMap<>();
     static final Map<Long, TransactionImpl> transactionCache = new HashMap<>();
-    static final Blockchain blockchain = Nxt.getBlockchain();
+    static final Blockchain blockchain = Taelium.getBlockchain();
     static {
-        Nxt.getBlockchainProcessor().addListener((block) -> {
+        Taelium.getBlockchainProcessor().addListener((block) -> {
             synchronized (blockCache) {
                 int height = block.getHeight();
                 Iterator<BlockImpl> it = blockCache.values().iterator();

@@ -18,7 +18,7 @@ package nxt.http;
 
 import nxt.Constants;
 import nxt.Db;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.addons.AddOns;
 import nxt.util.JSON;
@@ -121,7 +121,7 @@ public final class APIServlet extends HttpServlet {
 
     }
 
-    private static final boolean enforcePost = Nxt.getBooleanProperty("tael.apiServerEnforcePOST");
+    private static final boolean enforcePost = Taelium.getBooleanProperty("tael.apiServerEnforcePOST");
     static final Map<String,APIRequestHandler> apiRequestHandlers;
     static final Map<String,APIRequestHandler> disabledRequestHandlers;
 
@@ -233,24 +233,24 @@ public final class APIServlet extends HttpServlet {
             final long requireLastBlockId = apiRequestHandler.allowRequiredBlockParameters() ?
                     ParameterParser.getUnsignedLong(req, "requireLastBlock", false) : 0;
             if (requireBlockId != 0 || requireLastBlockId != 0) {
-                Nxt.getBlockchain().readLock();
+                Taelium.getBlockchain().readLock();
             }
             try {
                 try {
                     if (apiRequestHandler.startDbTransaction()) {
                         Db.db.beginTransaction();
                     }
-                    if (requireBlockId != 0 && !Nxt.getBlockchain().hasBlock(requireBlockId)) {
+                    if (requireBlockId != 0 && !Taelium.getBlockchain().hasBlock(requireBlockId)) {
                         response = REQUIRED_BLOCK_NOT_FOUND;
                         return;
                     }
-                    if (requireLastBlockId != 0 && requireLastBlockId != Nxt.getBlockchain().getLastBlock().getId()) {
+                    if (requireLastBlockId != 0 && requireLastBlockId != Taelium.getBlockchain().getLastBlock().getId()) {
                         response = REQUIRED_LAST_BLOCK_NOT_FOUND;
                         return;
                     }
                     response = apiRequestHandler.processRequest(req, resp);
                     if (requireLastBlockId == 0 && requireBlockId != 0 && response instanceof JSONObject) {
-                        ((JSONObject) response).put("lastBlock", Nxt.getBlockchain().getLastBlock().getStringId());
+                        ((JSONObject) response).put("lastBlock", Taelium.getBlockchain().getLastBlock().getStringId());
                     }
                 } finally {
                     if (apiRequestHandler.startDbTransaction()) {
@@ -259,7 +259,7 @@ public final class APIServlet extends HttpServlet {
                 }
             } finally {
                 if (requireBlockId != 0 || requireLastBlockId != 0) {
-                    Nxt.getBlockchain().readUnlock();
+                    Taelium.getBlockchain().readUnlock();
                 }
             }
         } catch (ParameterException e) {

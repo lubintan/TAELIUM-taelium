@@ -16,12 +16,12 @@
 
 package nxt.addons;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 
 public final class BeforeShutdown implements AddOn {
 
-    final String beforeShutdownScript = Nxt.getStringProperty("nxt.beforeShutdownScript");
+    final String beforeShutdownScript = Taelium.getStringProperty("nxt.beforeShutdownScript");
 
     @Override
     public void shutdown() {

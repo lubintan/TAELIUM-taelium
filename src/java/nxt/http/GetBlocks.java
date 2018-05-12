@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Block;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.db.DbIterator;
 import org.json.simple.JSONArray;
@@ -44,7 +44,7 @@ public final class GetBlocks extends APIServlet.APIRequestHandler {
         boolean includeExecutedPhased = "true".equalsIgnoreCase(req.getParameter("includeExecutedPhased"));
 
         JSONArray blocks = new JSONArray();
-        try (DbIterator<? extends Block> iterator = Nxt.getBlockchain().getBlocks(firstIndex, lastIndex)) {
+        try (DbIterator<? extends Block> iterator = Taelium.getBlockchain().getBlocks(firstIndex, lastIndex)) {
             while (iterator.hasNext()) {
                 Block block = iterator.next();
                 if (block.getTimestamp() < timestamp) {

@@ -311,7 +311,7 @@ public final class Account {
                 pstmt.setLong(++i, this.accountId);
                 DbUtils.setString(pstmt, ++i, this.name);
                 DbUtils.setString(pstmt, ++i, this.description);
-                pstmt.setInt(++i, Nxt.getBlockchain().getHeight());
+                pstmt.setInt(++i, Taelium.getBlockchain().getHeight());
                 pstmt.executeUpdate();
             }
         }
@@ -414,7 +414,7 @@ public final class Account {
             this.accountId = accountId;
             this.dbKey = publicKeyDbKeyFactory.newKey(accountId);
             this.publicKey = publicKey;
-            this.height = Nxt.getBlockchain().getHeight();
+            this.height = Taelium.getBlockchain().getHeight();
         }
 
         private PublicKey(ResultSet rs, DbKey dbKey) throws SQLException {
@@ -425,7 +425,7 @@ public final class Account {
         }
 
         private void save(Connection con) throws SQLException {
-            height = Nxt.getBlockchain().getHeight();
+            height = Taelium.getBlockchain().getHeight();
             try (PreparedStatement pstmt = con.prepareStatement("MERGE INTO public_key (account_id, public_key, height, latest) "
                     + "KEY (account_id, height) VALUES (?, ?, ?, TRUE)")) {
                 int i = 0;
@@ -497,8 +497,8 @@ public final class Account {
                 super.checkAvailable(height);
                 return;
             }
-            if (height > Nxt.getBlockchain().getHeight()) {
-                throw new IllegalArgumentException("Height " + height + " exceeds blockchain height " + Nxt.getBlockchain().getHeight());
+            if (height > Taelium.getBlockchain().getHeight()) {
+                throw new IllegalArgumentException("Height " + height + " exceeds blockchain height " + Taelium.getBlockchain().getHeight());
             }
         }
 
@@ -694,7 +694,7 @@ public final class Account {
 //
 //    };
 
-    private static final ConcurrentMap<DbKey, byte[]> publicKeyCache = Nxt.getBooleanProperty("tael.enablePublicKeyCache") ?
+    private static final ConcurrentMap<DbKey, byte[]> publicKeyCache = Taelium.getBooleanProperty("tael.enablePublicKeyCache") ?
             new ConcurrentHashMap<>() : null;
 
     private static final Listeners<Account,Event> listeners = new Listeners<>();
@@ -1021,7 +1021,7 @@ public final class Account {
 
     static {
 
-        Nxt.getBlockchainProcessor().addListener(block -> {
+        Taelium.getBlockchainProcessor().addListener(block -> {
             int height = block.getHeight();
 //            List<AccountLease> changingLeases = new ArrayList<>();
 //            try (DbIterator<AccountLease> leases = getLeaseChangingAccounts(height)) {
@@ -1062,7 +1062,7 @@ public final class Account {
 
         if (publicKeyCache != null) {
 
-            Nxt.getBlockchainProcessor().addListener(block -> {
+            Taelium.getBlockchainProcessor().addListener(block -> {
                 publicKeyCache.remove(accountDbKeyFactory.newKey(block.getGeneratorId()));
                 block.getTransactions().forEach(transaction -> {
                     publicKeyCache.remove(accountDbKeyFactory.newKey(transaction.getSenderId()));
@@ -1078,7 +1078,7 @@ public final class Account {
                 });
             }, BlockchainProcessor.Event.BLOCK_POPPED);
 
-            Nxt.getBlockchainProcessor().addListener(block -> publicKeyCache.clear(), BlockchainProcessor.Event.RESCAN_BEGIN);
+            Taelium.getBlockchainProcessor().addListener(block -> publicKeyCache.clear(), BlockchainProcessor.Event.RESCAN_BEGIN);
 
         }
 
@@ -1131,8 +1131,8 @@ public final class Account {
             pstmt.setBytes(++i, this.forgedBalanceNQT.toByteArray());
             DbUtils.setLongZeroToNull(pstmt, ++i, this.activeLesseeId);
             pstmt.setBoolean(++i, controls.contains(ControlType.PHASING_ONLY));
-            pstmt.setInt(++i, CalculateInterestAndG.givingInterest? Nxt.getBlockchain().getHeight()+1 : 
-            		Nxt.getBlockchain().getHeight());
+            pstmt.setInt(++i, CalculateInterestAndG.givingInterest? Taelium.getBlockchain().getHeight()+1 : 
+            		Taelium.getBlockchain().getHeight());
             pstmt.executeUpdate();
         }
     }
@@ -1214,7 +1214,7 @@ public final class Account {
     }
 
     public BigInteger getEffectiveBalanceNXT() {
-        return getEffectiveBalanceNXT(Nxt.getBlockchain().getHeight());
+        return getEffectiveBalanceNXT(Taelium.getBlockchain().getHeight());
     }
 
     public BigInteger getEffectiveBalanceNXT(int height) {
@@ -1228,12 +1228,12 @@ public final class Account {
         if (this.publicKey == null || this.publicKey.publicKey == null || height - this.publicKey.height <= Constants.EFF_BAL_HEIGHT) {
             return BigInteger.ZERO; // cfb: Accounts with the public key revealed less than 1440 blocks ago are not allowed to generate blocks
         }
-        Nxt.getBlockchain().readLock();
+        Taelium.getBlockchain().readLock();
         try {
         		BigInteger effectiveBalanceNQT = (getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, height));
 	        return effectiveBalanceNQT.compareTo(Constants.MIN_FORGING_BALANCE_HAEDS) < 0 ? BigInteger.ZERO : Constants.haedsToTaels(effectiveBalanceNQT);
         } finally {
-            Nxt.getBlockchain().readUnlock();
+            Taelium.getBlockchain().readUnlock();
         }
     }
 
@@ -1246,19 +1246,19 @@ public final class Account {
     }
 
     public BigInteger getGuaranteedBalanceNQT() {
-        return getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, Nxt.getBlockchain().getHeight());
+        return getGuaranteedBalanceNQT(Constants.GUARANTEED_BALANCE_CONFIRMATIONS, Taelium.getBlockchain().getHeight());
     }
 
     public BigInteger getGuaranteedBalanceNQT(final int numberOfConfirmations, final int currentHeight) {
     		//long to BigInt question mark 2
     		//ANSWERED.
     	
-        Nxt.getBlockchain().readLock();
+        Taelium.getBlockchain().readLock();
         try {
             int height = currentHeight - numberOfConfirmations;
             
-            if (height + Constants.GUARANTEED_BALANCE_CONFIRMATIONS < Nxt.getBlockchainProcessor().getMinRollbackHeight()
-                    || height > Nxt.getBlockchain().getHeight()) {
+            if (height + Constants.GUARANTEED_BALANCE_CONFIRMATIONS < Taelium.getBlockchainProcessor().getMinRollbackHeight()
+                    || height > Taelium.getBlockchain().getHeight()) {
                 throw new IllegalArgumentException("Height " + height + " not available for guaranteed balance calculation");
             }
             try (Connection con = Db.db.getConnection();
@@ -1284,7 +1284,7 @@ public final class Account {
                 throw new RuntimeException(e.toString(), e);
             }
         } finally {
-            Nxt.getBlockchain().readUnlock();
+            Taelium.getBlockchain().readUnlock();
         }
     }
 //
@@ -1442,7 +1442,7 @@ public final class Account {
         }
         if (publicKey.publicKey == null) {
             publicKey.publicKey = key;
-            publicKey.height = Nxt.getBlockchain().getHeight();
+            publicKey.height = Taelium.getBlockchain().getHeight();
             return true;
         }
         return Arrays.equals(publicKey.publicKey, key);
@@ -1458,7 +1458,7 @@ public final class Account {
             publicKeyTable.insert(publicKey);
         } else if (! Arrays.equals(publicKey.publicKey, key)) {
             throw new IllegalStateException("Public key mismatch");
-        } else if (publicKey.height >= Nxt.getBlockchain().getHeight() - 1) {
+        } else if (publicKey.height >= Taelium.getBlockchain().getHeight() - 1) {
             PublicKey dbPublicKey = publicKeyTable.get(dbKey, false);
             if (dbPublicKey == null || dbPublicKey.publicKey == null) {
                 publicKeyTable.insert(publicKey);
@@ -1785,7 +1785,7 @@ public final class Account {
     		if ((amountNQT.compareTo(BigInteger.ZERO) == 0) ) {
             return;
         }
-        int blockchainHeight = Nxt.getBlockchain().getHeight();
+        int blockchainHeight = Taelium.getBlockchain().getHeight();
         try (Connection con = Db.db.getConnection();
              PreparedStatement pstmtSelect = con.prepareStatement("SELECT additions FROM account_guaranteed_balance "
                      + "WHERE account_id = ? and height = ?");

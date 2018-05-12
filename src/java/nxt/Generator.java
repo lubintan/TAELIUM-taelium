@@ -46,9 +46,9 @@ public final class Generator implements Comparable<Generator> {
         GENERATION_DEADLINE, START_FORGING, STOP_FORGING
     }
 
-    private static final int MAX_FORGERS = Nxt.getIntProperty("tael.maxNumberOfForgers");
-    private static final byte[] fakeForgingPublicKey = Nxt.getBooleanProperty("nxt.enableFakeForging") ?
-            Account.getPublicKey(Convert.parseAccountId(Nxt.getStringProperty("nxt.fakeForgingAccount"))) : null;
+    private static final int MAX_FORGERS = Taelium.getIntProperty("tael.maxNumberOfForgers");
+    private static final byte[] fakeForgingPublicKey = Taelium.getBooleanProperty("nxt.enableFakeForging") ?
+            Account.getPublicKey(Convert.parseAccountId(Taelium.getStringProperty("nxt.fakeForgingAccount"))) : null;
 
     private static final Listeners<Generator,Event> listeners = new Listeners<>();
 
@@ -69,15 +69,15 @@ public final class Generator implements Comparable<Generator> {
                 try {
                     BlockchainImpl.getInstance().updateLock();
                     try {
-                        Block lastBlock = Nxt.getBlockchain().getLastBlock();
+                        Block lastBlock = Taelium.getBlockchain().getLastBlock();
                         if (lastBlock == null || lastBlock.getHeight() < Constants.LAST_KNOWN_BLOCK) {
                             return;
                         }
-                        final int generationLimit = Nxt.getEpochTime() - delayTime;
+                        final int generationLimit = Taelium.getEpochTime() - delayTime;
                         if (lastBlock.getId() != lastBlockId || sortedForgers == null) {
                             lastBlockId = lastBlock.getId();
-                            if (lastBlock.getTimestamp() > Nxt.getEpochTime() - 600) {
-                                Block previousBlock = Nxt.getBlockchain().getBlock(lastBlock.getPreviousBlockId());
+                            if (lastBlock.getTimestamp() > Taelium.getEpochTime() - 600) {
+                                Block previousBlock = Taelium.getBlockchain().getBlock(lastBlock.getPreviousBlockId());
                                 for (Generator generator : generators.values()) {
                                     generator.setLastBlock(previousBlock);
                                     int timestamp = generator.getTimestamp(generationLimit);
@@ -171,11 +171,11 @@ public final class Generator implements Comparable<Generator> {
     public static Generator stopForging(String secretPhrase) {
         Generator generator = generators.remove(secretPhrase);
         if (generator != null) {
-            Nxt.getBlockchain().updateLock();
+            Taelium.getBlockchain().updateLock();
             try {
                 sortedForgers = null;
             } finally {
-                Nxt.getBlockchain().updateUnlock();
+                Taelium.getBlockchain().updateUnlock();
             }
             Logger.logDebugMessage(generator + " stopped");
             listeners.notify(generator, Event.STOP_FORGING);
@@ -192,11 +192,11 @@ public final class Generator implements Comparable<Generator> {
             Logger.logDebugMessage(generator + " stopped");
             listeners.notify(generator, Event.STOP_FORGING);
         }
-        Nxt.getBlockchain().updateLock();
+        Taelium.getBlockchain().updateLock();
         try {
             sortedForgers = null;
         } finally {
-            Nxt.getBlockchain().updateUnlock();
+            Taelium.getBlockchain().updateUnlock();
         }
         return count;
     }
@@ -333,14 +333,14 @@ public final class Generator implements Comparable<Generator> {
         this.secretPhrase = secretPhrase;
         this.publicKey = Crypto.getPublicKey(secretPhrase);
         this.accountId = Account.getId(publicKey);
-        Nxt.getBlockchain().updateLock();
+        Taelium.getBlockchain().updateLock();
         try {
-            if (Nxt.getBlockchain().getHeight() >= Constants.LAST_KNOWN_BLOCK) {
-                setLastBlock(Nxt.getBlockchain().getLastBlock());
+            if (Taelium.getBlockchain().getHeight() >= Constants.LAST_KNOWN_BLOCK) {
+                setLastBlock(Taelium.getBlockchain().getLastBlock());
             }
             sortedForgers = null;
         } finally {
-            Nxt.getBlockchain().updateUnlock();
+            Taelium.getBlockchain().updateUnlock();
         }
     }
 
@@ -411,7 +411,7 @@ public final class Generator implements Comparable<Generator> {
             return false;
         }
         // means verifyHit returned True!
-        int start = Nxt.getEpochTime();
+        int start = Taelium.getEpochTime();
         while (true) {
             try { //successful forging
             		//insert reward to forger here.
@@ -420,7 +420,7 @@ public final class Generator implements Comparable<Generator> {
                 return true;
             } catch (BlockchainProcessor.TransactionNotAcceptedException e) {
                 // the bad transaction has been expunged, try again
-                if (Nxt.getEpochTime() - start > 10) { // give up after trying for 10 s
+                if (Taelium.getEpochTime() - start > 10) { // give up after trying for 10 s
                     throw e;
                 }
             }
@@ -451,7 +451,7 @@ public final class Generator implements Comparable<Generator> {
      */
     public static List<ActiveGenerator> getNextGenerators() {
         List<ActiveGenerator> generatorList;
-        Blockchain blockchain = Nxt.getBlockchain();
+        Blockchain blockchain = Taelium.getBlockchain();
         synchronized(activeGenerators) {
             if (!generatorsInitialized) {
                 activeGeneratorIds.addAll(BlockDb.getBlockGenerators(Math.max(1, blockchain.getHeight() - 10000)));
@@ -460,7 +460,7 @@ public final class Generator implements Comparable<Generator> {
                 // for each of these generators, append to activeGenerators(starts out empty) the id.
                 //so activeGenerators is now the last 1000 generator ids.
                 Logger.logDebugMessage(activeGeneratorIds.size() + " block generators found");
-                Nxt.getBlockchainProcessor().addListener(block -> {
+                Taelium.getBlockchainProcessor().addListener(block -> {
                     long generatorId = block.getGeneratorId();
                     synchronized(activeGenerators) {
                         if (!activeGeneratorIds.contains(generatorId)) {

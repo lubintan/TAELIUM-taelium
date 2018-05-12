@@ -18,7 +18,7 @@ package nxt.util;
 
 //seen.
 
-import nxt.Nxt;
+import nxt.Taelium;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -80,9 +80,9 @@ public final class Logger {
         if (! Boolean.getBoolean("nxt.doNotConfigureLogging")) {
             try {
                 Properties loggingProperties = new Properties();
-                Nxt.loadProperties(loggingProperties, "logging-default.properties", true);
-                Nxt.loadProperties(loggingProperties, "logging.properties", false);
-                Nxt.updateLogFileHandler(loggingProperties);
+                Taelium.loadProperties(loggingProperties, "logging-default.properties", true);
+                Taelium.loadProperties(loggingProperties, "logging.properties", false);
+                Taelium.updateLogFileHandler(loggingProperties);
                 if (loggingProperties.size() > 0) {
                     ByteArrayOutputStream outStream = new ByteArrayOutputStream();
                     loggingProperties.store(outStream, "logging properties");
@@ -96,9 +96,9 @@ public final class Logger {
                 throw new RuntimeException("Error loading logging properties", e);
             }
         }
-        log = org.slf4j.LoggerFactory.getLogger(nxt.Nxt.class);
-        enableStackTraces = Nxt.getBooleanProperty("tael.enableStackTraces");
-        enableLogTraceback = Nxt.getBooleanProperty("tael.enableLogTraceback");
+        log = org.slf4j.LoggerFactory.getLogger(nxt.Taelium.class);
+        enableStackTraces = Taelium.getBooleanProperty("tael.enableStackTraces");
+        enableLogTraceback = Taelium.getBooleanProperty("tael.enableLogTraceback");
         logInfoMessage("logging enabled");
     }
 

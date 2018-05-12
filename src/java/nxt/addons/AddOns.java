@@ -16,7 +16,7 @@
 
 package nxt.addons;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.http.APIServlet;
 import nxt.http.APITag;
 import nxt.util.Logger;
@@ -31,7 +31,7 @@ public final class AddOns {
     private static final List<AddOn> addOns;
     static {
         List<AddOn> addOnsList = new ArrayList<>();
-        Nxt.getStringListProperty("nxt.addOns").forEach(addOn -> {
+        Taelium.getStringListProperty("nxt.addOns").forEach(addOn -> {
             try {
                 addOnsList.add((AddOn)Class.forName(addOn).newInstance());
             } catch (ReflectiveOperationException e) {
@@ -39,8 +39,8 @@ public final class AddOns {
             }
         });
         addOns = Collections.unmodifiableList(addOnsList);
-        if (!addOns.isEmpty() && !Nxt.getBooleanProperty("tael.disableSecurityPolicy")) {
-            System.setProperty("java.security.policy", Nxt.isDesktopApplicationEnabled() ? "nxtdesktop.policy" : "nxt.policy");
+        if (!addOns.isEmpty() && !Taelium.getBooleanProperty("tael.disableSecurityPolicy")) {
+            System.setProperty("java.security.policy", Taelium.isDesktopApplicationEnabled() ? "nxtdesktop.policy" : "nxt.policy");
             Logger.logMessage("Setting security manager with policy " + System.getProperty("java.security.policy"));
             System.setSecurityManager(new SecurityManager() {
                 @Override

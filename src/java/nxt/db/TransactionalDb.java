@@ -16,7 +16,7 @@
 
 package nxt.db;
 //seen.
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 
 import java.sql.Connection;
@@ -37,9 +37,9 @@ public class TransactionalDb extends BasicDb {
     private static final long txInterval;
     static {
         long temp;
-        stmtThreshold = (temp=Nxt.getIntProperty("tael.statementLogThreshold")) != 0 ? temp : 1000;	//get these values from the properties file
-        txThreshold = (temp=Nxt.getIntProperty("tael.transactionLogThreshold")) != 0 ? temp : 5000;
-        txInterval = (temp=Nxt.getIntProperty("tael.transactionLogInterval")) != 0 ? temp*60*1000 : 15*60*1000;
+        stmtThreshold = (temp=Taelium.getIntProperty("tael.statementLogThreshold")) != 0 ? temp : 1000;	//get these values from the properties file
+        txThreshold = (temp=Taelium.getIntProperty("tael.transactionLogThreshold")) != 0 ? temp : 5000;
+        txInterval = (temp=Taelium.getIntProperty("tael.transactionLogInterval")) != 0 ? temp*60*1000 : 15*60*1000;
     }
     
     //ThreadLocal - create variables local to thread.
@@ -134,7 +134,7 @@ public class TransactionalDb extends BasicDb {
         long elapsed = now - ((DbConnection)con).txStart;
         if (elapsed >= txThreshold) {
             logThreshold(String.format("Database transaction required %.3f seconds at height %d",
-                                       (double)elapsed/1000.0, Nxt.getBlockchain().getHeight()));
+                                       (double)elapsed/1000.0, Taelium.getBlockchain().getHeight()));
         } else {
             long count, times;
             boolean logStats = false;
@@ -271,7 +271,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), sql));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), sql));
             return b;
         }
 
@@ -282,7 +282,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), sql));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), sql));
             return r;
         }
 
@@ -293,7 +293,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), sql));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), sql));
             return c;
         }
     }
@@ -310,7 +310,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), getSQL()));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), getSQL()));
             return b;
         }
 
@@ -321,7 +321,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), getSQL()));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), getSQL()));
             return r;
         }
 
@@ -332,7 +332,7 @@ public class TransactionalDb extends BasicDb {
             long elapsed = System.currentTimeMillis() - start;
             if (elapsed > stmtThreshold)
                 logThreshold(String.format("SQL statement required %.3f seconds at height %d:\n%s",
-                                           (double)elapsed/1000.0, Nxt.getBlockchain().getHeight(), getSQL()));
+                                           (double)elapsed/1000.0, Taelium.getBlockchain().getHeight(), getSQL()));
             return c;
         }
     }

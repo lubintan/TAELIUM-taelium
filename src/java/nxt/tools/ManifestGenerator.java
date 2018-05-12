@@ -16,7 +16,7 @@
 
 package nxt.tools;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.env.service.NxtService_ServiceManagement;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class ManifestGenerator {
 
     public static void main(String[] args) {
         ManifestGenerator manifestGenerator = new ManifestGenerator();
-        manifestGenerator.generate("./resource/nxt.manifest.mf", Nxt.class.getCanonicalName(), "./lib");
+        manifestGenerator.generate("./resource/nxt.manifest.mf", Taelium.class.getCanonicalName(), "./lib");
         String serviceClassName = NxtService_ServiceManagement.class.getCanonicalName();
         serviceClassName = serviceClassName.substring(0, serviceClassName.length() - "_ServiceManagement".length());
         manifestGenerator.generate("./resource/nxtservice.manifest.mf", serviceClassName, "./lib");

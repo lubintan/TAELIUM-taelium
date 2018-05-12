@@ -162,10 +162,10 @@ public class CalculateInterestAndG {
 		
 		Date yesterday = subtractOneDayFromDate(date);
 		
-		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
+		int nextHeight = Taelium.getBlockchain().getHeight() - (offset - 1);
 		if (nextHeight < 0) { return totalForgingHoldings;}
 		
-		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
+		Block nextBlock = Taelium.getBlockchain().getBlockAtHeight(nextHeight);
 		int numBlocks = 0;
 		
 		while (nextBlock.getDate().equals(yesterday) && (nextHeight > 0)) {
@@ -174,7 +174,7 @@ public class CalculateInterestAndG {
 			numBlocks = numBlocks + 1;
 			
 			nextHeight = nextHeight - 1;
-			nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
+			nextBlock = Taelium.getBlockchain().getBlockAtHeight(nextHeight);
 			
 		}
 		
@@ -192,7 +192,7 @@ public class CalculateInterestAndG {
 	}
 	
 	public static BigInteger getSupplyCurrent() {
-		if (Nxt.getBlockchain().getHeight() < (1)) {
+		if (Taelium.getBlockchain().getHeight() < (1)) {
 			supplyCurrent = Constants.INITIAL_BALANCE_HAEDS;
 		}else {
 			supplyCurrent = updateSupplyCurrent();
@@ -273,10 +273,10 @@ public class CalculateInterestAndG {
 	}
 	
 	public static double getLatestRYear() {
-		if (Nxt.getBlockchain().getHeight() < (1)) {
+		if (Taelium.getBlockchain().getHeight() < (1)) {
 			rYear = 0.0;
 		}else {
-			rYear = Nxt.getBlockchain().getLastBlock().getLatestRYear();
+			rYear = Taelium.getBlockchain().getLastBlock().getLatestRYear();
 		}
 		
 		
@@ -449,11 +449,11 @@ public class CalculateInterestAndG {
 		Date yesterday = subtractOneDayFromDate(date);
 		
 	
-		int nextHeight = Nxt.getBlockchain().getHeight() - (offset - 1);
+		int nextHeight = Taelium.getBlockchain().getHeight() - (offset - 1);
 		
 		if (nextHeight < 0) {return totalTxVolume;}
 		
-		Block nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
+		Block nextBlock = Taelium.getBlockchain().getBlockAtHeight(nextHeight);
 		
 		
 		
@@ -463,7 +463,7 @@ public class CalculateInterestAndG {
 			totalTxVolume = totalTxVolume.add(thisBlocksTxVolume);
 			
 			nextHeight = nextHeight - 1;
-			nextBlock = Nxt.getBlockchain().getBlockAtHeight(nextHeight);
+			nextBlock = Taelium.getBlockchain().getBlockAtHeight(nextHeight);
 			
 		}
 		

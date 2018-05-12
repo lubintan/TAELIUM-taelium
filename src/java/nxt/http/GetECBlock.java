@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Block;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
@@ -36,9 +36,9 @@ public final class GetECBlock extends APIServlet.APIRequestHandler {
     protected JSONStreamAware processRequest(HttpServletRequest req) throws NxtException {
         int timestamp = ParameterParser.getTimestamp(req);
         if (timestamp == 0) {
-            timestamp = Nxt.getEpochTime();
+            timestamp = Taelium.getEpochTime();
         }
-        Block ecBlock = Nxt.getBlockchain().getECBlock(timestamp);
+        Block ecBlock = Taelium.getBlockchain().getECBlock(timestamp);
         JSONObject response = new JSONObject();
         response.put("ecBlockId", ecBlock.getStringId());
         response.put("ecBlockHeight", ecBlock.getHeight());

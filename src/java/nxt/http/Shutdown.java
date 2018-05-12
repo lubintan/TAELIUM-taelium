@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -35,7 +35,7 @@ public final class Shutdown extends APIServlet.APIRequestHandler {
         JSONObject response = new JSONObject();
         boolean scan = "true".equalsIgnoreCase(req.getParameter("scan"));
         if (scan) {
-            Nxt.getBlockchainProcessor().fullScanWithShutdown();
+            Taelium.getBlockchainProcessor().fullScanWithShutdown();
         } else {
             new Thread(() -> System.exit(0)).start();
         }

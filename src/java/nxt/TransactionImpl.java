@@ -82,7 +82,7 @@ final class TransactionImpl implements Transaction {
         @Override
         public TransactionImpl build(String secretPhrase) throws NxtException.NotValidException {
             if (timestamp == Integer.MAX_VALUE) {
-                timestamp = Nxt.getEpochTime();
+                timestamp = Taelium.getEpochTime();
             }
             if (!ecBlockSet) {
                 Block ecBlock = BlockchainImpl.getInstance().getECBlock(timestamp);
@@ -333,7 +333,7 @@ final class TransactionImpl implements Transaction {
         }
         this.appendagesSize = appendagesSize;
         if (builder.feeNQT.compareTo(BigInteger.ZERO) <= 0 || (Constants.correctInvalidFees && builder.signature == null)) {
-            int effectiveHeight = (height < Integer.MAX_VALUE ? height : Nxt.getBlockchain().getHeight());
+            int effectiveHeight = (height < Integer.MAX_VALUE ? height : Taelium.getBlockchain().getHeight());
 //            BigInteger minFee = getMinimumFeeNQT(effectiveHeight);
 //            feeNQT = Math.max(minFee, builder.feeNQT);
 //            feeNQT = minFee.compareTo(builder.feeNQT) > 0 ? minFee:builder.feeNQT;
@@ -1261,7 +1261,7 @@ final class TransactionImpl implements Transaction {
         if (getFullSize() > Constants.MAX_PAYLOAD_LENGTH) {
             throw new NxtException.NotValidException("Transaction size " + getFullSize() + " exceeds maximum payload size");
         }
-        int blockchainHeight = Nxt.getBlockchain().getHeight();
+        int blockchainHeight = Taelium.getBlockchain().getHeight();
         if (!validatingAtFinish) {
 //            BigInteger minimumFeeNQT = getMinimumFeeNQT(blockchainHeight);
             if (feeNQT.compareTo(Constants.MIN_FEE_HAEDS) < 0) {

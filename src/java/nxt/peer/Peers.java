@@ -20,7 +20,7 @@ import nxt.Account;
 import nxt.Block;
 import nxt.Constants;
 import nxt.Db;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import nxt.http.API;
 import nxt.http.APIEnum;
@@ -78,7 +78,7 @@ import java.util.concurrent.TimeoutException;
 
 public final class Peers {
 
-    private static final int DEFAULT_PEER_PORT = 0;
+    private static final int DEFAULT_PEER_PORT = Taelium.getIntProperty("tael.peerServerPort");
 
 	
     public enum Event {
@@ -100,9 +100,9 @@ public final class Peers {
     static final int readTimeout;
     static final int blacklistingPeriod;
     static final boolean getMorePeers;
-    static final int MAX_REQUEST_SIZE = Nxt.getIntProperty("tael.maxPeerRequestSize", 1024 * 1024);
-    static final int MAX_RESPONSE_SIZE = Nxt.getIntProperty("tael.maxPeerResponseSize", 1024 * 1024);
-    static final int MAX_MESSAGE_SIZE = Nxt.getIntProperty("tael.maxPeerMessageSize", 10 * 1024 * 1024);
+    static final int MAX_REQUEST_SIZE = Taelium.getIntProperty("tael.maxPeerRequestSize", 1024 * 1024);
+    static final int MAX_RESPONSE_SIZE = Taelium.getIntProperty("tael.maxPeerResponseSize", 1024 * 1024);
+    static final int MAX_MESSAGE_SIZE = Taelium.getIntProperty("tael.maxPeerMessageSize", 10 * 1024 * 1024);
     public static final int MIN_COMPRESS_SIZE = 256;
     static final boolean useWebSockets;
     static final int webSocketIdleTimeout;
@@ -153,12 +153,12 @@ public final class Peers {
 
     static {
 
-        String platform = Nxt.getStringProperty("tael.myPlatform", System.getProperty("os.name") + " " + System.getProperty("os.arch"));
+        String platform = Taelium.getStringProperty("tael.myPlatform", System.getProperty("os.name") + " " + System.getProperty("os.arch"));
         if (platform.length() > MAX_PLATFORM_LENGTH) {
             platform = platform.substring(0, MAX_PLATFORM_LENGTH);
         }
         myPlatform = platform;
-        myAddress = Convert.emptyToNull(Nxt.getStringProperty("tael.myAddress", "").trim());
+        myAddress = Convert.emptyToNull(Taelium.getStringProperty("tael.myAddress", "").trim());
         if (myAddress != null && myAddress.endsWith(":" + TESTNET_PEER_PORT) && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
@@ -206,13 +206,13 @@ public final class Peers {
             }
         }        
         
-        myPeerServerPort = 0;
+        myPeerServerPort = DEFAULT_PEER_PORT;
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
         shareMyAddress = true && ! Constants.isOffline;
         enablePeerUPnP = true;
-        myHallmark = Convert.emptyToNull(Nxt.getStringProperty("tael.myHallmark", "").trim());
+        myHallmark = Convert.emptyToNull(Taelium.getStringProperty("tael.myHallmark", "").trim());
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             try {
                 Hallmark hallmark = Hallmark.parseHallmark(Peers.myHallmark);
@@ -261,8 +261,8 @@ public final class Peers {
             json.put("hallmark", Peers.myHallmark);
             servicesList.add(Peer.Service.HALLMARK);
         }
-        json.put("application", Nxt.APPLICATION);
-        json.put("version", Nxt.VERSION);
+        json.put("application", Taelium.APPLICATION);
+        json.put("version", Taelium.VERSION);
         json.put("platform", Peers.myPlatform);
         json.put("shareAddress", Peers.shareMyAddress);
         if (!Constants.ENABLE_PRUNING && Constants.INCLUDE_EXPIRED_PRUNABLE) {
@@ -310,12 +310,12 @@ public final class Peers {
         myServices = Collections.unmodifiableList(servicesList);
         myPeerInfo = json;
 
-        final List<String> defaultPeers = Constants.isTestnet ? Nxt.getStringListProperty("tael.defaultTestnetPeers")
-                : Nxt.getStringListProperty("tael.defaultPeers");
-        wellKnownPeers = Collections.unmodifiableList(Constants.isTestnet ? Nxt.getStringListProperty("tael.testnetPeers")
-                : Nxt.getStringListProperty("tael.wellKnownPeers"));
+        final List<String> defaultPeers = Constants.isTestnet ? Taelium.getStringListProperty("tael.defaultTestnetPeers")
+                : Taelium.getStringListProperty("tael.defaultPeers");
+        wellKnownPeers = Collections.unmodifiableList(Constants.isTestnet ? Taelium.getStringListProperty("tael.testnetPeers")
+                : Taelium.getStringListProperty("tael.wellKnownPeers"));
 
-        List<String> knownBlacklistedPeersList = Nxt.getStringListProperty("tael.knownBlacklistedPeers");
+        List<String> knownBlacklistedPeersList = Taelium.getStringListProperty("tael.knownBlacklistedPeers");
         if (knownBlacklistedPeersList.isEmpty()) {
             knownBlacklistedPeers = Collections.emptySet();
         } else {
@@ -333,12 +333,12 @@ public final class Peers {
         enableHallmarkProtection = true && !Constants.isLightClient;
         pushThreshold = 0;
         pullThreshold = 0;
-        useWebSockets = Nxt.getBooleanProperty("tael.useWebSockets");
-        webSocketIdleTimeout = Nxt.getIntProperty("tael.webSocketIdleTimeout");
-        isGzipEnabled = Nxt.getBooleanProperty("tael.enablePeerServerGZIPFilter");
+        useWebSockets = Taelium.getBooleanProperty("tael.useWebSockets");
+        webSocketIdleTimeout = Taelium.getIntProperty("tael.webSocketIdleTimeout");
+        isGzipEnabled = Taelium.getBooleanProperty("tael.enablePeerServerGZIPFilter");
         blacklistingPeriod = 600000 / 1000;
         communicationLoggingMask = 0;
-        sendToPeersLimit = Nxt.getIntProperty("tael.sendToPeersLimit");
+        sendToPeersLimit = Taelium.getIntProperty("tael.sendToPeersLimit");
         usePeersDb = true && ! Constants.isOffline;
         savePeers = usePeersDb && true;
         getMorePeers = true;
@@ -357,7 +357,7 @@ public final class Peers {
 
                 @Override
                 public void run() {
-                    final int now = Nxt.getEpochTime();
+                    final int now = Taelium.getEpochTime();
                     wellKnownPeers.forEach(address -> entries.add(new PeerDb.Entry(address, 0, now)));
                     if (usePeersDb) {
                         Logger.logDebugMessage("Loading known peers from the database...");
@@ -431,12 +431,12 @@ public final class Peers {
                 ServletHolder peerServletHolder = new ServletHolder(new PeerServlet());
                 ctxHandler.addServlet(peerServletHolder, "/*");
 
-                if (Nxt.getBooleanProperty("tael.enablePeerServerDoSFilter")) {
+                if (Taelium.getBooleanProperty("tael.enablePeerServerDoSFilter")) {
                     FilterHolder dosFilterHolder = ctxHandler.addFilter(DoSFilter.class, "/*",
                             EnumSet.of(DispatcherType.REQUEST));
-                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Nxt.getStringProperty("tael.peerServerDoSFilter.maxRequestsPerSec"));
-                    dosFilterHolder.setInitParameter("delayMs", Nxt.getStringProperty("tael.peerServerDoSFilter.delayMs"));
-                    dosFilterHolder.setInitParameter("maxRequestMs", Nxt.getStringProperty("tael.peerServerDoSFilter.maxRequestMs"));
+                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Taelium.getStringProperty("tael.peerServerDoSFilter.maxRequestsPerSec"));
+                    dosFilterHolder.setInitParameter("delayMs", Taelium.getStringProperty("tael.peerServerDoSFilter.delayMs"));
+                    dosFilterHolder.setInitParameter("maxRequestMs", Taelium.getStringProperty("tael.peerServerDoSFilter.maxRequestMs"));
                     dosFilterHolder.setInitParameter("trackSessions", "false");
                     dosFilterHolder.setAsyncSupported(true);
                 }
@@ -484,7 +484,7 @@ public final class Peers {
         try {
             try {
 
-                int curTime = Nxt.getEpochTime();
+                int curTime = Taelium.getEpochTime();
                 for (PeerImpl peer : peers.values()) {
                     peer.updateBlacklistedStatus(curTime);
                 }
@@ -507,7 +507,7 @@ public final class Peers {
             try {
                 try {
 
-                    final int now = Nxt.getEpochTime();
+                    final int now = Taelium.getEpochTime();
                     if (!hasEnoughConnectedPublicPeers(Peers.maxNumberOfConnectedPublicPeers)) {
                         List<Future<?>> futures = new ArrayList<>();
                         List<Peer> hallmarkedPeers = getPeers(peer -> !peer.isBlacklisted()
@@ -643,7 +643,7 @@ public final class Peers {
                     if (peers != null) {
                         JSONArray services = (JSONArray)response.get("services");
                         boolean setServices = (services != null && services.size() == peers.size());
-                        int now = Nxt.getEpochTime();
+                        int now = Taelium.getEpochTime();
                         for (int i=0; i<peers.size(); i++) {
                             String announcedAddress = (String)peers.get(i);
                             PeerImpl newPeer = findOrCreatePeer(announcedAddress, true);
@@ -697,7 +697,7 @@ public final class Peers {
         }
 
         private void updateSavedPeers() {
-            int now = Nxt.getEpochTime();
+            int now = Taelium.getEpochTime();
             //
             // Load the current database entries and map announced address to database entry
             //
@@ -1163,7 +1163,7 @@ public final class Peers {
 
     private static final int[] MAX_VERSION;
     static {
-        String version = Nxt.VERSION;
+        String version = Taelium.VERSION;
         if (version.endsWith("e")) {
             version = version.substring(0, version.length() - 1);
         }
@@ -1254,8 +1254,8 @@ public final class Peers {
 
     private static void checkBlockchainState() {
         Peer.BlockchainState state = Constants.isLightClient ? Peer.BlockchainState.LIGHT_CLIENT :
-                (Nxt.getBlockchainProcessor().isDownloading() || Nxt.getBlockchain().getLastBlockTimestamp() < Nxt.getEpochTime() - 600) ? Peer.BlockchainState.DOWNLOADING :
-                        (Nxt.getBlockchain().getLastBlock().getBaseTarget()
+                (Taelium.getBlockchainProcessor().isDownloading() || Taelium.getBlockchain().getLastBlockTimestamp() < Taelium.getEpochTime() - 600) ? Peer.BlockchainState.DOWNLOADING :
+                        (Taelium.getBlockchain().getLastBlock().getBaseTarget()
                         		.divide(Constants.INITIAL_BASE_TARGET).compareTo(BigInteger.TEN) > 0 &&
                         		!Constants.isTestnet) ? Peer.BlockchainState.FORK :
                         Peer.BlockchainState.UP_TO_DATE;

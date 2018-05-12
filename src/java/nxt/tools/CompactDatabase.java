@@ -17,7 +17,7 @@
 package nxt.tools;
 
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Logger;
 
 import java.io.File;
@@ -70,23 +70,23 @@ public class CompactDatabase {
         // Get the database URL
         //
         String dbPrefix = Constants.isTestnet ? "nxt.testDb" : "nxt.db";
-        String dbType = Nxt.getStringProperty(dbPrefix + "Type");
+        String dbType = Taelium.getStringProperty(dbPrefix + "Type");
         if (!"h2".equals(dbType)) {
             Logger.logErrorMessage("Database type must be 'h2'");
             return 1;
         }
-        String dbUrl = Nxt.getStringProperty(dbPrefix + "Url");
+        String dbUrl = Taelium.getStringProperty(dbPrefix + "Url");
         if (dbUrl == null) {
-            String dbPath = Nxt.getDbDir(Nxt.getStringProperty(dbPrefix + "Dir"));
+            String dbPath = Taelium.getDbDir(Taelium.getStringProperty(dbPrefix + "Dir"));
             dbUrl = String.format("jdbc:%s:%s", dbType, dbPath);
         }
-        String dbParams = Nxt.getStringProperty(dbPrefix + "Params");
+        String dbParams = Taelium.getStringProperty(dbPrefix + "Params");
         dbUrl += ";" + dbParams;
         if (!dbUrl.contains("MV_STORE=")) {
             dbUrl += ";MV_STORE=FALSE";
         }
-        String dbUsername = Nxt.getStringProperty(dbPrefix + "Username", "sa");
-        String dbPassword = Nxt.getStringProperty(dbPrefix + "Password", "sa", true);
+        String dbUsername = Taelium.getStringProperty(dbPrefix + "Username", "sa");
+        String dbPassword = Taelium.getStringProperty(dbPrefix + "Password", "sa", true);
         //
         // Get the database path.  This is the third colon-separated operand and is
         // terminated by a semi-colon or by the end of the string.

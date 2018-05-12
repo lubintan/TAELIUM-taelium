@@ -64,7 +64,7 @@ import java.util.TimeZone;
 import java.util.Date;
 
 
-public final class Nxt { //only public class in a Java file must also have the main method
+public final class Taelium { //only public class in a Java file must also have the main method
 	
     public static final String VERSION = "1.0.3";
     public static final String APPLICATION = "Taelium";
@@ -88,14 +88,14 @@ public final class Nxt { //only public class in a Java file must also have the m
     	
         redirectSystemStreams("out");
         redirectSystemStreams("err");
-        System.out.println("Initializing " + Nxt.APPLICATION + " server version " + Nxt.VERSION);
+        System.out.println("Initializing " + Taelium.APPLICATION + " server version " + Taelium.VERSION);
         printCommandLineArguments();
         runtimeMode = RuntimeEnvironment.getRuntimeMode();
         System.out.printf("Runtime mode %s\n", runtimeMode.getClass().getName());
         dirProvider = RuntimeEnvironment.getDirProvider();
         System.out.println("User home folder " + dirProvider.getUserHomeDir());
         loadProperties(defaultProperties, NXT_DEFAULT_PROPERTIES, true);
-        if (!VERSION.equals(Nxt.defaultProperties.getProperty("tael.version"))) {
+        if (!VERSION.equals(Taelium.defaultProperties.getProperty("tael.version"))) {
             throw new RuntimeException("Using a tael-default.properties file from a version other than " + VERSION + " is not supported!!!");
         }
     }
@@ -330,7 +330,7 @@ public final class Nxt { //only public class in a Java file must also have the m
     }
 
     static void setTime(Time time) {
-        Nxt.time = time;
+        Taelium.time = time;
     }
 
     public static void main(String[] args) {
@@ -436,7 +436,7 @@ public final class Nxt { //only public class in a Java file must also have the m
 //        	
         	/*============================================================*/
         	
-        		Runtime.getRuntime().addShutdownHook(new Thread(Nxt::shutdown)); //shutdown() defined below
+        		Runtime.getRuntime().addShutdownHook(new Thread(Taelium::shutdown)); //shutdown() defined below
             init();
         } catch (Throwable t) {
             System.out.println("Fatal error: " + t.toString());
@@ -462,7 +462,7 @@ public final class Nxt { //only public class in a Java file must also have the m
         BlockchainProcessorImpl.getInstance().shutdown();
         Peers.shutdown();
         Db.shutdown();
-        Logger.logShutdownMessage(Nxt.APPLICATION + " server " + VERSION + " stopped.");
+        Logger.logShutdownMessage(Taelium.APPLICATION + " server " + VERSION + " stopped.");
         Logger.shutdown();
         runtimeMode.shutdown();
     }
@@ -528,10 +528,10 @@ public final class Nxt { //only public class in a Java file must also have the m
                 NtpTime.init();
                 
                 
-                int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Nxt.getIntProperty("nxt.timeMultiplier"), 1) : 1;
+                int timeMultiplier = (Constants.isTestnet && Constants.isOffline) ? Math.max(Taelium.getIntProperty("nxt.timeMultiplier"), 1) : 1;
                 ThreadPool.start(timeMultiplier);
                 if (timeMultiplier > 1) {
-                    setTime(new Time.FasterTime(Math.max(getEpochTime(), Nxt.getBlockchain().getLastBlock().getTimestamp()), timeMultiplier));
+                    setTime(new Time.FasterTime(Math.max(getEpochTime(), Taelium.getBlockchain().getLastBlock().getTimestamp()), timeMultiplier));
                     Logger.logMessage("TIME WILL FLOW " + timeMultiplier + " TIMES FASTER!");
                 }
                 try {
@@ -540,7 +540,7 @@ public final class Nxt { //only public class in a Java file must also have the m
                 testSecureRandom();
                 long currentTime = System.currentTimeMillis();
                 Logger.logMessage("Initialization took " + (currentTime - startTime) / 1000 + " seconds");
-                Logger.logMessage(Nxt.APPLICATION + " server " + VERSION + " started successfully.");
+                Logger.logMessage(Taelium.APPLICATION + " server " + VERSION + " started successfully.");
                 Logger.logMessage("Copyright © 2013-2016 The Nxt Core Developers.");
                 Logger.logMessage("Copyright © 2016-2017 Jelurida IP B.V.");
                 Logger.logMessage("Distributed under the Jelurida Public License version 1.0 for the Nxt Public Blockchain Platform, with ABSOLUTELY NO WARRANTY.");
@@ -679,6 +679,6 @@ public final class Nxt { //only public class in a Java file must also have the m
     }
     
 //    prevent initializing an instance of this class
-    private Nxt() {} // never
+    private Taelium() {} // never
 
 }

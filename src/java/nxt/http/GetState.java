@@ -29,7 +29,7 @@ import nxt.Constants;
 //import nxt.Exchange;
 //import nxt.ExchangeRequest;
 import nxt.Generator;
-import nxt.Nxt;
+import nxt.Taelium;
 ////import nxt.Order;
 //import nxt.Poll;
 import nxt.PrunableMessage;
@@ -59,7 +59,7 @@ public final class GetState extends APIServlet.APIRequestHandler {
         JSONObject response = GetBlockchainStatus.instance.processRequest(req);
 
         if ("true".equalsIgnoreCase(req.getParameter("includeCounts")) && API.checkPassword(req)) {
-            response.put("numberOfTransactions", Nxt.getBlockchain().getTransactionCount());
+            response.put("numberOfTransactions", Taelium.getBlockchain().getTransactionCount());
             response.put("numberOfAccounts", Account.getCount());
 //            response.put("numberOfAssets", Asset.getCount());
 //            int askCount = Order.Ask.getCount();

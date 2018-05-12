@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Constants;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import nxt.util.Logger;
 import nxt.util.ThreadPool;
@@ -93,28 +93,28 @@ public final class API {
     private static final Set<String> allowedBotHosts;
     private static final List<NetworkAddress> allowedBotNets;
     private static final Map<String, PasswordCount> incorrectPasswords = new HashMap<>();
-    public static final String adminPassword = Nxt.getStringProperty("tael.adminPassword", "", true);
+    public static final String adminPassword = Taelium.getStringProperty("tael.adminPassword", "", true);
     static final boolean disableAdminPassword;
-    static final int maxRecords = Nxt.getIntProperty("tael.maxAPIRecords");
-    static final boolean enableAPIUPnP = Nxt.getBooleanProperty("tael.enableAPIUPnP");
+    static final int maxRecords = Taelium.getIntProperty("tael.maxAPIRecords");
+    static final boolean enableAPIUPnP = Taelium.getBooleanProperty("tael.enableAPIUPnP");
     public static final int apiServerIdleTimeout = 30000;
     public static final boolean apiServerCORS = true;
-    private static final String forwardedForHeader = Nxt.getStringProperty("nxt.forwardedForHeader");
+    private static final String forwardedForHeader = Taelium.getStringProperty("nxt.forwardedForHeader");
 
     private static final Server apiServer;
     private static URI welcomePageUri;
     private static URI serverRootUri;
 
     static {
-        List<String> disabled = new ArrayList<>(Nxt.getStringListProperty("tael.disabledAPIs"));
+        List<String> disabled = new ArrayList<>(Taelium.getStringListProperty("tael.disabledAPIs"));
         Collections.sort(disabled);
         disabledAPIs = Collections.unmodifiableList(disabled);
-        disabled = Nxt.getStringListProperty("tael.disabledAPITags");
+        disabled = Taelium.getStringListProperty("tael.disabledAPITags");
         Collections.sort(disabled);
         List<APITag> apiTags = new ArrayList<>(disabled.size());
         disabled.forEach(tagName -> apiTags.add(APITag.fromDisplayName(tagName)));
         disabledAPITags = Collections.unmodifiableList(apiTags);
-        List<String> allowedBotHostsList = Nxt.getStringListProperty("tael.allowedBotHosts");
+        List<String> allowedBotHostsList = Taelium.getStringListProperty("tael.allowedBotHosts");
         if (! allowedBotHostsList.contains("*")) {
             Set<String> hosts = new HashSet<>();
             List<NetworkAddress> nets = new ArrayList<>();
@@ -139,14 +139,14 @@ public final class API {
 
         boolean enableAPIServer = true;
         if (enableAPIServer) {
-            final int port = Constants.isTestnet ? TESTNET_API_PORT : Nxt.getIntProperty("tael.apiServerPort");
-            final int sslPort = Constants.isTestnet ? TESTNET_API_SSLPORT : Nxt.getIntProperty("tael.apiServerSSLPort");
-            final String host = Nxt.getStringProperty("tael.apiServerHost");
-            disableAdminPassword = Nxt.getBooleanProperty("tael.disableAdminPassword") || ("127.0.0.1".equals(host) && adminPassword.isEmpty());
+            final int port = Constants.isTestnet ? TESTNET_API_PORT : Taelium.getIntProperty("tael.apiServerPort");
+            final int sslPort = Constants.isTestnet ? TESTNET_API_SSLPORT : Taelium.getIntProperty("tael.apiServerSSLPort");
+            final String host = Taelium.getStringProperty("tael.apiServerHost");
+            disableAdminPassword = Taelium.getBooleanProperty("tael.disableAdminPassword") || ("127.0.0.1".equals(host) && adminPassword.isEmpty());
 
             apiServer = new Server();
             ServerConnector connector;
-            boolean enableSSL = Nxt.getBooleanProperty("tael.apiSSL");
+            boolean enableSSL = Taelium.getBooleanProperty("tael.apiSSL");
             //
             // Create the HTTP connector
             //
@@ -175,16 +175,16 @@ public final class API {
                 https_config.setSecurePort(sslPort);
                 https_config.addCustomizer(new SecureRequestCustomizer());
                 sslContextFactory = new SslContextFactory();
-                String keyStorePath = Paths.get(Nxt.getUserHomeDir()).resolve(Paths.get(Nxt.getStringProperty("tael.keyStorePath"))).toString();
+                String keyStorePath = Paths.get(Taelium.getUserHomeDir()).resolve(Paths.get(Taelium.getStringProperty("tael.keyStorePath"))).toString();
                 Logger.logInfoMessage("Using keystore: " + keyStorePath);
                 sslContextFactory.setKeyStorePath(keyStorePath);
-                sslContextFactory.setKeyStorePassword(Nxt.getStringProperty("tael.keyStorePassword", null, true));
+                sslContextFactory.setKeyStorePassword(Taelium.getStringProperty("tael.keyStorePassword", null, true));
                 sslContextFactory.addExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA", "SSL_DHE_RSA_WITH_DES_CBC_SHA",
                         "SSL_DHE_DSS_WITH_DES_CBC_SHA", "SSL_RSA_EXPORT_WITH_RC4_40_MD5", "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                         "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA", "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
                 sslContextFactory.addExcludeProtocols("SSLv3");
-                sslContextFactory.setKeyStoreType(Nxt.getStringProperty("tael.keyStoreType"));
-                List<String> ciphers = Nxt.getStringListProperty("tael.apiSSLCiphers");
+                sslContextFactory.setKeyStoreType(Taelium.getStringProperty("tael.keyStoreType"));
+                List<String> ciphers = Taelium.getStringListProperty("tael.apiSSLCiphers");
                 if (!ciphers.isEmpty()) {
                     sslContextFactory.setIncludeCipherSuites(ciphers.toArray(new String[ciphers.size()]));
                 }
@@ -213,7 +213,7 @@ public final class API {
             HandlerList apiHandlers = new HandlerList();
 
             ServletContextHandler apiHandler = new ServletContextHandler();
-            String apiResourceBase = Nxt.getStringProperty("tael.apiResourceBase");
+            String apiResourceBase = Taelium.getStringProperty("tael.apiResourceBase");
             if (apiResourceBase != null) {
                 ServletHolder defaultServletHolder = new ServletHolder(new DefaultServlet());
                 defaultServletHolder.setInitParameter("dirAllowed", "false");
@@ -223,10 +223,10 @@ public final class API {
                 defaultServletHolder.setInitParameter("gzip", "true");
                 defaultServletHolder.setInitParameter("etags", "true");
                 apiHandler.addServlet(defaultServletHolder, "/*");
-                apiHandler.setWelcomeFiles(new String[]{Nxt.getStringProperty("tael.apiWelcomeFile")});
+                apiHandler.setWelcomeFiles(new String[]{Taelium.getStringProperty("tael.apiWelcomeFile")});
             }
 
-            String javadocResourceBase = Nxt.getStringProperty("tael.javadocResourceBase");
+            String javadocResourceBase = Taelium.getStringProperty("tael.javadocResourceBase");
             if (javadocResourceBase != null) {
                 ContextHandler contextHandler = new ContextHandler("/doc");
                 ResourceHandler docFileHandler = new ResourceHandler();
@@ -239,16 +239,16 @@ public final class API {
 
             ServletHolder servletHolder = apiHandler.addServlet(APIServlet.class, "/nxt");
             servletHolder.getRegistration().setMultipartConfig(new MultipartConfigElement(
-                    null, Math.max(Nxt.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
+                    null, Math.max(Taelium.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
 
             servletHolder = apiHandler.addServlet(APIProxyServlet.class, "/nxt-proxy");
             servletHolder.setInitParameters(Collections.singletonMap("idleTimeout",
                     "" + Math.max(apiServerIdleTimeout - APIProxyServlet.PROXY_IDLE_TIMEOUT_DELTA, 0)));
             servletHolder.getRegistration().setMultipartConfig(new MultipartConfigElement(
-                    null, Math.max(Nxt.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
+                    null, Math.max(Taelium.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
 
             GzipHandler gzipHandler = new GzipHandler();
-            if (!Nxt.getBooleanProperty("tael.enableAPIServerGZIPFilter", isOpenAPI)) {
+            if (!Taelium.getBooleanProperty("tael.enableAPIServerGZIPFilter", isOpenAPI)) {
                 gzipHandler.setExcludedPaths("/nxt", "/nxt-proxy");
             }
             gzipHandler.setIncludedMethods("GET", "POST");
@@ -368,7 +368,7 @@ public final class API {
     }
 
     private static void checkOrLockPassword(HttpServletRequest req) throws ParameterException {
-        int now = Nxt.getEpochTime();
+        int now = Taelium.getEpochTime();
         String remoteHost = null;
         if (forwardedForHeader != null) {
             remoteHost = req.getHeader(forwardedForHeader);

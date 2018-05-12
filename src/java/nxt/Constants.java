@@ -26,13 +26,13 @@ public final class Constants {
 
     public static final boolean isTestnet = false;
     public static final boolean isOffline = false;
-    public static final boolean isLightClient = Nxt.getBooleanProperty("tael.isLightClient");
-    public static final String customLoginWarning = Nxt.getStringProperty("nxt.customLoginWarning", null, false, "UTF-8");
+    public static final boolean isLightClient = Taelium.getBooleanProperty("tael.isLightClient");
+    public static final String customLoginWarning = Taelium.getStringProperty("nxt.customLoginWarning", null, false, "UTF-8");
 
     public static final String COIN_SYMBOL = "Taels";
     public static final String ACCOUNT_PREFIX = "TAEL";
     public static final String PROJECT_NAME = "Taelium";
-    public static final int MAX_NUMBER_OF_TRANSACTIONS = Nxt.getIntProperty("tael.maxNumberOfTransactions", 255);
+    public static final int MAX_NUMBER_OF_TRANSACTIONS = Taelium.getIntProperty("tael.maxNumberOfTransactions", 255);
     public static final int MIN_TRANSACTION_SIZE = 176;
     public static final int MAX_PAYLOAD_LENGTH = MAX_NUMBER_OF_TRANSACTIONS * MIN_TRANSACTION_SIZE;
     
@@ -47,10 +47,10 @@ public final class Constants {
     public static final BigInteger ONE_TAEL = BigInteger.valueOf(10000).multiply(BigInteger.valueOf(10000)); // 8 zeroes.
     public static final BigInteger INITIAL_BALANCE_HAEDS = BigInteger.valueOf(1000).multiply(BigInteger.valueOf(1000000)).multiply(ONE_TAEL);
     public static final BigInteger INITIAL_BALANCE_TAELS = haedsToTaels(INITIAL_BALANCE_HAEDS);
-    public static BigInteger MAX_BALANCE_HAEDS = Nxt.getBlockchain().getHeight() > 0 ? Nxt.getBlockchain().getLastBlock().getSupplyCurrent():
+    public static BigInteger MAX_BALANCE_HAEDS = Taelium.getBlockchain().getHeight() > 0 ? Taelium.getBlockchain().getLastBlock().getSupplyCurrent():
     														INITIAL_BALANCE_HAEDS; // make this non-final
     
-    public static BigInteger MAX_BALANCE_TAELS = Nxt.getBlockchain().getHeight() > 0 ? haedsToTaels(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()):
+    public static BigInteger MAX_BALANCE_TAELS = Taelium.getBlockchain().getHeight() > 0 ? haedsToTaels(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()):
 														INITIAL_BALANCE_TAELS; // make this non-final
     
     
@@ -79,18 +79,18 @@ public final class Constants {
     public static final int MIN_BLOCKTIME_LIMIT = BLOCK_TIME - 7;
     public static final int MAX_BLOCKTIME_LIMIT = BLOCK_TIME + 7;
     public static final int BASE_TARGET_GAMMA = 64;
-    public static final int MAX_ROLLBACK = Math.max(Nxt.getIntProperty("tael.maxRollback"), 720);
+    public static final int MAX_ROLLBACK = Math.max(Taelium.getIntProperty("tael.maxRollback"), 720);
     public static final int GUARANTEED_BALANCE_CONFIRMATIONS = DAILY_BLOCKS;
 //    		isTestnet ? Nxt.getIntProperty("nxt.testnetGuaranteedBalanceConfirmations", ) : 5;
-    public static final int LEASING_DELAY = isTestnet ? Nxt.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
+    public static final int LEASING_DELAY = isTestnet ? Taelium.getIntProperty("nxt.testnetLeasingDelay", 1440) : 1440;
     public static final BigInteger MIN_FORGING_BALANCE_HAEDS = BigInteger.ONE; //One Haed
     
 
 
     public static final int MAX_TIMEDRIFT = 15; // allow up to 15 s clock difference
-    public static final int FORGING_DELAY = Nxt.getIntProperty("tael.forgingDelay");
-    public static final int FORGING_SPEEDUP = Nxt.getIntProperty("tael.forgingSpeedup");
-    public static final int BATCH_COMMIT_SIZE = Nxt.getIntProperty("tael.batchCommitSize", Integer.MAX_VALUE);
+    public static final int FORGING_DELAY = Taelium.getIntProperty("tael.forgingDelay");
+    public static final int FORGING_SPEEDUP = Taelium.getIntProperty("tael.forgingSpeedup");
+    public static final int BATCH_COMMIT_SIZE = Taelium.getIntProperty("tael.batchCommitSize", Integer.MAX_VALUE);
 
     public static final byte MAX_PHASING_VOTE_TRANSACTIONS = 10;
     public static final byte MAX_PHASING_WHITELIST_SIZE = 10;
@@ -111,11 +111,11 @@ public final class Constants {
     public static final int MAX_PRUNABLE_LIFETIME;
     public static final boolean ENABLE_PRUNING;
     static {
-        int maxPrunableLifetime = Nxt.getIntProperty("tael.maxPrunableLifetime");
+        int maxPrunableLifetime = Taelium.getIntProperty("tael.maxPrunableLifetime");
         ENABLE_PRUNING = maxPrunableLifetime >= 0;
         MAX_PRUNABLE_LIFETIME = ENABLE_PRUNING ? Math.max(maxPrunableLifetime, MIN_PRUNABLE_LIFETIME) : Integer.MAX_VALUE;
     }
-    public static final boolean INCLUDE_EXPIRED_PRUNABLE = Nxt.getBooleanProperty("tael.includeExpiredPrunable");
+    public static final boolean INCLUDE_EXPIRED_PRUNABLE = Taelium.getBooleanProperty("tael.includeExpiredPrunable");
 
     public static final int MAX_ACCOUNT_NAME_LENGTH = 100;
     public static final int MAX_ACCOUNT_DESCRIPTION_LENGTH = 1000;
@@ -180,7 +180,7 @@ public final class Constants {
     static final BigInteger UNCONFIRMED_POOL_DEPOSIT_NQT = BigInteger.valueOf(100).multiply(ONE_TAEL);
     public static final BigInteger SHUFFLING_DEPOSIT_NQT = BigInteger.valueOf(1000).multiply(ONE_TAEL);
 
-    public static final boolean correctInvalidFees = Nxt.getBooleanProperty("tael.correctInvalidFees");
+    public static final boolean correctInvalidFees = Taelium.getBooleanProperty("tael.correctInvalidFees");
 
     public static final String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
     public static final String ALLOWED_CURRENCY_CODE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

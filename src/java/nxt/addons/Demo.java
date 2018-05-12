@@ -18,7 +18,7 @@ package nxt.addons;
 
 import nxt.Account;
 import nxt.BlockchainProcessor;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import nxt.util.Logger;
 
@@ -26,7 +26,7 @@ public final class Demo implements AddOn {
 
     @Override
     public void init() {
-        Nxt.getBlockchainProcessor().addListener(block -> Logger.logInfoMessage("Block " + block.getStringId()
+        Taelium.getBlockchainProcessor().addListener(block -> Logger.logInfoMessage("Block " + block.getStringId()
                 + " has been forged by account " + Convert.rsAccount(block.getGeneratorId()) + " having effective balance of "
                 + Account.getAccount(block.getGeneratorId()).getEffectiveBalanceNXT()),
                 BlockchainProcessor.Event.BEFORE_BLOCK_APPLY);

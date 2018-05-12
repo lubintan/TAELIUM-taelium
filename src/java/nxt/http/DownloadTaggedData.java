@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.NxtException;
 import nxt.TaggedData;
 import org.json.simple.JSONStreamAware;
@@ -44,7 +44,7 @@ public final class DownloadTaggedData extends APIServlet.APIRequestHandler {
         boolean retrieve = "true".equalsIgnoreCase(request.getParameter("retrieve"));
         TaggedData taggedData = TaggedData.getData(transactionId);
         if (taggedData == null && retrieve) {
-            if (Nxt.getBlockchainProcessor().restorePrunedTransaction(transactionId) == null) {
+            if (Taelium.getBlockchainProcessor().restorePrunedTransaction(transactionId) == null) {
                 return PRUNED_TRANSACTION;
             }
             taggedData = TaggedData.getData(transactionId);

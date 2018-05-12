@@ -21,7 +21,7 @@ import nxt.Block;
 import nxt.BlockchainProcessor;
 import nxt.Constants;
 import nxt.NtpTime;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.peer.Peer;
 import nxt.peer.Peers;
 import org.json.simple.JSONArray;
@@ -44,21 +44,21 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
     @Override
     protected JSONObject processRequest(HttpServletRequest req) {
         JSONObject response = new JSONObject();
-        response.put("application", Nxt.APPLICATION);
-        response.put("version", Nxt.VERSION);
-        response.put("time", Nxt.getEpochTime());
-        Block lastBlock = Nxt.getBlockchain().getLastBlock();
+        response.put("application", Taelium.APPLICATION);
+        response.put("version", Taelium.VERSION);
+        response.put("time", Taelium.getEpochTime());
+        Block lastBlock = Taelium.getBlockchain().getLastBlock();
         response.put("lastBlock", lastBlock.getStringId());
         response.put("cumulativeDifficulty", lastBlock.getCumulativeDifficulty().toString());
         response.put("numberOfBlocks", lastBlock.getHeight() + 1);
-        BlockchainProcessor blockchainProcessor = Nxt.getBlockchainProcessor();
+        BlockchainProcessor blockchainProcessor = Taelium.getBlockchainProcessor();
         Peer lastBlockchainFeeder = blockchainProcessor.getLastBlockchainFeeder();
         response.put("lastBlockchainFeeder", lastBlockchainFeeder == null ? null : lastBlockchainFeeder.getAnnouncedAddress());
         response.put("lastBlockchainFeederHeight", blockchainProcessor.getLastBlockchainFeederHeight());
         response.put("isScanning", blockchainProcessor.isScanning());
         response.put("isDownloading", blockchainProcessor.isDownloading());
         response.put("maxRollback", Constants.MAX_ROLLBACK);
-        response.put("currentMinRollbackHeight", Nxt.getBlockchainProcessor().getMinRollbackHeight());
+        response.put("currentMinRollbackHeight", Taelium.getBlockchainProcessor().getMinRollbackHeight());
         response.put("isTestnet", Constants.isTestnet);
         response.put("maxPrunableLifetime", Constants.MAX_PRUNABLE_LIFETIME);
         response.put("includeExpiredPrunable", Constants.INCLUDE_EXPIRED_PRUNABLE);
@@ -78,16 +78,16 @@ public final class GetBlockchainStatus extends APIServlet.APIRequestHandler {
         
         if (currHeight > (Constants.DAILY_BLOCKS+1)) {
         		for(int i=currHeight; i>(currHeight-Constants.DAILY_BLOCKS); i--) {
-        			sumAvgBlockTime += Nxt.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
-        					Nxt.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
+        			sumAvgBlockTime += Taelium.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
+        					Taelium.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
         		}
         		
         		avgBlockTime = sumAvgBlockTime/Constants.DAILY_BLOCKS;
         }
         else if (currHeight!=1){
         		for(int i=currHeight; i>1; i--) {
-        			sumAvgBlockTime += Nxt.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
-        					Nxt.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
+        			sumAvgBlockTime += Taelium.getBlockchain().getBlockAtHeight(i).getTimestamp() - 
+        					Taelium.getBlockchain().getBlockAtHeight(i-1).getTimestamp();
         		}
         		
         		avgBlockTime = sumAvgBlockTime/(currHeight-1);

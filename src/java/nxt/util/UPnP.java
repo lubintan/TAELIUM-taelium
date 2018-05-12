@@ -16,7 +16,7 @@
 
 package nxt.util;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.bitlet.weupnp.GatewayDevice;
 import org.bitlet.weupnp.GatewayDiscover;
 
@@ -58,7 +58,7 @@ public class UPnP {
         //
         try {
             if (gateway.addPortMapping(port, port, localAddress.getHostAddress(), "TCP",
-                                       Nxt.APPLICATION + " " + Nxt.VERSION)) {
+                                       Taelium.APPLICATION + " " + Taelium.VERSION)) {
                 Logger.logDebugMessage("Mapped port [" + externalAddress.getHostAddress() + "]:" + port);
             } else {
                 Logger.logDebugMessage("Unable to map port " + port);
@@ -122,9 +122,9 @@ public class UPnP {
         //
         try {
             Logger.logInfoMessage("Looking for UPnP gateway device...");
-            GatewayDevice.setHttpReadTimeout(Nxt.getIntProperty("nxt.upnpGatewayTimeout", GatewayDevice.getHttpReadTimeout()));
+            GatewayDevice.setHttpReadTimeout(Taelium.getIntProperty("nxt.upnpGatewayTimeout", GatewayDevice.getHttpReadTimeout()));
             GatewayDiscover discover = new GatewayDiscover();
-            discover.setTimeout(Nxt.getIntProperty("nxt.upnpDiscoverTimeout", discover.getTimeout()));
+            discover.setTimeout(Taelium.getIntProperty("nxt.upnpDiscoverTimeout", discover.getTimeout()));
             Map<InetAddress, GatewayDevice> gatewayMap = discover.discover();
             if (gatewayMap == null || gatewayMap.isEmpty()) {
                 Logger.logDebugMessage("There are no UPnP gateway devices");

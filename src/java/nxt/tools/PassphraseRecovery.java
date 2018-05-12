@@ -18,7 +18,7 @@ package nxt.tools;
 
 import nxt.Account;
 import nxt.Db;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
 import nxt.util.Logger;
@@ -51,14 +51,14 @@ public final class PassphraseRecovery {
     private void recover() {
         try {
             Map<Long, byte[]> publicKeys = getPublicKeys();
-            String wildcard = Nxt.getStringProperty("recoveryWildcard", "", false, "UTF-8"); // support UTF8 chars
+            String wildcard = Taelium.getStringProperty("recoveryWildcard", "", false, "UTF-8"); // support UTF8 chars
             if ("".equals(wildcard)) {
                 Logger.logInfoMessage("Specify in the recoveryWildcard setting, an approximate passphrase as close as possible to the real passphrase");
                 return;
             }
             int[] passphraseChars = wildcard.chars().toArray();
             Logger.logInfoMessage("wildcard=" + wildcard + ", wildcard chars=" + Arrays.toString(passphraseChars));
-            String positionsStr = Nxt.getStringProperty("recoveryPositions", "");
+            String positionsStr = Taelium.getStringProperty("recoveryPositions", "");
             int[] positions;
             try {
                 if (positionsStr.length() == 0) {
@@ -73,7 +73,7 @@ public final class PassphraseRecovery {
                 Logger.logInfoMessage("Specify in the recoveryPositions setting, a comma separated list of numeric positions pointing to the recoveryWildcard unknown characters (first position is 1)");
                 return;
             }
-            String dictionaryStr = Nxt.getStringProperty("recoveryDictionary", "");
+            String dictionaryStr = Taelium.getStringProperty("recoveryDictionary", "");
             char[] dictionary;
             switch(dictionaryStr.toLowerCase()) {
                 case "":

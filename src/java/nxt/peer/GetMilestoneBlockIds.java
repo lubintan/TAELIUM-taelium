@@ -17,7 +17,7 @@
 package nxt.peer;
 //seen.
 import nxt.Block;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import nxt.util.Logger;
 import org.json.simple.JSONArray;
@@ -42,8 +42,8 @@ final class GetMilestoneBlockIds extends PeerServlet.PeerRequestHandler {
             String lastBlockIdString = (String) request.get("lastBlockId");
             if (lastBlockIdString != null) {
                 long lastBlockId = Convert.parseUnsignedLong(lastBlockIdString);
-                long myLastBlockId = Nxt.getBlockchain().getLastBlock().getId();
-                if (myLastBlockId == lastBlockId || Nxt.getBlockchain().hasBlock(lastBlockId)) {
+                long myLastBlockId = Taelium.getBlockchain().getLastBlock().getId();
+                if (myLastBlockId == lastBlockId || Taelium.getBlockchain().hasBlock(lastBlockId)) {
                     milestoneBlockIds.add(lastBlockIdString);
                     response.put("milestoneBlockIds", milestoneBlockIds);
                     if (myLastBlockId == lastBlockId) {
@@ -57,10 +57,10 @@ final class GetMilestoneBlockIds extends PeerServlet.PeerRequestHandler {
             int height;
             int jump;
             int limit = 10;
-            int blockchainHeight = Nxt.getBlockchain().getHeight();
+            int blockchainHeight = Taelium.getBlockchain().getHeight();
             String lastMilestoneBlockIdString = (String) request.get("lastMilestoneBlockId");
             if (lastMilestoneBlockIdString != null) {
-                Block lastMilestoneBlock = Nxt.getBlockchain().getBlock(Convert.parseUnsignedLong(lastMilestoneBlockIdString));
+                Block lastMilestoneBlock = Taelium.getBlockchain().getBlock(Convert.parseUnsignedLong(lastMilestoneBlockIdString));
                 if (lastMilestoneBlock == null) {
                     throw new IllegalStateException("Don't have block " + lastMilestoneBlockIdString);
                 }
@@ -75,11 +75,11 @@ final class GetMilestoneBlockIds extends PeerServlet.PeerRequestHandler {
                 response.put("error", "Old getMilestoneBlockIds protocol not supported, please upgrade");
                 return response;
             }
-            blockId = Nxt.getBlockchain().getBlockIdAtHeight(height);
+            blockId = Taelium.getBlockchain().getBlockIdAtHeight(height);
 
             while (height > 0 && limit-- > 0) {
                 milestoneBlockIds.add(Long.toUnsignedString(blockId));
-                blockId = Nxt.getBlockchain().getBlockIdAtHeight(height);
+                blockId = Taelium.getBlockchain().getBlockIdAtHeight(height);
                 height = height - jump;
             }
             response.put("milestoneBlockIds", milestoneBlockIds);

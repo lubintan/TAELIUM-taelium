@@ -184,11 +184,11 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         							BigInteger.ZERO : Constants.STD_FEE;
         int ecBlockHeight = ParameterParser.getInt(req, "ecBlockHeight", 0, Integer.MAX_VALUE, false);
         long ecBlockId = Convert.parseUnsignedLong(req.getParameter("ecBlockId"));
-        if (ecBlockId != 0 && ecBlockId != Nxt.getBlockchain().getBlockIdAtHeight(ecBlockHeight)) {
+        if (ecBlockId != 0 && ecBlockId != Taelium.getBlockchain().getBlockIdAtHeight(ecBlockHeight)) {
             return INCORRECT_EC_BLOCK;
         }
         if (ecBlockId == 0 && ecBlockHeight > 0) {
-            ecBlockId = Nxt.getBlockchain().getBlockIdAtHeight(ecBlockHeight);
+            ecBlockId = Taelium.getBlockchain().getBlockIdAtHeight(ecBlockHeight);
         }
 
         JSONObject response = new JSONObject();
@@ -197,7 +197,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
         byte[] publicKey = secretPhrase != null ? Crypto.getPublicKey(secretPhrase) : Convert.parseHexString(publicKeyValue);
 
         try {
-            Transaction.Builder builder = Nxt.newTransactionBuilder(publicKey, amountNQT, feeNQT,
+            Transaction.Builder builder = Taelium.newTransactionBuilder(publicKey, amountNQT, feeNQT,
                     deadline, attachment).referencedTransactionFullHash(referencedTransactionFullHash);
             if (attachment.getTransactionType().canHaveRecipient()) {
                 builder.recipientId(recipientId);
@@ -239,7 +239,7 @@ abstract class CreateTransaction extends APIServlet.APIRequestHandler {
                 response.put("signatureHash", transactionJSON.get("signatureHash"));
             }
             if (broadcast) {
-                Nxt.getTransactionProcessor().broadcast(transaction);
+                Taelium.getTransactionProcessor().broadcast(transaction);
                 response.put("broadcasted", true);
             } else {
                 transaction.validate();

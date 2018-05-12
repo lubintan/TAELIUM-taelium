@@ -16,7 +16,7 @@
 
 package nxt.http;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONStreamAware;
 
@@ -33,7 +33,7 @@ public final class TrimDerivedTables extends APIServlet.APIRequestHandler {
     @Override
     protected JSONStreamAware processRequest(HttpServletRequest req) {
         JSONObject response = new JSONObject();
-        Nxt.getBlockchainProcessor().trimDerivedTables();
+        Taelium.getBlockchainProcessor().trimDerivedTables();
         response.put("done", true);
         return response;
     }

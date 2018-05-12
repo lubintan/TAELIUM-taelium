@@ -17,7 +17,7 @@
 package nxt.http;
 
 import nxt.Block;
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.util.Convert;
 import org.json.simple.JSONStreamAware;
 
@@ -45,17 +45,17 @@ public final class GetBlock extends APIServlet.APIRequestHandler {
         String timestampValue = Convert.emptyToNull(req.getParameter("timestamp"));
         if (blockValue != null) {
             try {
-                blockData = Nxt.getBlockchain().getBlock(Convert.parseUnsignedLong(blockValue));
+                blockData = Taelium.getBlockchain().getBlock(Convert.parseUnsignedLong(blockValue));
             } catch (RuntimeException e) {
                 return INCORRECT_BLOCK;
             }
         } else if (heightValue != null) {
             try {
                 int height = Integer.parseInt(heightValue);
-                if (height < 0 || height > Nxt.getBlockchain().getHeight()) {
+                if (height < 0 || height > Taelium.getBlockchain().getHeight()) {
                     return INCORRECT_HEIGHT;
                 }
-                blockData = Nxt.getBlockchain().getBlockAtHeight(height);
+                blockData = Taelium.getBlockchain().getBlockAtHeight(height);
             } catch (RuntimeException e) {
                 return INCORRECT_HEIGHT;
             }
@@ -65,12 +65,12 @@ public final class GetBlock extends APIServlet.APIRequestHandler {
                 if (timestamp < 0) {
                     return INCORRECT_TIMESTAMP;
                 }
-                blockData = Nxt.getBlockchain().getLastBlock(timestamp);
+                blockData = Taelium.getBlockchain().getLastBlock(timestamp);
             } catch (RuntimeException e) {
                 return INCORRECT_TIMESTAMP;
             }
         } else {
-            blockData = Nxt.getBlockchain().getLastBlock();
+            blockData = Taelium.getBlockchain().getLastBlock();
         }
 
         if (blockData == null) {

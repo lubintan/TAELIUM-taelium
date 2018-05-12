@@ -16,7 +16,7 @@
 
 package nxt.tools;
 
-import nxt.Nxt;
+import nxt.Taelium;
 import nxt.Transaction;
 import nxt.crypto.Crypto;
 import nxt.util.Convert;
@@ -72,7 +72,7 @@ public final class SignTransactionJSON {
                 } else {
                     secretPhrase = new String(console.readPassword("Secret phrase for account " + senderRS + ": "));
                 }
-                Transaction.Builder builder = Nxt.newTransactionBuilder(json);
+                Transaction.Builder builder = Taelium.newTransactionBuilder(json);
                 Transaction transaction = builder.build(secretPhrase);
                 writer.write(transaction.getJSONObject().toJSONString());
                 writer.newLine();
