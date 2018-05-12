@@ -37,7 +37,7 @@ import java.util.Arrays;
 
 public final class Crypto {
 
-    private static final boolean useStrongSecureRandom = Nxt.getBooleanProperty("nxt.useStrongSecureRandom");
+    private static final boolean useStrongSecureRandom = false;
 
     private static final ThreadLocal<SecureRandom> secureRandom = new ThreadLocal<SecureRandom>() {
         @Override

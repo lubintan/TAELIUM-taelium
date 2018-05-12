@@ -34,8 +34,8 @@ import java.util.List;
 /**
  * <p>
  * The GetAccountLedger API will return entries from the account ledger.  The
- * account ledger tracks all account changes as determined by the nxt.ledgerAccounts,
- * nxt.ledgerLogUnconfirmed and nxt.ledgerTrimKeep properties.
+ * account ledger tracks all account changes as determined by the tael.ledgerAccounts,
+ * tael.ledgerLogUnconfirmed and tael.ledgerTrimKeep properties.
  * </p>
  * <table>
  *   <caption><b>Request parameters</b></caption>
@@ -55,7 +55,7 @@ import java.util.List;
  *     <tr>
  *       <td>adminPassword</td>
  *       <td>Administrator password.
- *           The administrator password is required if more than nxt.maxAPIRecords entries are to be searched.
+ *           The administrator password is required if more than tael.maxAPIRecords entries are to be searched.
  *       </td>
  *     </tr>
  *     <tr>
@@ -103,7 +103,7 @@ import java.util.List;
  *     <tr>
  *       <td>lastIndex</td>
  *       <td>The index of the last matching entry to return, inclusive.
- *           The maximum number of entries returned is limited by the nxt.maxAPIRecords property
+ *           The maximum number of entries returned is limited by the tael.maxAPIRecords property
  *           unless the administrator password is specified.
  *       </td>
  *     </tr>

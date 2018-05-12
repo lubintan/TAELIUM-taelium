@@ -97,8 +97,8 @@ public final class Logger {
             }
         }
         log = org.slf4j.LoggerFactory.getLogger(nxt.Nxt.class);
-        enableStackTraces = Nxt.getBooleanProperty("nxt.enableStackTraces");
-        enableLogTraceback = Nxt.getBooleanProperty("nxt.enableLogTraceback");
+        enableStackTraces = Nxt.getBooleanProperty("tael.enableStackTraces");
+        enableLogTraceback = Nxt.getBooleanProperty("tael.enableLogTraceback");
         logInfoMessage("logging enabled");
     }
 

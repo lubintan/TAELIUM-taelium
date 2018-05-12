@@ -93,12 +93,12 @@ public final class API {
     private static final Set<String> allowedBotHosts;
     private static final List<NetworkAddress> allowedBotNets;
     private static final Map<String, PasswordCount> incorrectPasswords = new HashMap<>();
-    public static final String adminPassword = Nxt.getStringProperty("nxt.adminPassword", "", true);
+    public static final String adminPassword = Nxt.getStringProperty("tael.adminPassword", "", true);
     static final boolean disableAdminPassword;
-    static final int maxRecords = Nxt.getIntProperty("nxt.maxAPIRecords");
-    static final boolean enableAPIUPnP = Nxt.getBooleanProperty("nxt.enableAPIUPnP");
-    public static final int apiServerIdleTimeout = Nxt.getIntProperty("nxt.apiServerIdleTimeout");
-    public static final boolean apiServerCORS = Nxt.getBooleanProperty("nxt.apiServerCORS");
+    static final int maxRecords = Nxt.getIntProperty("tael.maxAPIRecords");
+    static final boolean enableAPIUPnP = Nxt.getBooleanProperty("tael.enableAPIUPnP");
+    public static final int apiServerIdleTimeout = 30000;
+    public static final boolean apiServerCORS = true;
     private static final String forwardedForHeader = Nxt.getStringProperty("nxt.forwardedForHeader");
 
     private static final Server apiServer;
@@ -106,15 +106,15 @@ public final class API {
     private static URI serverRootUri;
 
     static {
-        List<String> disabled = new ArrayList<>(Nxt.getStringListProperty("nxt.disabledAPIs"));
+        List<String> disabled = new ArrayList<>(Nxt.getStringListProperty("tael.disabledAPIs"));
         Collections.sort(disabled);
         disabledAPIs = Collections.unmodifiableList(disabled);
-        disabled = Nxt.getStringListProperty("nxt.disabledAPITags");
+        disabled = Nxt.getStringListProperty("tael.disabledAPITags");
         Collections.sort(disabled);
         List<APITag> apiTags = new ArrayList<>(disabled.size());
         disabled.forEach(tagName -> apiTags.add(APITag.fromDisplayName(tagName)));
         disabledAPITags = Collections.unmodifiableList(apiTags);
-        List<String> allowedBotHostsList = Nxt.getStringListProperty("nxt.allowedBotHosts");
+        List<String> allowedBotHostsList = Nxt.getStringListProperty("tael.allowedBotHosts");
         if (! allowedBotHostsList.contains("*")) {
             Set<String> hosts = new HashSet<>();
             List<NetworkAddress> nets = new ArrayList<>();
@@ -137,16 +137,16 @@ public final class API {
             allowedBotNets = null;
         }
 
-        boolean enableAPIServer = Nxt.getBooleanProperty("nxt.enableAPIServer");
+        boolean enableAPIServer = true;
         if (enableAPIServer) {
-            final int port = Constants.isTestnet ? TESTNET_API_PORT : Nxt.getIntProperty("nxt.apiServerPort");
-            final int sslPort = Constants.isTestnet ? TESTNET_API_SSLPORT : Nxt.getIntProperty("nxt.apiServerSSLPort");
-            final String host = Nxt.getStringProperty("nxt.apiServerHost");
-            disableAdminPassword = Nxt.getBooleanProperty("nxt.disableAdminPassword") || ("127.0.0.1".equals(host) && adminPassword.isEmpty());
+            final int port = Constants.isTestnet ? TESTNET_API_PORT : Nxt.getIntProperty("tael.apiServerPort");
+            final int sslPort = Constants.isTestnet ? TESTNET_API_SSLPORT : Nxt.getIntProperty("tael.apiServerSSLPort");
+            final String host = Nxt.getStringProperty("tael.apiServerHost");
+            disableAdminPassword = Nxt.getBooleanProperty("tael.disableAdminPassword") || ("127.0.0.1".equals(host) && adminPassword.isEmpty());
 
             apiServer = new Server();
             ServerConnector connector;
-            boolean enableSSL = Nxt.getBooleanProperty("nxt.apiSSL");
+            boolean enableSSL = Nxt.getBooleanProperty("tael.apiSSL");
             //
             // Create the HTTP connector
             //
@@ -175,16 +175,16 @@ public final class API {
                 https_config.setSecurePort(sslPort);
                 https_config.addCustomizer(new SecureRequestCustomizer());
                 sslContextFactory = new SslContextFactory();
-                String keyStorePath = Paths.get(Nxt.getUserHomeDir()).resolve(Paths.get(Nxt.getStringProperty("nxt.keyStorePath"))).toString();
+                String keyStorePath = Paths.get(Nxt.getUserHomeDir()).resolve(Paths.get(Nxt.getStringProperty("tael.keyStorePath"))).toString();
                 Logger.logInfoMessage("Using keystore: " + keyStorePath);
                 sslContextFactory.setKeyStorePath(keyStorePath);
-                sslContextFactory.setKeyStorePassword(Nxt.getStringProperty("nxt.keyStorePassword", null, true));
+                sslContextFactory.setKeyStorePassword(Nxt.getStringProperty("tael.keyStorePassword", null, true));
                 sslContextFactory.addExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA", "SSL_DHE_RSA_WITH_DES_CBC_SHA",
                         "SSL_DHE_DSS_WITH_DES_CBC_SHA", "SSL_RSA_EXPORT_WITH_RC4_40_MD5", "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                         "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA", "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
                 sslContextFactory.addExcludeProtocols("SSLv3");
-                sslContextFactory.setKeyStoreType(Nxt.getStringProperty("nxt.keyStoreType"));
-                List<String> ciphers = Nxt.getStringListProperty("nxt.apiSSLCiphers");
+                sslContextFactory.setKeyStoreType(Nxt.getStringProperty("tael.keyStoreType"));
+                List<String> ciphers = Nxt.getStringListProperty("tael.apiSSLCiphers");
                 if (!ciphers.isEmpty()) {
                     sslContextFactory.setIncludeCipherSuites(ciphers.toArray(new String[ciphers.size()]));
                 }
@@ -213,7 +213,7 @@ public final class API {
             HandlerList apiHandlers = new HandlerList();
 
             ServletContextHandler apiHandler = new ServletContextHandler();
-            String apiResourceBase = Nxt.getStringProperty("nxt.apiResourceBase");
+            String apiResourceBase = Nxt.getStringProperty("tael.apiResourceBase");
             if (apiResourceBase != null) {
                 ServletHolder defaultServletHolder = new ServletHolder(new DefaultServlet());
                 defaultServletHolder.setInitParameter("dirAllowed", "false");
@@ -223,10 +223,10 @@ public final class API {
                 defaultServletHolder.setInitParameter("gzip", "true");
                 defaultServletHolder.setInitParameter("etags", "true");
                 apiHandler.addServlet(defaultServletHolder, "/*");
-                apiHandler.setWelcomeFiles(new String[]{Nxt.getStringProperty("nxt.apiWelcomeFile")});
+                apiHandler.setWelcomeFiles(new String[]{Nxt.getStringProperty("tael.apiWelcomeFile")});
             }
 
-            String javadocResourceBase = Nxt.getStringProperty("nxt.javadocResourceBase");
+            String javadocResourceBase = Nxt.getStringProperty("tael.javadocResourceBase");
             if (javadocResourceBase != null) {
                 ContextHandler contextHandler = new ContextHandler("/doc");
                 ResourceHandler docFileHandler = new ResourceHandler();
@@ -248,7 +248,7 @@ public final class API {
                     null, Math.max(Nxt.getIntProperty("nxt.maxUploadFileSize"), Constants.MAX_TAGGED_DATA_DATA_LENGTH), -1L, 0));
 
             GzipHandler gzipHandler = new GzipHandler();
-            if (!Nxt.getBooleanProperty("nxt.enableAPIServerGZIPFilter", isOpenAPI)) {
+            if (!Nxt.getBooleanProperty("tael.enableAPIServerGZIPFilter", isOpenAPI)) {
                 gzipHandler.setExcludedPaths("/nxt", "/nxt-proxy");
             }
             gzipHandler.setIncludedMethods("GET", "POST");
@@ -266,7 +266,7 @@ public final class API {
                 filterHolder.setAsyncSupported(true);
             }
 
-            if (Nxt.getBooleanProperty("nxt.apiFrameOptionsSameOrigin")) {
+            if (true) {
                 FilterHolder filterHolder = apiHandler.addFilter(XFrameOptionsFilter.class, "/*", null);
                 filterHolder.setAsyncSupported(true);
             }

@@ -46,7 +46,7 @@ public final class Generator implements Comparable<Generator> {
         GENERATION_DEADLINE, START_FORGING, STOP_FORGING
     }
 
-    private static final int MAX_FORGERS = Nxt.getIntProperty("nxt.maxNumberOfForgers");
+    private static final int MAX_FORGERS = Nxt.getIntProperty("tael.maxNumberOfForgers");
     private static final byte[] fakeForgingPublicKey = Nxt.getBooleanProperty("nxt.enableFakeForging") ?
             Account.getPublicKey(Convert.parseAccountId(Nxt.getStringProperty("nxt.fakeForgingAccount"))) : null;
 

@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>RetrievePrunedData will schedule a background task to retrieve data which
- * has been pruned.  The nxt.maxPrunableLifetime property determines the
+ * has been pruned.  The tael.maxPrunableLifetime property determines the
  * data that will be retrieved.  Data is retrieved from a random peer with
  * the PRUNABLE service.
  * </p>

@@ -244,7 +244,7 @@ public class DesktopApplication extends Application {
             HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLProvider.getSslSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(TrustAllSSLProvider.getHostNameVerifier());
         }
-        String defaultAccount = Nxt.getStringProperty("nxt.defaultDesktopAccount");
+        String defaultAccount = null;
         if (defaultAccount != null && !defaultAccount.equals("")) {
             url += "?account=" + defaultAccount;
         }

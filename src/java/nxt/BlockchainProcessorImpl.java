@@ -87,9 +87,9 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
 
     private final ExecutorService networkService = Executors.newCachedThreadPool();
     private final List<DerivedDbTable> derivedTables = new CopyOnWriteArrayList<>();
-    private final boolean trimDerivedTables = Nxt.getBooleanProperty("nxt.trimDerivedTables");
+    private final boolean trimDerivedTables = Nxt.getBooleanProperty("tael.trimDerivedTables");
     private final int defaultNumberOfForkConfirmations = Nxt.getIntProperty(Constants.isTestnet
-            ? "nxt.testnetNumberOfForkConfirmations" : "nxt.numberOfForkConfirmations");
+            ? "tael.testnetNumberOfForkConfirmations" : "tael.numberOfForkConfirmations");
     private final boolean simulateEndlessDownload = Nxt.getBooleanProperty("nxt.simulateEndlessDownload");
 
     private int initialScanHeight;
@@ -958,7 +958,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
     };
     //***** CONSTRUCTOR *****//
     private BlockchainProcessorImpl() {
-        final int trimFrequency = Nxt.getIntProperty("nxt.trimFrequency");
+        final int trimFrequency = Nxt.getIntProperty("tael.trimFrequency");
         blockListeners.addListener(block -> {
             if (block.getHeight() % 5000 == 0) {
                 Logger.logMessage("processed block " + block.getHeight());
@@ -991,8 +991,8 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
         ThreadPool.runBeforeStart(() -> {
             alreadyInitialized = true;
             addGenesisBlock();
-            if (Nxt.getBooleanProperty("nxt.forceScan")) {
-                scan(0, Nxt.getBooleanProperty("nxt.forceValidate"));
+            if (Nxt.getBooleanProperty("tael.forceScan")) {
+                scan(0, Nxt.getBooleanProperty("tael.forceValidate"));
             } else {
                 boolean rescan;
                 boolean validate;

@@ -121,7 +121,7 @@ public final class APIServlet extends HttpServlet {
 
     }
 
-    private static final boolean enforcePost = Nxt.getBooleanProperty("nxt.apiServerEnforcePOST");
+    private static final boolean enforcePost = Nxt.getBooleanProperty("tael.apiServerEnforcePOST");
     static final Map<String,APIRequestHandler> apiRequestHandlers;
     static final Map<String,APIRequestHandler> disabledRequestHandlers;
 
@@ -141,7 +141,7 @@ public final class APIServlet extends HttpServlet {
         API.disabledAPIs.forEach(api -> {
             APIRequestHandler handler = map.remove(api);
             if (handler == null) {
-                throw new RuntimeException("Invalid API in nxt.disabledAPIs: " + api);
+                throw new RuntimeException("Invalid API in tael.disabledAPIs: " + api);
             }
             disabledMap.put(api, handler);
         });

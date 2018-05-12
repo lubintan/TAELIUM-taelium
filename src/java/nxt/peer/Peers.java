@@ -78,7 +78,7 @@ import java.util.concurrent.TimeoutException;
 
 public final class Peers {
 
-    private static final int DEFAULT_PEER_PORT = Nxt.getIntProperty("nxt.peerServerPort");
+    private static final int DEFAULT_PEER_PORT = 0;
 
 	
     public enum Event {
@@ -100,9 +100,9 @@ public final class Peers {
     static final int readTimeout;
     static final int blacklistingPeriod;
     static final boolean getMorePeers;
-    static final int MAX_REQUEST_SIZE = Nxt.getIntProperty("nxt.maxPeerRequestSize", 1024 * 1024);
-    static final int MAX_RESPONSE_SIZE = Nxt.getIntProperty("nxt.maxPeerResponseSize", 1024 * 1024);
-    static final int MAX_MESSAGE_SIZE = Nxt.getIntProperty("nxt.maxPeerMessageSize", 10 * 1024 * 1024);
+    static final int MAX_REQUEST_SIZE = Nxt.getIntProperty("tael.maxPeerRequestSize", 1024 * 1024);
+    static final int MAX_RESPONSE_SIZE = Nxt.getIntProperty("tael.maxPeerResponseSize", 1024 * 1024);
+    static final int MAX_MESSAGE_SIZE = Nxt.getIntProperty("tael.maxPeerMessageSize", 10 * 1024 * 1024);
     public static final int MIN_COMPRESS_SIZE = 256;
     static final boolean useWebSockets;
     static final int webSocketIdleTimeout;
@@ -133,7 +133,7 @@ public final class Peers {
     static final int MAX_APPLICATION_LENGTH = 20;
     static final int MAX_PLATFORM_LENGTH = 30;
     static final int MAX_ANNOUNCED_ADDRESS_LENGTH = 100;
-    static final boolean hideErrorDetails = Nxt.getBooleanProperty("nxt.hideErrorDetails");
+    static final boolean hideErrorDetails = false;
 
     private static final JSONObject myPeerInfo;
     private static final List<Peer.Service> myServices;
@@ -153,12 +153,12 @@ public final class Peers {
 
     static {
 
-        String platform = Nxt.getStringProperty("nxt.myPlatform", System.getProperty("os.name") + " " + System.getProperty("os.arch"));
+        String platform = Nxt.getStringProperty("tael.myPlatform", System.getProperty("os.name") + " " + System.getProperty("os.arch"));
         if (platform.length() > MAX_PLATFORM_LENGTH) {
             platform = platform.substring(0, MAX_PLATFORM_LENGTH);
         }
         myPlatform = platform;
-        myAddress = Convert.emptyToNull(Nxt.getStringProperty("nxt.myAddress", "").trim());
+        myAddress = Convert.emptyToNull(Nxt.getStringProperty("tael.myAddress", "").trim());
         if (myAddress != null && myAddress.endsWith(":" + TESTNET_PEER_PORT) && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
@@ -206,13 +206,13 @@ public final class Peers {
             }
         }        
         
-        myPeerServerPort = Nxt.getIntProperty("nxt.peerServerPort");
+        myPeerServerPort = 0;
         if (myPeerServerPort == TESTNET_PEER_PORT && !Constants.isTestnet) {
             throw new RuntimeException("Port " + TESTNET_PEER_PORT + " should only be used for testnet!!!");
         }
-        shareMyAddress = Nxt.getBooleanProperty("nxt.shareMyAddress") && ! Constants.isOffline;
-        enablePeerUPnP = Nxt.getBooleanProperty("nxt.enablePeerUPnP");
-        myHallmark = Convert.emptyToNull(Nxt.getStringProperty("nxt.myHallmark", "").trim());
+        shareMyAddress = true && ! Constants.isOffline;
+        enablePeerUPnP = true;
+        myHallmark = Convert.emptyToNull(Nxt.getStringProperty("tael.myHallmark", "").trim());
         if (Peers.myHallmark != null && Peers.myHallmark.length() > 0) {
             try {
                 Hallmark hallmark = Hallmark.parseHallmark(Peers.myHallmark);
@@ -310,40 +310,40 @@ public final class Peers {
         myServices = Collections.unmodifiableList(servicesList);
         myPeerInfo = json;
 
-        final List<String> defaultPeers = Constants.isTestnet ? Nxt.getStringListProperty("nxt.defaultTestnetPeers")
-                : Nxt.getStringListProperty("nxt.defaultPeers");
-        wellKnownPeers = Collections.unmodifiableList(Constants.isTestnet ? Nxt.getStringListProperty("nxt.testnetPeers")
-                : Nxt.getStringListProperty("nxt.wellKnownPeers"));
+        final List<String> defaultPeers = Constants.isTestnet ? Nxt.getStringListProperty("tael.defaultTestnetPeers")
+                : Nxt.getStringListProperty("tael.defaultPeers");
+        wellKnownPeers = Collections.unmodifiableList(Constants.isTestnet ? Nxt.getStringListProperty("tael.testnetPeers")
+                : Nxt.getStringListProperty("tael.wellKnownPeers"));
 
-        List<String> knownBlacklistedPeersList = Nxt.getStringListProperty("nxt.knownBlacklistedPeers");
+        List<String> knownBlacklistedPeersList = Nxt.getStringListProperty("tael.knownBlacklistedPeers");
         if (knownBlacklistedPeersList.isEmpty()) {
             knownBlacklistedPeers = Collections.emptySet();
         } else {
             knownBlacklistedPeers = Collections.unmodifiableSet(new HashSet<>(knownBlacklistedPeersList));
         }
 
-        maxNumberOfInboundConnections = Nxt.getIntProperty("nxt.maxNumberOfInboundConnections");
-        maxNumberOfOutboundConnections = Nxt.getIntProperty("nxt.maxNumberOfOutboundConnections");
-        maxNumberOfConnectedPublicPeers = Math.min(Nxt.getIntProperty("nxt.maxNumberOfConnectedPublicPeers"),
+        maxNumberOfInboundConnections = 250;
+        maxNumberOfOutboundConnections = 50;
+        maxNumberOfConnectedPublicPeers = Math.min(20,
                 maxNumberOfOutboundConnections);
-        maxNumberOfKnownPeers = Nxt.getIntProperty("nxt.maxNumberOfKnownPeers");
-        minNumberOfKnownPeers = Nxt.getIntProperty("nxt.minNumberOfKnownPeers");
-        connectTimeout = Nxt.getIntProperty("nxt.connectTimeout");
-        readTimeout = Nxt.getIntProperty("nxt.readTimeout");
-        enableHallmarkProtection = Nxt.getBooleanProperty("nxt.enableHallmarkProtection") && !Constants.isLightClient;
-        pushThreshold = Nxt.getIntProperty("nxt.pushThreshold");
-        pullThreshold = Nxt.getIntProperty("nxt.pullThreshold");
-        useWebSockets = Nxt.getBooleanProperty("nxt.useWebSockets");
-        webSocketIdleTimeout = Nxt.getIntProperty("nxt.webSocketIdleTimeout");
-        isGzipEnabled = Nxt.getBooleanProperty("nxt.enablePeerServerGZIPFilter");
-        blacklistingPeriod = Nxt.getIntProperty("nxt.blacklistingPeriod") / 1000;
-        communicationLoggingMask = Nxt.getIntProperty("nxt.communicationLoggingMask");
-        sendToPeersLimit = Nxt.getIntProperty("nxt.sendToPeersLimit");
-        usePeersDb = Nxt.getBooleanProperty("nxt.usePeersDb") && ! Constants.isOffline;
-        savePeers = usePeersDb && Nxt.getBooleanProperty("nxt.savePeers");
-        getMorePeers = Nxt.getBooleanProperty("nxt.getMorePeers");
-        cjdnsOnly = Nxt.getBooleanProperty("nxt.cjdnsOnly");
-        ignorePeerAnnouncedAddress = Nxt.getBooleanProperty("nxt.ignorePeerAnnouncedAddress");
+        maxNumberOfKnownPeers = 2000;
+        minNumberOfKnownPeers = 1000;
+        connectTimeout = 10000;
+        readTimeout = 20000;
+        enableHallmarkProtection = true && !Constants.isLightClient;
+        pushThreshold = 0;
+        pullThreshold = 0;
+        useWebSockets = Nxt.getBooleanProperty("tael.useWebSockets");
+        webSocketIdleTimeout = Nxt.getIntProperty("tael.webSocketIdleTimeout");
+        isGzipEnabled = Nxt.getBooleanProperty("tael.enablePeerServerGZIPFilter");
+        blacklistingPeriod = 600000 / 1000;
+        communicationLoggingMask = 0;
+        sendToPeersLimit = Nxt.getIntProperty("tael.sendToPeersLimit");
+        usePeersDb = true && ! Constants.isOffline;
+        savePeers = usePeersDb && true;
+        getMorePeers = true;
+        cjdnsOnly = false;
+        ignorePeerAnnouncedAddress = false;
         if (useWebSockets && useProxy) {
             Logger.logMessage("Using a proxy, will not create outbound websockets.");
         }
@@ -419,9 +419,9 @@ public final class Peers {
                 ServerConnector connector = new ServerConnector(peerServer);
                 final int port = Constants.isTestnet ? TESTNET_PEER_PORT : Peers.myPeerServerPort;
                 connector.setPort(port);
-                final String host = Nxt.getStringProperty("nxt.peerServerHost");
+                final String host = "0.0.0.0";
                 connector.setHost(host);
-                connector.setIdleTimeout(Nxt.getIntProperty("nxt.peerServerIdleTimeout"));
+                connector.setIdleTimeout(30000);
                 connector.setReuseAddress(true);
                 peerServer.addConnector(connector);
 
@@ -431,12 +431,12 @@ public final class Peers {
                 ServletHolder peerServletHolder = new ServletHolder(new PeerServlet());
                 ctxHandler.addServlet(peerServletHolder, "/*");
 
-                if (Nxt.getBooleanProperty("nxt.enablePeerServerDoSFilter")) {
+                if (Nxt.getBooleanProperty("tael.enablePeerServerDoSFilter")) {
                     FilterHolder dosFilterHolder = ctxHandler.addFilter(DoSFilter.class, "/*",
                             EnumSet.of(DispatcherType.REQUEST));
-                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Nxt.getStringProperty("nxt.peerServerDoSFilter.maxRequestsPerSec"));
-                    dosFilterHolder.setInitParameter("delayMs", Nxt.getStringProperty("nxt.peerServerDoSFilter.delayMs"));
-                    dosFilterHolder.setInitParameter("maxRequestMs", Nxt.getStringProperty("nxt.peerServerDoSFilter.maxRequestMs"));
+                    dosFilterHolder.setInitParameter("maxRequestsPerSec", Nxt.getStringProperty("tael.peerServerDoSFilter.maxRequestsPerSec"));
+                    dosFilterHolder.setInitParameter("delayMs", Nxt.getStringProperty("tael.peerServerDoSFilter.delayMs"));
+                    dosFilterHolder.setInitParameter("maxRequestMs", Nxt.getStringProperty("tael.peerServerDoSFilter.maxRequestMs"));
                     dosFilterHolder.setInitParameter("trackSessions", "false");
                     dosFilterHolder.setAsyncSupported(true);
                 }

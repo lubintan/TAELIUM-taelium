@@ -65,15 +65,14 @@ import java.util.Date;
 
 
 public final class Nxt { //only public class in a Java file must also have the main method
-
+	
     public static final String VERSION = "1.0.3";
     public static final String APPLICATION = "Taelium";
 
     private static volatile Time time = new Time.EpochTime();
 
-    public static final String NXT_DEFAULT_PROPERTIES = "nxt-default.properties";
-    public static final String NXT_PROPERTIES = "nxt.properties";
-    public static final String NXT_INSTALLER_PROPERTIES = "nxt-installer.properties";
+    public static final String NXT_DEFAULT_PROPERTIES = "tael-default.properties";
+//    public static final String NXT_INSTALLER_PROPERTIES = "nxt-installer.properties";
     public static final String CONFIG_DIR = "conf";
 
     private static final RuntimeMode runtimeMode;
@@ -85,6 +84,8 @@ public final class Nxt { //only public class in a Java file must also have the m
     the block below is initializing output and error logs and home folder and checking the properties file is the right version.	
 */    
     static {
+    		
+    	
         redirectSystemStreams("out");
         redirectSystemStreams("err");
         System.out.println("Initializing " + Nxt.APPLICATION + " server version " + Nxt.VERSION);
@@ -94,8 +95,8 @@ public final class Nxt { //only public class in a Java file must also have the m
         dirProvider = RuntimeEnvironment.getDirProvider();
         System.out.println("User home folder " + dirProvider.getUserHomeDir());
         loadProperties(defaultProperties, NXT_DEFAULT_PROPERTIES, true);
-        if (!VERSION.equals(Nxt.defaultProperties.getProperty("nxt.version"))) {
-            throw new RuntimeException("Using an nxt-default.properties file from a version other than " + VERSION + " is not supported!!!");
+        if (!VERSION.equals(Nxt.defaultProperties.getProperty("tael.version"))) {
+            throw new RuntimeException("Using a tael-default.properties file from a version other than " + VERSION + " is not supported!!!");
         }
     }
 
@@ -133,8 +134,8 @@ public final class Nxt { //only public class in a Java file must also have the m
     private static final Properties properties = new Properties(defaultProperties);
 
     static {
-        loadProperties(properties, NXT_INSTALLER_PROPERTIES, true);
-        loadProperties(properties, NXT_PROPERTIES, false);
+//        loadProperties(properties, NXT_INSTALLER_PROPERTIES, true);
+//        loadProperties(properties, NXT_PROPERTIES, false);
     }
 
 //    this loads property values from the properties files
@@ -334,6 +335,8 @@ public final class Nxt { //only public class in a Java file must also have the m
 
     public static void main(String[] args) {
         try {
+        		System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Taelium");
 //        		Date date = NtpTime.getDate();
 //        		Date date2 = new Date(NtpTime.getDateMs() + 86400000);
 //        		Date date3 = new Date(NtpTime.getDateMs() + ((12/24) * 86400000));
@@ -630,7 +633,7 @@ public final class Nxt { //only public class in a Java file must also have the m
             thread.join(2000);
             if (thread.isAlive()) {
                 throw new RuntimeException("SecureRandom implementation too slow!!! " +
-                        "Install haveged if on linux, or set nxt.useStrongSecureRandom=false.");
+                        "Install haveged if on linux, or set tael.useStrongSecureRandom=false.");
             }
         } catch (InterruptedException ignore) {}
     }
@@ -668,7 +671,7 @@ public final class Nxt { //only public class in a Java file must also have the m
     }
 
     public static boolean isDesktopApplicationEnabled() {
-        return RuntimeEnvironment.isDesktopApplicationEnabled() && Nxt.getBooleanProperty("nxt.launchDesktopApplication");
+        return RuntimeEnvironment.isDesktopApplicationEnabled() && true;
     }
 
     private static void launchDesktopApplication() {

@@ -39,9 +39,9 @@ public class APIProxy {
     private static final APIProxy instance = new APIProxy();
 
     static final boolean enableAPIProxy = Constants.isLightClient ||
-            (Nxt.getBooleanProperty("nxt.enableAPIProxy") && ! API.isOpenAPI);
-    private static final int blacklistingPeriod = Nxt.getIntProperty("nxt.apiProxyBlacklistingPeriod") / 1000;
-    static final String forcedServerURL = Nxt.getStringProperty("nxt.forceAPIProxyServerURL", "");
+            (Nxt.getBooleanProperty("tael.enableAPIProxy") && ! API.isOpenAPI);
+    private static final int blacklistingPeriod = Nxt.getIntProperty("tael.apiProxyBlacklistingPeriod") / 1000;
+    static final String forcedServerURL = Nxt.getStringProperty("tael.forceAPIProxyServerURL", "");
 
     private volatile String forcedPeerHost;
     private volatile List<String> peersHosts = Collections.emptyList();

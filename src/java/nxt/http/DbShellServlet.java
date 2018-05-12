@@ -86,7 +86,7 @@ public final class DbShellServlet extends HttpServlet {
 
     private static final String errorNoPasswordIsConfigured =
             "This page is password-protected, but no password is configured in nxt.properties. " +
-                    "Please set nxt.adminPassword or disable the password protection with nxt.disableAdminPassword";
+                    "Please set tael.adminPassword or disable the password protection with tael.disableAdminPassword";
 
     private static final String passwordFormTemplate =
             "<form action=\"/dbshell\" method=\"POST\">" +

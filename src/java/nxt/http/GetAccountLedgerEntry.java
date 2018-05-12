@@ -28,8 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * <p>
  * The GetAccountLedgerEntry API will return an entry from the account ledger.  The
- * account ledger tracks all account changes as determined by the nxt.ledgerAccounts,
- * nxt.ledgerLogUnconfirmed and nxt.ledgerTrimKeep properties.
+ * account ledger tracks all account changes as determined by the tael.ledgerAccounts,
+ * tael.ledgerLogUnconfirmed and tael.ledgerTrimKeep properties.
  * </p>
  * <table>
  *   <caption><b>Request parameters</b></caption>

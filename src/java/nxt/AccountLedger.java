@@ -58,7 +58,7 @@ public class AccountLedger {
 
     /** Number of blocks to keep when trimming */
     public static final int trimKeep = 1440 * 100;
-//    		Nxt.getIntProperty("nxt.ledgerTrimKeep", 30000);
+//    		Nxt.getIntProperty("tael.ledgerTrimKeep", 30000);
 
     /** Blockchain */
     private static final Blockchain blockchain = Nxt.getBlockchain();
@@ -70,10 +70,10 @@ public class AccountLedger {
     private static final List<LedgerEntry> pendingEntries = new ArrayList<>();
 
     /**
-     * Process nxt.ledgerAccounts
+     * Process tael.ledgerAccounts
      */
     static {
-        List<String> ledgerAccounts = Nxt.getStringListProperty("nxt.ledgerAccounts");
+        List<String> ledgerAccounts = Nxt.getStringListProperty("tael.ledgerAccounts");
         ledgerEnabled = !ledgerAccounts.isEmpty();
         trackAllAccounts = ledgerAccounts.contains("*");
         if (ledgerEnabled) {
@@ -92,7 +92,7 @@ public class AccountLedger {
         } else {
             Logger.logInfoMessage("Account ledger is not enabled");
         }
-//        int temp = Nxt.getIntProperty("nxt.ledgerLogUnconfirmed", 1);
+//        int temp = Nxt.getIntProperty("tael.ledgerLogUnconfirmed", 1);
 //        logUnconfirmed = (temp >= 0 && temp <= 2 ? temp : 1);
         logUnconfirmed = 0;
     }//end of static block.
