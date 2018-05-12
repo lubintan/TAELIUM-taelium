@@ -107,7 +107,7 @@ var NRS = (function(NRS, $, undefined) {
 	//hide modal when another one is activated.
     var modal = $(".modal");
     modal.on("show.bs.modal", function() {
-		var $inputFields = $(this).find("input[name=recipient], input[name=account_id], input[name=phasingWhitelisted]").not("[type=hidden]");
+		var $inputFields = $(this).find("input[name=account_id], input[name=phasingWhitelisted]").not("[type=hidden]");
 		$.each($inputFields, function() {
 			if ($(this).hasClass("noMask")) {
 				$(this).unmask();

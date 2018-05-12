@@ -18,11 +18,11 @@
     <div class="form-group">
         <label for="{{name}}_recipient" data-i18n="recipient">RECIPIENT</label>
         <div id="{{name}}_account_id_reader" class="scan-qr-code-reader" style="display:none;margin:auto;width:384px;height:384px;"></div>
-        <button type="button" data-reader="{{name}}_account_id_reader" data-result="{{name}}_recipient" class="scan-qr-code btn btn-default btn-xs">
-            <i class="fa fa-qrcode"></i>
-        </button>
+        <!-- <button type="button" data-reader="{{name}}_account_id_reader" data-result="{{name}}_recipient" class="scan-qr-code btn btn-default btn-xs"> 
+            <i class="fa fa-qrcode"></i> 
+        </button> -->
         <div class="input-group">
-            <input type="text" class="form-control" name="recipient" id="{{name}}_recipient" placeholder="Recipient Account" data-i18n="[placeholder]recipient_account" autofocus tabindex="1" style="width: 328px;" />
+            <input type="text" class="form-control noMask" name="recipient" id="{{name}}_recipient" placeholder="Recipient Account" data-i18n="[placeholder]recipient_account" autofocus tabindex="1" style="width: 328px;" />
             <span class="input-group-btn btn-group recipient_selector">
                 <!--<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></button> -->
                 <!--suppress HtmlUnknownTag -->
