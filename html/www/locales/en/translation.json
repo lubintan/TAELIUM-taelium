@@ -832,7 +832,7 @@
   "recipient": "Recipient",
   "recipient_account": "Recipient Account",
   "recipient_alias_suggestion": "If you want to type an alias, prepend it with the @ character.",
-  "recipient_info": "The recipient account has a public key and a balance of __amount__ __symbol__.",
+  "recipient_info": "The recipient account has a public key stored on the blockchain.",
   "recipient_info_with_name": "The recipient account, named __name__, has a public key and a balance of __amount__ __symbol__.",
   "recipient_malformed": "The recipient account is malformed, please adjust.",
   "recipient_malformed_suggestion": "The recipient address is malformed, did you mean __recipient__ ?",
