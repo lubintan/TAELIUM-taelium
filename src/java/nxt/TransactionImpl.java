@@ -30,6 +30,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ final class TransactionImpl implements Transaction {
         private final short deadline;
         private final byte[] senderPublicKey;
         private final BigInteger amountNQT;
-        private final BigInteger feeNQT;
+        private  BigInteger feeNQT;
         private final TransactionType type;
         private final byte version;
         private Attachment.AbstractAttachment attachment;
@@ -88,6 +89,16 @@ final class TransactionImpl implements Transaction {
                 this.ecBlockHeight = ecBlock.getHeight();
                 this.ecBlockId = ecBlock.getId();
             }
+            
+            Date txDate = new Date(Convert.fromEpochTime(blockTimestamp));
+            
+            if (txDate.before(Constants.blockchainStartDate)) {
+            		this.feeNQT = BigInteger.ZERO;
+            }
+            else {
+            		this.feeNQT = Constants.STD_FEE;
+            }
+            
             return new TransactionImpl(this, secretPhrase);
         }
 
@@ -323,11 +334,30 @@ final class TransactionImpl implements Transaction {
         this.appendagesSize = appendagesSize;
         if (builder.feeNQT.compareTo(BigInteger.ZERO) <= 0 || (Constants.correctInvalidFees && builder.signature == null)) {
             int effectiveHeight = (height < Integer.MAX_VALUE ? height : Nxt.getBlockchain().getHeight());
-            BigInteger minFee = getMinimumFeeNQT(effectiveHeight);
+//            BigInteger minFee = getMinimumFeeNQT(effectiveHeight);
 //            feeNQT = Math.max(minFee, builder.feeNQT);
-            feeNQT = minFee.compareTo(builder.feeNQT) > 0 ? minFee:builder.feeNQT;
+//            feeNQT = minFee.compareTo(builder.feeNQT) > 0 ? minFee:builder.feeNQT;
+            
+            Date txDate = new Date(Convert.fromEpochTime(this.timestamp));
+            
+            feeNQT = txDate.before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE; 
+//            
+//            Logger.logDebugMessage("");
+//            Logger.logDebugMessage("== amount id: " + builder.amountNQT +"==" );
+//            Logger.logDebugMessage("Fee A: " + feeNQT);
+//            Logger.logDebugMessage("");
+            
         } else {
-            feeNQT = builder.feeNQT;
+//            feeNQT = builder.feeNQT;
+            
+            Date txDate = new Date(Convert.fromEpochTime(this.timestamp));
+            
+            feeNQT = txDate.before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE; 
+//            
+//            Logger.logDebugMessage("");
+//            Logger.logDebugMessage("== amount id: " + builder.amountNQT +"==" );
+//            Logger.logDebugMessage("Fee B: " + feeNQT);
+//            Logger.logDebugMessage("");
         }
 
         if (builder.signature != null && secretPhrase != null) {
@@ -400,6 +430,9 @@ final class TransactionImpl implements Transaction {
 
     @Override
     public byte[] getSignature() {
+//    		Logger.logDebugMessage("====== Getting Signature: " + signature + "======");
+    	
+    	
         return signature;
     }
 
@@ -762,6 +795,21 @@ final class TransactionImpl implements Transaction {
                 
 //                Logger.logDebugMessage(" --- Buffer Put SIZE: " + bytes.length);
                 
+//                Logger.logDebugMessage("");
+//                Logger.logDebugMessage("-- BYTE INFO --");
+//                
+//                Logger.logDebugMessage(" --- Buffer Put SIZE: " + bytes.length);
+//                Logger.logDebugMessage("type: " + type.getType());
+//                Logger.logDebugMessage("subType: "+ type.getSubtype());
+//                Logger.logDebugMessage("timestamp: " + timestamp);
+//                Logger.logDebugMessage("deadline: "+ deadline);
+//                Logger.logDebugMessage("senderPubKey: "+ Convert.toHexString(getSenderPublicKey()));
+//                Logger.logDebugMessage("amount: " + amountNQT);
+//                Logger.logDebugMessage("fee: " + feeNQT);
+//                Logger.logDebugMessage("---------------");
+//                Logger.logDebugMessage("");
+                
+                
             } catch (RuntimeException e) {
                 if (signature != null) {
                     Logger.logDebugMessage("Failed to get transaction bytes for transaction: " + getJSONObject().toJSONString());
@@ -800,7 +848,16 @@ final class TransactionImpl implements Transaction {
             for (int i=0; i<10; i++) {
             		feeNQTBytes[9-i] = buffer.get();	     
             }
-            BigInteger feeNQT = new BigInteger(feeNQTBytes);
+//            BigInteger feeNQT = new BigInteger(feeNQTBytes);
+            
+            Date txDate = new Date(Convert.fromEpochTime(timestamp));
+            
+            BigInteger feeNQT = txDate.before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE; 
+            
+//            Logger.logDebugMessage("");
+//            Logger.logDebugMessage("== amount id: " + amountNQT +"==" );
+//            Logger.logDebugMessage("Fee C: " + feeNQT);
+//            Logger.logDebugMessage("");
             
             byte[] referencedTransactionFullHash = new byte[32];
             buffer.get(referencedTransactionFullHash);	   
@@ -972,7 +1029,16 @@ final class TransactionImpl implements Transaction {
             BigInteger amountNQT = new BigInteger(amountNQTString);
             
             String feeNQTString = (String) transactionData.get("feeNQT");
-            BigInteger feeNQT = new BigInteger(feeNQTString);
+//            BigInteger feeNQT = new BigInteger(feeNQTString);
+            
+            Date txDate = new Date(Convert.fromEpochTime(timestamp));
+            
+            BigInteger feeNQT = txDate.before(Constants.blockchainStartDate) ? BigInteger.ZERO: Constants.STD_FEE; 
+            
+//            Logger.logDebugMessage("");
+//            Logger.logDebugMessage("== amount id: " + amountNQT +"==" );
+//            Logger.logDebugMessage("Fee D: " + feeNQT);
+//            Logger.logDebugMessage("");
             
             String referencedTransactionFullHash = (String) transactionData.get("referencedTransactionFullHash");
             byte[] signature = Convert.parseHexString((String) transactionData.get("signature"));
@@ -1122,20 +1188,38 @@ final class TransactionImpl implements Transaction {
     @Override
     public void validate() throws NxtException.ValidationException {
         
+    		Date txDate = new Date(Convert.fromEpochTime(timestamp));
+    	
 //    		Logger.logDebugMessage("MAX_BALANCE_HAEDS: " + Constants.MAX_BALANCE_HAEDS);
+//    		Logger.logDebugMessage("======== VALIDATE  Tx ID: " + id +" ========");
+////    		Logger.logDebugMessage("Last Block Date: " + Nxt.getBlockchain().getBlockAtHeight(txHeight).getDate());
+//    		Logger.logDebugMessage("Tx timsetamp: " + new Date(Convert.fromEpochTime(timestamp)));
+//    		Logger.logDebugMessage("Block Timestamp: " + new Date(Convert.fromEpochTime(blockTimestamp)));
+//    		Logger.logDebugMessage("fee: " + feeNQT );
+////    		Logger.logDebugMessage("txHeight: " + txHeight);
+//    		
+//    		Logger.logDebugMessage("Fee less than equal zero: " + (feeNQT.compareTo(BigInteger.ZERO) <= 0));
+//    		Logger.logDebugMessage("Not Before Blockchain Start: " + (!(txDate.before(Constants.blockchainStartDate))));
+//    		
+//    		Logger.logDebugMessage("==========================");
     	
     		if (timestamp == 0 ? (deadline != 0 || (feeNQT.compareTo(BigInteger.ZERO) != 0)) : 
     			(deadline < 1 || 
     					(
     							
     							
-    							(feeNQT.compareTo(BigInteger.ZERO) <= 0) && 
-    							(!Nxt.getBlockchain().getLastBlock().getDate().before(Constants.blockchainStartDate)) 
+    							(feeNQT.compareTo(BigInteger.ZERO) <= 0) 
+    							&& 
+    							(!(txDate.before(Constants.blockchainStartDate))) 
     					)
 				)
-                || feeNQT.compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) > 0
+                || feeNQT.compareTo(
+                		Constants.MAX_BALANCE_HAEDS
+                		) > 0
                 || amountNQT.compareTo(BigInteger.ZERO) < 0
-                || amountNQT.compareTo(Nxt.getBlockchain().getLastBlock().getSupplyCurrent()) > 0 
+                || amountNQT.compareTo(
+                		Constants.MAX_BALANCE_HAEDS
+                		) > 0 
                 || type == null) {
             throw new NxtException.NotValidException("Invalid transaction parameters:\n type: " + type + ", timestamp: " + timestamp
                     + ", deadline: " + deadline + ", fee: " + feeNQT + ", amount: " + amountNQT);
@@ -1179,10 +1263,10 @@ final class TransactionImpl implements Transaction {
         }
         int blockchainHeight = Nxt.getBlockchain().getHeight();
         if (!validatingAtFinish) {
-            BigInteger minimumFeeNQT = getMinimumFeeNQT(blockchainHeight);
+//            BigInteger minimumFeeNQT = getMinimumFeeNQT(blockchainHeight);
             if (feeNQT.compareTo(Constants.MIN_FEE_HAEDS) < 0) {
                 throw new NxtException.NotCurrentlyValidException(String.format("Transaction fee %s %s less than minimum fee %s %s at height %d",
-                        Constants.haedsToTaels(feeNQT).toString(), Constants.COIN_SYMBOL, Constants.haedsToTaels(minimumFeeNQT).toString(), Constants.COIN_SYMBOL, blockchainHeight));
+                        Constants.haedsToTaels(feeNQT).toString(), Constants.COIN_SYMBOL, Constants.haedsToTaels(Constants.MIN_FEE_HAEDS).toString(), Constants.COIN_SYMBOL, blockchainHeight));
             }
             if (ecBlockId != 0) {
                 if (blockchainHeight < ecBlockHeight) {
