@@ -411,6 +411,27 @@ public final class Nxt { //only public class in a Java file must also have the m
 //    		System.out.println();
 //    		System.exit(0);
 //    		/*~~~~~~~~~~~~~~~~~~~~~~~~ END Test/Debug Space 		~~~~~~~~~~~~~~~~~~~~~~~~~ */
+        		
+        	
+        	/* ============== Print passphrase, Acct ID, Public Key List =================*/
+//        		List<String> passphraseList = new ArrayList<String>();
+//        	
+//        		passphraseList.add("manchesterunited0");
+//        		
+//        		System.out.println("phrase,Account ID,AccountNumber,Public Key");
+//        		
+//        		for (String nextSecretPhrase : passphraseList) {
+//        			byte[] pubKeyBytes = Crypto.getPublicKey(nextSecretPhrase);
+//        			String pubKeyString = Convert.toHexString(pubKeyBytes);
+//        			long acctId = Account.getId(pubKeyBytes);
+//        			String accountName = Crypto.rsEncode(acctId);
+//        			
+//        			System.out.println(nextSecretPhrase + "," + accountName + "," 
+//        			+ String.valueOf(Crypto.rsDecode(accountName)) 
+//        			+ "," + pubKeyString ); 
+//        		}
+//        	
+        	/*============================================================*/
         	
         		Runtime.getRuntime().addShutdownHook(new Thread(Nxt::shutdown)); //shutdown() defined below
             init();
