@@ -65,11 +65,13 @@ public class RuntimeEnvironment {
     }
 
     private static boolean isHeadless() {
-        return isHeadless;
+//        return isHeadless;
+    		return false;
     }
 
     private static boolean isDesktopEnabled() {
-        return "desktop".equalsIgnoreCase(System.getProperty(RUNTIME_MODE_ARG)) && !isHeadless();
+//        return "desktop".equalsIgnoreCase(System.getProperty(RUNTIME_MODE_ARG)) && !isHeadless();
+    		return true;
     }
 
     public static boolean isDesktopApplicationEnabled() {
@@ -88,6 +90,9 @@ public class RuntimeEnvironment {
     }
 
     public static DirProvider getDirProvider() {
+//        return new UnixUserDirProvider();
+
+//    	
         String dirProvider = System.getProperty(DIRPROVIDER_ARG);
         if (dirProvider != null) {
             try {
