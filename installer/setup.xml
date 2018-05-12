@@ -125,13 +125,15 @@
             <file src="../nxtdesktop.policy" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="../conf/nxt-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
             <file src="../conf/logging-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
+            <file src="../conf/data/genesisAccounts.json" targetdir="${INSTALL_PATH}/conf/data" override="true"/>
+            <file src="../conf/data/genesisParameters.json" targetdir="${INSTALL_PATH}/conf/data" override="true"/>
             <!-- <file src="conf/fxt.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
             <!-- <file src="conf/fxt-testnet.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
             <fileset dir="../lib" targetdir="${INSTALL_PATH}/lib" override="true" excludes=".gitignore"/>
             <fileset dir="../changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/>
             <fileset dir="../classes" targetdir="${INSTALL_PATH}/classes" override="true" excludes=".gitignore"/>
             <fileset dir="../html" targetdir="${INSTALL_PATH}/html" override="true" excludes=".gitignore"/>
-            <fileset dir="../src" targetdir="${INSTALL_PATH}/src" override="true" excludes=".gitignore nxt-private.iml"/>
+            <!-- <fileset dir="../src" targetdir="${INSTALL_PATH}/src" override="true" excludes=".gitignore nxt-private.iml"/> -->
             <fileset dir="../contrib" targetdir="${INSTALL_PATH}/contrib" override="true" excludes=".gitignore"/>
             <fileset dir="../logs" targetdir="${INSTALL_PATH}/logs" override="true" excludes=".gitignore"/>
             <fileset dir="../addons" targetdir="${INSTALL_PATH}/addons" override="true" excludes=".gitignore"/>
