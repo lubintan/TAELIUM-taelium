@@ -5,9 +5,9 @@ then
 	echo VERSION not defined
 	exit 1
 fi
-PACKAGE=nxt-client-${VERSION}
+PACKAGE=taelium-client-${VERSION}
 echo PACKAGE="${PACKAGE}"
-CHANGELOG=nxt-client-${VERSION}.changelog.txt
+CHANGELOG=taelium-client-${VERSION}.changelog.txt
 OBFUSCATE=$2
 MACVERSION=$3
 if [ -x ${MACVERSION} ];
@@ -17,14 +17,14 @@ fi
 echo MACVERSION="${MACVERSION}"
 
 FILES="changelogs conf html lib resource contrib"
-FILES="${FILES} nxt.exe nxtservice.exe"
-FILES="${FILES} 3RD-PARTY-LICENSES.txt AUTHORS.txt LICENSE.txt"
-FILES="${FILES} DEVELOPERS-GUIDE.md OPERATORS-GUIDE.md README.md README.txt USERS-GUIDE.md"
+FILES="${FILES} taelium.exe taeliumservice.exe"
+FILES="${FILES} 3RD-PARTY-LICENSES.txt"
+# FILES="${FILES} DEVELOPERS-GUIDE.md OPERATORS-GUIDE.md README.md README.txt USERS-GUIDE.md"
 FILES="${FILES} mint.bat mint.sh run.bat run.sh run-tor.sh run-desktop.sh start.sh stop.sh compact.sh compact.bat sign.sh sign.bat"
-FILES="${FILES} nxt.policy nxtdesktop.policy NXT_Wallet.url Dockerfile"
+FILES="${FILES} taelium.policy taeliumdesktop.policy Dockerfile"
 
-echo compile
-./compile.sh
+# echo compile
+# ./compile.sh
 rm -rf html/doc/*
 rm -rf nxt
 rm -rf ${PACKAGE}.jar
@@ -47,8 +47,8 @@ echo javadoc
 ./javadoc.sh
 fi
 echo copy resources
-cp installer/lib/JavaExe.exe nxt.exe
-cp installer/lib/JavaExe.exe nxtservice.exe
+cp installer/lib/JavaExe.exe taelium.exe
+cp installer/lib/JavaExe.exe taeliumservice.exe
 cp -a ${FILES} nxt
 cp -a logs/placeholder.txt nxt/logs
 echo gzip
@@ -62,11 +62,11 @@ do
 done
 cd nxt
 echo generate jar files
-../jar.sh
+./jar.sh
 echo package installer Jar
 ../installer/build-installer.sh ../${PACKAGE}
 cd -
 rm -rf nxt
 
 echo bundle a dmg file
-/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javapackager -deploy -outdir ../taelium -outfile nxt-client -name nxt-installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.nxt.client.installer -Bmac.CFBundleName=Nxt-Installer -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns  > installer/javapackager.log 2>&1
+/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javapackager -deploy -outdir ../taeliumBuild -outfile taelium-client -name Taelium_Installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.nxt.client.installer -Bmac.CFBundleName=Taelium-Setup -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns  > installer/javapackager.log 2>&1

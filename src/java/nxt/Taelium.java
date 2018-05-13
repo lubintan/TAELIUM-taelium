@@ -71,7 +71,7 @@ public final class Taelium { //only public class in a Java file must also have t
 
     private static volatile Time time = new Time.EpochTime();
 
-    public static final String NXT_DEFAULT_PROPERTIES = "tael-default.properties";
+    public static final String NXT_DEFAULT_PROPERTIES = "taelium-default.properties";
 //    public static final String NXT_INSTALLER_PROPERTIES = "nxt-installer.properties";
     public static final String CONFIG_DIR = "conf";
 
@@ -96,7 +96,7 @@ public final class Taelium { //only public class in a Java file must also have t
         System.out.println("User home folder " + dirProvider.getUserHomeDir());
         loadProperties(defaultProperties, NXT_DEFAULT_PROPERTIES, true);
         if (!VERSION.equals(Taelium.defaultProperties.getProperty("tael.version"))) {
-            throw new RuntimeException("Using a tael-default.properties file from a version other than " + VERSION + " is not supported!!!");
+            throw new RuntimeException("Using a taelium-default.properties file from a version other than " + VERSION + " is not supported!!!");
         }
     }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"  ?>
 <installation version="5.0">
     <properties>
-        <property file="../conf/nxt-default.properties" prefix="runtime"/>
+        <property file="../conf/taelium-default.properties" prefix="runtime"/>
     </properties>
     <info>
-        <appname>NXT</appname>
-        <appversion>@{runtime.nxt.version}</appversion>
-        <url>https://nxt.org</url>
+        <appname>Taelium</appname>
+        <appversion>1.0.3</appversion>
+        <!-- <url>https://nxt.org</url> -->
         <run-privileged condition="izpack.windowsinstall"/>
     </info>
 
@@ -41,7 +41,7 @@
         </native>
     </natives>
 
-    <guiprefs height="700" resizable="yes" width="870">
+    <guiprefs height="700" resizable="yes" width="1000">
         <!-- GUI adaption for more information see "Modifying the GUI" in the documentation -->
         <modifier key="langDisplayType" value="default"/>
         <modifier key="layoutAnchor" value="CENTER"/>
@@ -83,9 +83,9 @@
     </locale>
 
     <resources>
-        <res id="InfoPanel.info" src="../changelogs/nxt-client-1.0.3.changelog.txt" parse="yes"/>
-        <res id="LicencePanel.licence" src="../LICENSE.txt"/>
-        <res id="Installer.image" src="../html/www/img/installer_left_pane.png"/>
+        <!-- <res id="InfoPanel.info" src="../changelogs/nxt-client-1.0.3.changelog.txt" parse="yes"/> -->
+        <res id="LicencePanel.licence" src="../Jelurida Public License.txt"/>
+        <res id="Installer.image" src="../html/www/img/Taelium Installer picture.png"/>
         <res id="shortcutSpec.xml" src="../installer/shortcutSpec.xml"/>
         <res id="Unix_shortcutSpec.xml" src="../installer/Unix_shortcutSpec.xml"/>
         <res id="RegistrySpec.xml" src="../installer/RegistrySpec.xml"/>
@@ -94,13 +94,13 @@
     <variables>
         <variable name="$InstallerFrame.logfilePath" value="default"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
-        <variable name="TargetPanel.dir.mac" value="/Applications/nxt.app"/>
+        <variable name="TargetPanel.dir.mac" value="/Applications/taelium.app"/>
     </variables>
 
     <panels>
         <panel classname="CheckedHelloPanel" id="hellopanel"/>
         <panel classname="LicencePanel"/>
-        <panel classname="InfoPanel"/>
+        <!-- <panel classname="InfoPanel"/> -->
         <panel classname="TargetPanel"/>
         <panel classname="ShortcutPanel" condition="!izpack.macinstall"/>
         <panel classname="InstallPanel"/>
@@ -110,20 +110,20 @@
     <packs>
         <pack name="server" required="yes">
             <description>Common Server Files</description>
-            <file src="../nxt.jar" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../README.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../NXT_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../taelium.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <!-- <file src="../README.txt" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <!-- <file src="../NXT_Wallet.url" targetdir="${INSTALL_PATH}" override="true"/> -->
             <file src="../3RD-PARTY-LICENSES.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../AUTHORS.txt" targetdir="${INSTALL_PATH}" override="true"/>
+            <!-- <file src="../AUTHORS.txt" targetdir="${INSTALL_PATH}" override="true"/> -->
             <!-- <file src="COPYING.txt" targetdir="${INSTALL_PATH}" override="true"/> -->
-            <file src="../LICENSE.txt" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../DEVELOPERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../OPERATORS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../README.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../USERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../nxt.policy" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../nxtdesktop.policy" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../conf/nxt-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
+            <file src="../Jelurida Public License.pdf" targetdir="${INSTALL_PATH}" override="true"/>
+            <!-- <file src="../DEVELOPERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <!-- <file src="../OPERATORS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <!-- <file src="../README.md" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <!-- <file src="../USERS-GUIDE.md" targetdir="${INSTALL_PATH}" override="true"/> -->
+            <file src="../taelium.policy" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../taeliumdesktop.policy" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../conf/taelium-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
             <file src="../conf/logging-default.properties" targetdir="${INSTALL_PATH}/conf" override="true"/>
             <file src="../conf/data/genesisAccounts.json" targetdir="${INSTALL_PATH}/conf/data" override="true"/>
             <file src="../conf/data/genesisParameters.json" targetdir="${INSTALL_PATH}/conf/data" override="true"/>
@@ -149,9 +149,9 @@
         <pack name="server.windows" os="windows" required="yes">
             <description>Windows Specific Resources</description>
             <os family="windows"/>
-            <file src="../nxt.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../nxtservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
-            <file src="../nxtservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../taelium.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../taeliumservice.exe" targetdir="${INSTALL_PATH}" override="true"/>
+            <file src="../taeliumservice.jar" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="../run.bat" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="../mint.bat" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="../compact.bat" targetdir="${INSTALL_PATH}" override="true"/>

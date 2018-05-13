@@ -8,13 +8,13 @@
     <programGroup defaultName="NXT" location="applications"/>
 
     <shortcut
-            name="Nxt Start"
+            name="Taelium Start"
             programGroup="yes"
             desktop="yes"
             target="$INSTALL_PATH/start.sh"
             workingDirectory="$INSTALL_PATH"
-            description="Start Nxt"
-            iconFile="$INSTALL_PATH/html/www/img/nxt-icon-32x32.png"
+            description="Start Taelium"
+            iconFile="$INSTALL_PATH/html/www/img/tael-icon-32x32.png"
             type="Application"
             encoding="UTF-8"
             categories="Application;Network;"
@@ -22,13 +22,13 @@
     </shortcut>
 
     <shortcut
-            name="Nxt Stop"
+            name="Taelium Stop"
             programGroup="yes"
             desktop="yes"
             target="$INSTALL_PATH/stop.sh"
             workingDirectory="$INSTALL_PATH"
-            description="Shutdown Nxt"
-            iconFile="$INSTALL_PATH/html/www/img/nxt-icon-32x32.png"
+            description="Shutdown Taelium"
+            iconFile="$INSTALL_PATH/html/www/img/tael-icon-32x32.png"
             type="Application"
             encoding="UTF-8"
             categories="Application;Network;"
@@ -51,7 +51,7 @@
     -->
 
     <shortcut
-            name="Nxt Uninstaller"
+            name="Taelium Uninstaller"
             programGroup="yes"
             desktop="no"
             target="java"
