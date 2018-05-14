@@ -1433,7 +1433,7 @@ final class BlockchainProcessorImpl implements BlockchainProcessor {
                 BlockDb.commit(block);
                 Db.db.commitTransaction();
                 
-//                Constants.updateMaxBal(block.getSupplyCurrent());
+                Constants.updateMaxBal(block.getSupplyCurrent());
                 
                 Logger.logDebugMessage("****** BLOCK SUMMARY *******");
                 Logger.logDebugMessage("id: " + block.getId());

@@ -17,32 +17,16 @@
 package nxt;
 
 import java.math.BigInteger;
-import java.util.Date;
 
 
 //seen.
 public interface Fee {
 
-    BigInteger getFee(TransactionImpl transaction, Appendix appendage, int blockchainHeight);
+    BigInteger getFee(TransactionImpl transaction, Appendix appendage);
 
-    static Fee returnFee(int height) {
-    		return new Fee.ConstantFee(calculateFee(height));
-    }
+    Fee DEFAULT_FEE = new Fee.ConstantFee(Constants.STD_FEE);
 
-    
-
-	Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
-    
-    static BigInteger calculateFee(int height) {
-//    		Date today = NtpTime.getCurrentDate();
-    		Date today = Taelium.getBlockchain().getBlockAtHeight(height-1).getDate();
-    		
-    		if (today.before(Constants.blockchainStartDate)) {
-    			return BigInteger.ZERO;
-    		}else {
-    			return Constants.STD_FEE;
-    		}
-    }
+    Fee NONE = new Fee.ConstantFee(BigInteger.ZERO);
 
     final class ConstantFee implements Fee {
 
@@ -53,8 +37,8 @@ public interface Fee {
         }
 
         @Override
-        public BigInteger getFee(TransactionImpl transaction, Appendix appendage, int blockchainHeight) {
-            return calculateFee(blockchainHeight);
+        public BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
+            return fee;
         }
 
     }
@@ -81,14 +65,13 @@ public interface Fee {
 
         // the first size unit is free if constantFee is 0
         @Override
-        public final BigInteger getFee(TransactionImpl transaction, Appendix appendage, int blockchainHeight) {
-//            int size = getSize(transaction, appendage) - 1;
-//            if (size < 0) {
-//                return constantFee;
-//            }
-//            return constantFee.add(feePerSize.multiply(BigInteger.valueOf((long)(size/unitSize))));
-////            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
-        		return calculateFee(blockchainHeight);
+        public final BigInteger getFee(TransactionImpl transaction, Appendix appendage) {
+            int size = getSize(transaction, appendage) - 1;
+            if (size < 0) {
+                return constantFee;
+            }
+            return constantFee.add(feePerSize.multiply(BigInteger.valueOf((long)(size/unitSize))));
+//            return Math.addExact(constantFee, Math.multiplyExact((long) (size / unitSize), feePerSize));
         }
 
         public abstract int getSize(TransactionImpl transaction, Appendix appendage);

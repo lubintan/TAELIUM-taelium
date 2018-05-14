@@ -288,8 +288,7 @@ public abstract class TransactionType {
     }
 
     Fee getBaselineFee(Transaction transaction) {
-//        return Fee.returnFee(transaction.getBlock().getHeight());
-		return Fee.NONE;
+        return Fee.DEFAULT_FEE;
     }
 
     Fee getNextFee(Transaction transaction) {
@@ -382,7 +381,7 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) <= 0 || 
-                		transaction.getAmountNQT().compareTo(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
+                		transaction.getAmountNQT().compareTo(Constants.MAX_BALANCE_HAEDS) >= 0) {
                     throw new NxtException.NotValidException("Invalid ordinary reward");
                 }
             }
@@ -459,7 +458,7 @@ public abstract class TransactionType {
             @Override
             void validateAttachment(Transaction transaction) throws NxtException.ValidationException {
                 if (transaction.getAmountNQT().compareTo(BigInteger.ZERO) <= 0 || 
-                		transaction.getAmountNQT().compareTo(Taelium.getBlockchain().getLastBlock().getSupplyCurrent()) >= 0) {
+                		transaction.getAmountNQT().compareTo(Constants.MAX_BALANCE_HAEDS) >= 0) {
                     throw new NxtException.NotValidException("Invalid ordinary payment");
                 }
             }
