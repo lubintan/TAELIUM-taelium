@@ -59,11 +59,9 @@ public final class Genesis {
     private static byte[] loadGenesisAccountsJSON() {
         MessageDigest digest = Crypto.sha256();
         try (InputStreamReader is = new InputStreamReader(new DigestInputStream(
-                ClassLoader.getSystemResourceAsStream("data/genesisAccounts" + (Constants.isTestnet ? "-testnet.json" : ".json")), digest))) {
+                ClassLoader.getSystemResourceAsStream("data/genesisAccounts.json"), digest))) {
             genesisAccountsJSON = (JSONObject) JSONValue.parseWithException(is);
             
-//            System.out.println(genesisAccountsJSON);
-//            System.out.println("/n************************/n");
         } catch (IOException|ParseException e) {
             throw new RuntimeException("Failed to process genesis recipients accounts", e);
         }
