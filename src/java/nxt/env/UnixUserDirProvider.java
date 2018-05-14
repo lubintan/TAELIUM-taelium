@@ -22,15 +22,16 @@ import nxt.util.Logger;
 import java.nio.file.Paths;
 
 public class UnixUserDirProvider extends DesktopUserDirProvider {
-
-    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "Library/Application Support/" + Taelium.APPLICATION.toUpperCase()).toString();
-//    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), Nxt.APPLICATION.toUpperCase()).toString();
+		
+		private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "Documents/Taelium Data").toString();
+//    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), "Library/Application Support/" + Taelium.APPLICATION.toUpperCase()).toString();
+//    private static final String NXT_USER_HOME = Paths.get(System.getProperty("user.home"), Taelium.APPLICATION.toUpperCase()).toString();
 
     @Override
     public String getUserHomeDir() {
     	
     		
-    		System.out.println("NXT_USER_HOME: " + NXT_USER_HOME);
+    		System.out.println("TAELIUM_USER_HOME: " + NXT_USER_HOME);
     	    	
         return NXT_USER_HOME;
     }

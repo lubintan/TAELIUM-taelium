@@ -94,7 +94,7 @@
     <variables>
         <variable name="$InstallerFrame.logfilePath" value="default"/>
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
-        <variable name="TargetPanel.dir.mac" value="/Applications/taelium.app"/>
+        <variable name="TargetPanel.dir.mac" value="/Applications/Taelium.app"/>
     </variables>
 
     <panels>
@@ -130,13 +130,13 @@
             <!-- <file src="conf/fxt.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
             <!-- <file src="conf/fxt-testnet.json" targetdir="${INSTALL_PATH}/conf" override="true"/> -->
             <fileset dir="../lib" targetdir="${INSTALL_PATH}/lib" override="true" excludes=".gitignore"/>
-            <fileset dir="../changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/>
+            <!-- <fileset dir="../changelogs" targetdir="${INSTALL_PATH}/changelogs" override="true" excludes=".gitignore"/> -->
             <fileset dir="../classes" targetdir="${INSTALL_PATH}/classes" override="true" excludes=".gitignore"/>
             <fileset dir="../html" targetdir="${INSTALL_PATH}/html" override="true" excludes=".gitignore"/>
             <!-- <fileset dir="../src" targetdir="${INSTALL_PATH}/src" override="true" excludes=".gitignore nxt-private.iml"/> -->
             <fileset dir="../contrib" targetdir="${INSTALL_PATH}/contrib" override="true" excludes=".gitignore"/>
-            <fileset dir="../logs" targetdir="${INSTALL_PATH}/logs" override="true" excludes=".gitignore"/>
-            <fileset dir="../addons" targetdir="${INSTALL_PATH}/addons" override="true" excludes=".gitignore"/>
+            <!-- <fileset dir="../logs" targetdir="${INSTALL_PATH}/logs" override="true" excludes=".gitignore"/> -->
+            <!-- <fileset dir="../addons" targetdir="${INSTALL_PATH}/addons" override="true" excludes=".gitignore"/> -->
             <updatecheck>
                 <include name="*.desktop" />
                 <include name="lib/**" />
@@ -156,8 +156,8 @@
             <file src="../mint.bat" targetdir="${INSTALL_PATH}" override="true"/>
             <file src="../compact.bat" targetdir="${INSTALL_PATH}" override="true"/>
             <parsable targetfile="${INSTALL_PATH}/run.bat"/>
-            <singlefile src="../resource/nxt.properties" target="${INSTALL_PATH}/resource/nxt.properties" override="true"/>
-            <singlefile src="../resource/nxtservice.properties" target="${INSTALL_PATH}/resource/nxtservice.properties" override="true"/>
+            <singlefile src="../resource/taelium.properties" target="${INSTALL_PATH}/resource/taelium.properties" override="true"/>
+            <singlefile src="../resource/taeliumservice.properties" target="${INSTALL_PATH}/resource/taeliumservice.properties" override="true"/>
         </pack>
 
         <pack name="server.unix" os="unix" required="yes">
@@ -196,8 +196,8 @@
         <pack name="server.mac" os="mac_osx" required="yes" uninstall="false">
             <description>Mac Specific Resources</description>
             <fileset dir="../resource/mac/Contents" targetdir="${INSTALL_PATH}/Contents" override="true"/>
-			<parsable targetfile="${INSTALL_PATH}/Contents/MacOS/nxt"/>
-			<executable targetfile="${INSTALL_PATH}/Contents/MacOS/nxt"/>
+			<parsable targetfile="${INSTALL_PATH}/Contents/MacOS/taelium"/>
+			<executable targetfile="${INSTALL_PATH}/Contents/MacOS/taelium"/>
 		</pack>
 
         <pack name="jre.mac" os="mac_osx" required="yes" uninstall="false">

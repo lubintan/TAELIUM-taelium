@@ -1,11 +1,11 @@
 #!/bin/sh
-APPLICATION="nxt-clone"
+APPLICATION="taelium"
 if [ -e ~/.${APPLICATION}/nxt.pid ]; then
     PID=`cat ~/.${APPLICATION}/nxt.pid`
     ps -p $PID > /dev/null
     STATUS=$?
     if [ $STATUS -eq 0 ]; then
-        echo "Nxt server already running"
+        echo "Taelium server already running"
         exit 1
     fi
 fi

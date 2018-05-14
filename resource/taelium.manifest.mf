@@ -14,5 +14,5 @@ Class-Path: lib/websocket-client-9.3.20.v20170531.jar lib/h2-1.4.196.j
  31.jar lib/lucene-analyzers-common-5.3.2.jar lib/tika-parsers-1.13.ja
  r lib/jetty-servlet-9.3.20.v20170531.jar lib/lucene-queries-5.3.2.jar
   lib/core-3.3.0.jar lib/weupnp-0.1.4.jar conf/
-Main-Class: nxt.Nxt
+Main-Class: nxt.Taelium
 

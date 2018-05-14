@@ -1,5 +1,5 @@
 #!/bin/sh
-APPLICATION="nxt-clone"
+APPLICATION="taelium"
 if [ -e ~/.${APPLICATION}/nxt.pid ]; then
     PID=`cat ~/.${APPLICATION}/nxt.pid`
     ps -p $PID > /dev/null
@@ -12,6 +12,5 @@ if [ -e ~/.${APPLICATION}/nxt.pid ]; then
         STATUS=$?
     done
     rm -f ~/.${APPLICATION}/nxt.pid
-    echo "Nxt server stopped"
+    echo "Taelium server stopped"
 fi
-

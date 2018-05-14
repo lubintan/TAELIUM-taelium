@@ -9,27 +9,27 @@
 	<key>CFBundleAllowMixedLocalizations</key>
 	<true/>
 	<key>CFBundleExecutable</key>
-	<string>nxt</string>
+	<string>taelium</string>
 	<key>CFBundleIconFile</key>
-	<string>nxt</string>
+	<string>taelium</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.nxt.runtime</string>
+	<string>org.taelium.runtime</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Nxt</string>
+	<string>Taelium</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.8.0</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>LSApplicationCategoryType</key>
 	<string>Business</string>
 	<key>CFBundleVersion</key>
-	<string>1.8.0</string>
+	<string>1.0.3</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright (C) 2016</string>
+	<string>Copyright (C) 2018</string>
 	<key>NSHighResolutionCapable</key>
 	<string>true</string>
 </dict>

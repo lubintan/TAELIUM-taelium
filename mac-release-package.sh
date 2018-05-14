@@ -43,8 +43,8 @@ else
 FILES="${FILES} classes src"
 FILES="${FILES} compile.sh javadoc.sh jar.sh package.sh"
 FILES="${FILES} win-compile.sh win-javadoc.sh win-package.sh"
-echo javadoc
-./javadoc.sh
+# echo javadoc
+# ./javadoc.sh
 fi
 echo copy resources
 cp installer/lib/JavaExe.exe taelium.exe
@@ -62,11 +62,13 @@ do
 done
 cd nxt
 echo generate jar files
+cd -
 ./jar.sh
+cd nxt
 echo package installer Jar
 ../installer/build-installer.sh ../${PACKAGE}
 cd -
 rm -rf nxt
 
 echo bundle a dmg file
-/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javapackager -deploy -outdir ../taeliumBuild -outfile taelium-client -name Taelium_Installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.nxt.client.installer -Bmac.CFBundleName=Taelium-Setup -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns  > installer/javapackager.log 2>&1
+/Library/Java/JavaVirtualMachines/jdk1.8.0_172.jdk/Contents/Home/bin/javapackager -deploy -outdir ../taeliumBuild -outfile taelium-client -name Taelium_Installer -width 34 -height 43 -native dmg -srcfiles ${PACKAGE}.jar -appclass com.izforge.izpack.installer.bootstrap.Installer -v -Bmac.category=Business -Bmac.CFBundleIdentifier=org.taelium.client.installer -Bmac.CFBundleName=Taelium-Setup -Bmac.CFBundleVersion=${MACVERSION} -BappVersion=${MACVERSION} -Bicon=installer/AppIcon.icns  > installer/javapackager.log 2>&1
