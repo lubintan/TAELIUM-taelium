@@ -12,7 +12,7 @@ Key Features:
 
 
 # Project Repo
-There are a total of [7 repos](https://github.com/search?q=user%3Alubintan+taelium) related to this project.
+There are a total of [7 repos](https://github.com/search?q=user%3Alubintan+taelium) related to this project, with the main one being [TAELIUM-taelium](https://github.com/lubintan/TAELIUM-taelium).
 
 The main working repo for this project was originally hosted [here](https://bitbucket.org/lubinium/taelium/src/master/).
 
